@@ -144,45 +144,50 @@ button:focus { outline: none; }
 }
 
 /* Background & menu colors */
-.cd-hero-slider li:nth-of-type(1) { background-color: rgba(56, 182, 230, 0.62); }
-.cd-hero-slider li:nth-of-type(2) { background-color: rgba(237, 84, 76, 0.62); }
-.cd-hero-slider li:nth-of-type(3) { background-color: rgba(234, 163, 25, 0.62); }
-.cd-hero-slider li:nth-of-type(4) { background-color: rgba(22, 181, 163, 0.62); }
-.cd-hero-slider li:nth-of-type(5) { background-color: rgba(68, 127, 202, 0.62); }
+.cd-hero-slider li:nth-of-type(1) { background-color: rgba(120, 120, 120, 0.62); }
+.cd-hero-slider li:nth-of-type(2) { background-color: rgba(0, 0, 0, 0.88); }
+.cd-hero-slider li:nth-of-type(3) { background-color: rgba(120, 120, 120, 0.62); }
+.cd-hero-slider li:nth-of-type(4) { background-color: rgba(120, 120, 120, 0.62); }
+.cd-hero-slider li:nth-of-type(5) { background-color: rgba(120, 120, 120, 0.62); }
 
 .cd-slider-nav .nav-item:nth-of-type(1).selected .nav-link,
 .cd-slider-nav .nav-item:nth-of-type(1) .nav-link:hover,
 .cd-slider-nav .nav-item:nth-of-type(1) .nav-link:focus {
 
-	background-color: #38b6e6;
+	background-color: #86C1DE;
 }
 
 .cd-slider-nav .nav-item:nth-of-type(2).selected .nav-link,
 .cd-slider-nav .nav-item:nth-of-type(2) .nav-link:hover,
 .cd-slider-nav .nav-item:nth-of-type(2) .nav-link:focus {
 			
-	background-color: #ed544c;
+	background-color: #F3A278;
 }
 
 .cd-slider-nav .nav-item:nth-of-type(3).selected .nav-link,
 .cd-slider-nav .nav-item:nth-of-type(3) .nav-link:hover,
 .cd-slider-nav .nav-item:nth-of-type(3) .nav-link:focus {
 		
-	background-color: #eaa319;	
+	background-color: #30479F;	
 }
 
 .cd-slider-nav .nav-item:nth-of-type(4).selected .nav-link,
 .cd-slider-nav .nav-item:nth-of-type(4) .nav-link:hover,
 .cd-slider-nav .nav-item:nth-of-type(4) .nav-link:focus {
 	
-	background-color: #16b5a3;
+	background-color: #76A8A3;
 }
 
 .cd-slider-nav .nav-item:nth-of-type(5).selected .nav-link,
 .cd-slider-nav .nav-item:nth-of-type(5) .nav-link:hover,
 .cd-slider-nav .nav-item:nth-of-type(5) .nav-link:focus {
-	
-	background-color: #447fca;		
+    background-color: #ECE379;
+}
+
+.cd-slider-nav .nav-item:nth-of-type(6).selected .nav-link,
+.cd-slider-nav .nav-item:nth-of-type(6) .nav-link:hover,
+.cd-slider-nav .nav-item:nth-of-type(6) .nav-link:focus {
+    background-color: #484848;
 }
 
 .tm-bg-white-translucent { background-color: rgba(255,255,255,0.8); }
