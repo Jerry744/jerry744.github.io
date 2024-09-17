@@ -1,0 +1,99 @@
+body{
+    /* Landing page - 1 */
+    position: relative;
+    /* width: 1920px;
+    height: 1080px; */
+    background: hsl(259, 100%, 36%);
+    font-family: 'proxima-nova', Arial, sans-serif;
+}
+.header{
+    height: 80px;
+    /* border-bottom: 2px solid #C5CCF0; */
+    background: #FFFFFF;
+}
+.header .logo{
+    margin: 0 0 0 40px;
+    float: left;
+}
+.header .menu{
+    float: right;
+    margin: 0 40px;
+}
+.header .menu ul{
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+}
+.header .menu ul li{
+    display: inline-block;
+}
+.header .menu ul li a{
+    text-decoration: none;
+    color: #000;
+    line-height: 80px;
+    padding: 20;
+    margin: 0 20px;
+    font-size: 30px;
+    font-weight: 700;
+}
+.separator{
+    height: 10px;
+}
+.container{
+    background: #c8c5e0;
+    padding: 40px;
+}
+.container .content .list{
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    width: 25%;
+}
+.content .list label{
+    /* height: 40px; */
+    /* background: rgb(255, 255, 255); */
+    font-size: 22px;
+    font-weight: 600;
+    color: #3B00B7;
+    cursor: pointer;
+    margin: 10px 0;
+    padding: 10px;
+    line-height: 40px;
+    z-index: 12;
+    transition: all 0.4s ease;
+}
+.content .indicator{
+    height: 70px;
+    width: 100%;
+    left: 0;
+    top: 0;
+    position: absolute;
+    background: #69509e;
+    border-radius: 6px;
+}
+.content .list label:hover{
+    color: #9b85cb;
+}
+#home:checked ~ .list .home,
+#blog:checked ~ .list .blog,
+#specs:checked ~ .list .specs,
+#code:checked ~ .list .code{
+    color: #FFFFFF;
+}
+
+#home:checked ~ .list .indicator{
+    top: 0;
+}
+#blog:checked ~ .list .indicator{
+    top: 80px;
+}
+#specs:checked ~ .list .indicator{
+    top: 160px;
+}
+#code:checked ~ .list .indicator{
+    top: 240px;
+}
+.container input[type="radio"]{
+    display: none;
+}
