@@ -44,6 +44,43 @@ body{
     background: #eeeeee;
     padding: 40px;
 }
+.container .content{
+    display: flex;
+    align-items: top;
+    justify-content: space-between;
+}
+.container .content .text-content{
+    width: 80%;
+    height: 100%;
+}
+.content .text-content .text{
+    display: none;
+}
+.content .text-content .home{
+    display: block;
+}
+
+#home:checked ~ .text-content .home,
+#blog:checked ~ .text-content .blog,
+#specs:checked ~ .text-content .specs,
+#code:checked ~ .text-content .code{
+    display: block;
+}
+/* #home:checked ~ .text-content .home, */
+#blog:checked ~ .text-content .home,
+#specs:checked ~ .text-content .home,
+#code:checked ~ .text-content .home{
+    display: none;
+}
+
+.content .text-content p{
+    text-align: justify;
+}
+.content .text-content .title{
+    font-size: 32px;
+    font-weight: 500;
+    margin-bottom: 0;
+}
 .container .content .list{
     display: flex;
     flex-direction: column;
