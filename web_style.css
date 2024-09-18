@@ -38,10 +38,10 @@ body{
     font-weight: 700;
 }
 .separator{
-    height: 10px;
+    height: 9px;
 }
 .container{
-    background: #c8c5e0;
+    background: #eeeeee;
     padding: 40px;
 }
 .container .content .list{
@@ -61,19 +61,21 @@ body{
     padding: 10px;
     line-height: 40px;
     z-index: 12;
-    transition: all 0.4s ease;
+    /* transition: all 0.4s ease; */
 }
 .content .indicator{
     height: 70px;
-    width: 100%;
+    width: 85%;
     left: 0;
     top: 0;
+    margin: 0 0 0 -5px;
     position: absolute;
     background: #69509e;
     border-radius: 6px;
+    transition: all 0.2s ease;
 }
 .content .list label:hover{
-    color: #9b85cb;
+    color: #8368c3;
 }
 #home:checked ~ .list .home,
 #blog:checked ~ .list .blog,
@@ -83,16 +85,20 @@ body{
 }
 
 #home:checked ~ .list .indicator{
-    top: 0;
+    top: 5px;
+    /* width: 49%; */
 }
 #blog:checked ~ .list .indicator{
-    top: 80px;
+    top: 85px;
+    /* width: 80%; */
 }
 #specs:checked ~ .list .indicator{
-    top: 160px;
+    top: 165px;
+    /* width:50%; */
 }
 #code:checked ~ .list .indicator{
-    top: 240px;
+    top: 245px;
+    /* width: 45%; */
 }
 .container input[type="radio"]{
     display: none;
