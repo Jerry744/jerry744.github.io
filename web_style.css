@@ -40,9 +40,9 @@ body{
     font-size: 30px;
     font-weight: 700;
 }
-.separator{
-    /* height: 9px; */
-}
+/* .separator{
+    height: 9px;
+} */
 .container{
     background: #3B00B7;
     padding: 20px;
