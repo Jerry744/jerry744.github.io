@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html
+    lang="zh-CN"
+    class="h-full"
+>
+    <head>
+        <meta charset="UTF-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0"
+        />
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link
+            rel="stylesheet"
+            href="https://rsms.me/inter/inter.css"
+        />
+        <style>
+            .group {
+                animation: rotate 8s linear infinite;
+            }
+
+            .group .circle-box {
+                position: absolute;
+            }
+
+            .group .circle {
+                animation: move1 2s ease infinite;
+                width: 50px;
+                height: 50px;
+                border-radius: 100%;
+                background-color: #63f78a;
+                position: absolute;
+                perspective: 100px;
+                left: 50px;
+                top: -25px;
+            }
+
+            .group:nth-child(2) .circle {
+                animation: move2 2s ease infinite;
+            }
+
+            .group .circle-box:first-child {
+                transform: rotate(45deg);
+            }
+
+            .group .circle-box:nth-child(2) {
+                transform: rotate(90deg);
+            }
+
+            .group .circle-box:nth-child(3) {
+                transform: rotate(135deg);
+            }
+
+            .group .circle-box:nth-child(4) {
+                transform: rotate(180deg);
+            }
+
+            .group .circle-box:nth-child(5) {
+                transform: rotate(225deg);
+            }
+
+            .group .circle-box:nth-child(6) {
+                transform: rotate(270deg);
+            }
+
+            .group .circle-box:nth-child(7) {
+                transform: rotate(315deg);
+            }
+
+            .group .circle-box:nth-child(8) {
+                transform: rotate(360deg);
+            }
+
+            .group .circle-box:nth-child(2) .circle {
+                animation-delay: 0.25s;
+                background-color: #5ff19f;
+            }
+
+            .group .circle-box:nth-child(3) .circle {
+                animation-delay: 0.5s;
+                background-color: #5deea8;
+            }
+
+            .group .circle-box:nth-child(4) .circle {
+                animation-delay: 0.75s;
+                background-color: #5cebb2;
+            }
+
+            .group .circle-box:nth-child(5) .circle {
+                animation-delay: 1s;
+                background-color: #5ae7bb;
+            }
+
+            .group .circle-box:nth-child(6) .circle {
+                animation-delay: 1.25s;
+                background-color: #58e4c3;
+            }
+
+            .group .circle-box:nth-child(7) .circle {
+                animation-delay: 1.5s;
+                background-color: #57e0cc;
+            }
+
+            .group .circle-box:nth-child(8) .circle {
+                animation-delay: 1.75s;
+                background-color: #56dcd3;
+            }
+
+            @keyframes move1 {
+                0% {
+                    transform: scale(1) translateX(0) rotate(0);
+                    opacity: 0.8;
+                }
+                40% {
+                    transform: scale(1.5) translateX(20px) skew(10deg)
+                        rotate(200deg);
+                    opacity: 1;
+                }
+                100% {
+                    transform: scale(0.3) translateX(0);
+                    opacity: 0;
+                }
+            }
+
+            @keyframes move2 {
+                0% {
+                    transform: scale(0.3) translateX(130px) rotate(0);
+                    opacity: 0;
+                }
+                40% {
+                    transform: scale(1) translateX(130px) rotate(0);
+                    opacity: 1;
+                }
+                60% {
+                    transform: scale(1.8) translateX(100px) skew(10deg)
+                        rotate(200deg);
+                    opacity: 1;
+                }
+            }
+
+            @keyframes rotate {
+                from {
+                    transform: rotate(0);
+                }
+                to {
+                    transform: rotate(360deg);
+                }
+            }
+        </style>
+    </head>
+    <body class="h-full bg-[#111827] flex items-center justify-center">
+        <div class="relative scale-50">
+            <div class="group">
+                <div class="circle-box">
+                    <div class="circle"></div>
+                </div>
+                <div class="circle-box">
+                    <div class="circle"></div>
+                </div>
+                <div class="circle-box">
+                    <div class="circle"></div>
+                </div>
+                <div class="circle-box">
+                    <div class="circle"></div>
+                </div>
+                <div class="circle-box">
+                    <div class="circle"></div>
+                </div>
+                <div class="circle-box">
+                    <div class="circle"></div>
+                </div>
+                <div class="circle-box">
+                    <div class="circle"></div>
+                </div>
+                <div class="circle-box">
+                    <div class="circle"></div>
+                </div>
+            </div>
+            <div class="group">
+                <div class="circle-box">
+                    <div class="circle"></div>
+                </div>
+                <div class="circle-box">
+                    <div class="circle"></div>
+                </div>
+                <div class="circle-box">
+                    <div class="circle"></div>
+                </div>
+                <div class="circle-box">
+                    <div class="circle"></div>
+                </div>
+                <div class="circle-box">
+                    <div class="circle"></div>
+                </div>
+                <div class="circle-box">
+                    <div class="circle"></div>
+                </div>
+                <div class="circle-box">
+                    <div class="circle"></div>
+                </div>
+                <div class="circle-box">
+                    <div class="circle"></div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
