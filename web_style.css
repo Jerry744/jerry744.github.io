@@ -43,6 +43,13 @@ body{
 /* .separator{
     height: 9px;
 } */
+
+.centered-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .container{
     background: #3B00B7;
     padding: 20px;
