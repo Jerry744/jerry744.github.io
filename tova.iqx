@@ -1,0 +1,1121 @@
+﻿<usermanual>
+___________________________________________________________________________________________________________________	
+
+							*T.O.V.A. (Test of Variables of Attention) - visual stimuli*
+___________________________________________________________________________________________________________________	
+
+last updated:  06-26-2024 by K. Borchert (katjab@millisecond.com) for Millisecond Software, LLC
+Script Copyright © 06-26-2024 Millisecond Software
+
+___________________________________________________________________________________________________________________
+BACKGROUND INFO 	
+___________________________________________________________________________________________________________________	
+
+This script implements and administers: T.O.V.A. (Test of Variables of Attention), 
+a computerized test of sustained attention and impulsivity.
+The T.O.V.A. is a Continuous Performance Test (CPT) with a simple shape in 2 different 
+screen positions (top square/bottom square).
+
+Reference:
+Greenberg, L.M., & Waldman, I.D. (1993). Developmental normative data on the Test of Variable of
+Attention (T.O.V.A.™). Journal of Child Psychology and Psychiatry, 34, 1019–1030.
+
+Greenberg, L.M., Kindschi, C.L., Dupuy, T.R., Hughes, S.J. (2016). TOVA:
+Test of Variable Attention. Clinical Manual. 
+http://files.tovatest.com/documentation/8/Clinical%20Manual.pdf
+
+Adjustments to z-scores as described by:
+Gregg, A. & Sedikides, C. (2010). Narcissistic Fragility:
+Rethinking Its Links to Explicit and Implicit Self-esteem, Self and Identity, 9:2, 142-161 (p.148)
+
+
+___________________________________________________________________________________________________________________
+TASK DESCRIPTION	
+___________________________________________________________________________________________________________________	
+
+Participants are presented 2 different stimuli (for 100ms) at a constant pace (every 2s). 
+If the stimulus is a target (aka top square), they are asked to press the Spacebar. 
+If it's not a target (aka bottom square), they are asked to simply wait for the
+next stimulus.									  
+
+___________________________________________________________________________________________________________________	
+DURATION 
+___________________________________________________________________________________________________________________	
+the default set-up of the script takes appr. 24 minutes to complete
+
+___________________________________________________________________________________________________________________	
+DATA FILE INFORMATION 
+___________________________________________________________________________________________________________________	
+The default data stored in the data files are:
+
+(1) Raw data file: 'tova_raw*.iqdat' (a separate file for each participant)
+
+build:							The specific Inquisit version used (the 'build') that was run
+computer.platform:				the platform the script was run on (win/mac/ios/android)
+date, time: 					date and time script was run 
+subject, group: 				with the current subject/groupnumber
+session:						with the current session id
+
+blockcode, blocknum:			the name and number of the current block (built-in Inquisit variable)
+trialcode, trialnum: 			the name and number of the currently recorded trial (built-in Inquisit variable)
+									Note: trialnum is a built-in Inquisit variable; it counts all trials run; even those
+									that do not store data to the data file such as feedback trials. Thus, trialnum 
+									may not reflect the number of main trials run per block.
+									
+frequency:						1 = low frequency condition; 
+								2 = high frequency condition; 
+								0 = practice
+									
+response:						the participant's key response (scancodes: 57 = Spacebar; 0 = noresponse)
+correct:						the correctness of the response (1 = correct; 0 = incorrect)
+latency: 						the response latency (in ms); measured from onset of target/nontarget
+
+anticipatoryResponse:			1 = response is anticipatory (latency < parameters.minValidLatency; default: 200ms); 
+								0 = response is not anticipatory
+									
+commissionerror:				1 = valid commission error (excludes anticipatory responses); 
+								0 = no valid commission error 
+									
+postCommissionHit:				1 = valid hit (excludes anticipatory responses) immediately after a commission error; 
+								0 = not a valid hit immediately after a commission error
+									
+
+(2) Summary data file: 'tova_summary*.iqdat' (a separate file for each participant)
+
+inquisit.version:				Inquisit version run
+computer.platform:				the platform the script was run on (win/mac/ios/android)
+startDate:						date script was run
+startTime:						time script was started
+subjectid:						assigned subject id number
+groupid:						assigned group id number
+sessionid:						assigned session id number
+elapsedTime:					time it took to run script (in ms); measured from onset to offset of script
+completed:						0 = script was not completed (prematurely aborted); 
+								1 = script was completed (all conditions run)	
+									
+(parameter) minValidLatency:	minimum latency in ms that is considered valid and not anticipatory (default: 200)
+sum_anticipatoryResponses:		sums up number of anticipatory responses across all test trials
+percentAnticipatoryResponses:	percentage of anticipatory response during test trials
+
+
+Notes:
+(a) the following summary statistic exclude all anticipatory responses (default: responses with latencies < 200ms)
+(b) z-scores were adjusted according to Gregg & Sedikides (2010, p.148)
+If the hit rate / FA rate is 0 => 0.005 is used instead
+IF the hit rate / FA rate is 1.0 => 0.995 is used instead
+
+
+propcorrect_practice:			overall proportion correct of practice trials
+overallproportioncorrect:		overall proportion correct of all experimental trials (across all test blocks)
+meanPostCommissionRT:			mean correct hit latencies (in ms) committed immediately after a commission error (across all test blocks)
+meanHitRT:						mean hit latency (in ms) of all experimental trials (across all test blocks)
+SDHitRT:						standard deviation of all hit latencies (across all test blocks)
+hitRate:						mean hit rate (across all test blocks)
+omissionsRate:					mean omissions rate (across all test blocks)
+commissionRate:					mean false alarm rate (across all test blocks)
+z_hr:							z-value of mean hit rate (across all test blocks)
+z_FAr:							z-value of mean False Alarm rate (across all test blocks)
+dprime:							d' (parametric measure of discriminability). (across all test blocks)
+
+meanHitRT_LF:					mean hit latency (in ms) in low frequency condition (across both low frequency blocks)
+SDHitRT_LF:						standard deviation of all hit latencies in low frequency condition (across both low frequency blocks)
+hitRate_LF:						mean hit rate in low frequency condition (across both low frequency blocks)
+omissionsRate_LF:				mean omissions rate in low frequency condition (across both low frequency blocks)
+commissionRate_LF:				mean false alarm rate in low frequency condition (across both low frequency blocks)
+z_hr_LF:						z-value of mean hit rate in low frequency condition (across both low frequency blocks)
+z_FAr_LF:						z-value of mean False Alarm rate in low frequency condition (across both low frequency blocks)
+dprime_LF:						d' (parametric measure of discriminability) in low frequency condition (across both low frequency blocks)
+
+meanHitRT_HF:					mean hit latency (in ms) in high frequency condition (across both high frequency blocks)
+SDHitRT_HF:						standard deviation of all hit latencies in high frequency condition (across both high frequency blocks)
+hitRate_HF:						mean hit rate in high frequency condition (across both high frequency blocks)
+omissionsRate_HF:				mean omissions rate in high frequency condition (across both high frequency blocks)
+commissionRate_HF:				mean false alarm rate in high frequency condition (across both high frequency blocks)
+z_hr_HF:						z-value of mean hit rate in high frequency condition (across both high frequency blocks)
+z_FAr_HF:						z-value of mean False Alarm rate in high frequency condition (across both high frequency blocks)
+dprime_HF:						d' (parametric measure of discriminability) in high frequency condition (across both high frequency blocks)
+
+meanHitRT_LF1:					mean hit latency (in ms) in first low frequency block
+SDHitRT_LF1:					standard deviation of all hit latencies in first low frequency block
+hitRate_LF1:					mean hit rate in first low frequency block
+omissionsRate_LF1:				mean omissions rate in first low frequency block
+commissionRate_LF1:				mean false alarm rate in first low frequency block
+z_hr_LF1:						z-value of mean hit rate in first low frequency block
+z_FAr_LF1:						z-value of mean False Alarm rate in first low frequency block
+dprime_LF1:						d' (parametric measure of discriminability) in first low frequency block
+
+meanHitRT_LF2:					mean hit latency (in ms) in second low frequency block
+SDHitRT_LF2:					standard deviation of all hit latencies in second low frequency block
+hitRate_LF2:					mean hit rate in second low frequency block
+omissionsRate_LF2:				mean omissions rate in second low frequency block
+commissionRate_LF2:				mean false alarm rate in second low frequency block
+z_hr_LF2:						z-value of mean hit rate in second low frequency block
+z_FAr_LF2:						z-value of mean False Alarm rate in second low frequency block
+dprime_LF2:						d' (parametric measure of discriminability) in second low frequency block
+
+meanHitRT_HF1:					mean hit latency (in ms) in first high frequency block
+SDHitRT_HF1:					standard deviation of all hit latencies in first high frequency block
+hitRate_HF1:					mean hit rate in first high frequency block
+omissionsRate_HF1:				mean omissions rate in first high frequency block
+commissionRate_HF1:				mean false alarm rate in first high frequency block
+z_hr_HF1:						z-value of mean hit rate in first high frequency block
+z_FAr_HF1:						z-value of mean False Alarm rate in first high frequency block
+dprime_HF1:						d' (parametric measure of discriminability) in first high frequency block
+
+meanHitRT_HF2:					mean hit latency (in ms) in second high frequency block
+SDHitRT_HF2:					standard deviation of all hit latencies in second high frequency block
+hitRate_HF2:					mean hit rate in second high frequency block
+omissionsRate_HF2:				mean omissions rate in second high frequency block
+commissionRate_HF2:				mean false alarm rate in second high frequency block
+z_hr_HF2:						z-value of mean hit rate in second high frequency block
+z_FAr_HF2:						z-value of mean False Alarm rate in second high frequency block
+dprime_HF2:						d' (parametric measure of discriminability) in second high frequency block
+
+
+___________________________________________________________________________________________________________________	
+EXPERIMENTAL SET-UP 
+___________________________________________________________________________________________________________________	
+
+5 blocks: total of 698 trials (648 test trials and 50 practice trials); takes ~24 minutes
+(errorfeedback is optional, see section Editable Parameters)
+
+Practice: 50 trials with target:nontarget frequency = 1:1 (lasts ~2 minutes)
+
+Test Blocks:
+1. Low Frequency1: 162 trials with 36 targets, 126 nontargets (1:3.5)(lasts ~5.5 minutes) => ~11 min on Low Frequency condition
+2. Low Frequency1: 162 trials with 36 targets, 126 nontargets (1:3.5)(lasts ~5.5 minutes) => ~11 min on Low Frequency condition
+3. High Frequency1: 162 trials with 126 targets, 36 nontargets (3.5:1)(lasts ~5.5 minutes) => ~11 min on Low Frequency condition
+4. High Frequency1: 162 trials with 126 targets, 36 nontargets (3.5:1)(lasts ~5.5 minutes) => ~11 min on Low Frequency condition
+
+Test Procedures: 
+1.   Test purpose and instructions displayed.
+1b.  2-min Practice Session begins
+2.   First half of the test begins.
+2a.  target/Non-target stimulus presented briefly for 100ms (~22.2% of the stimuli are targets). 
+2b.  Awaits for user response (space bar) or terminates after 2000ms.
+2c.  Go to 2a until half time is reached.
+3.   Second half of the test begins (unannounced).
+3a.  target/Non-target stimulus presented briefly for 100ms (~77.8% of the stimuli are targets).
+3b.  Awaits for user response (space bar) or terminates after 2000ms.
+3c.  Go to 3a until half time is reached
+4.   End of test (w/ thank you page). 		
+
+___________________________________________________________________________________________________________________	
+INSTRUCTIONS 
+___________________________________________________________________________________________________________________	
+see section Editable Instructions
+(from Greenberg & Waldman, 1993)
+
+___________________________________________________________________________________________________________________	
+EDITABLE CODE 
+___________________________________________________________________________________________________________________	
+check below for (relatively) easily editable parameters, stimuli, instructions etc. 
+Keep in mind that you can use this script as a template and therefore always "mess" with the entire code 
+to further customize your experiment.
+
+The parameters you can change are:
+
+SOA:								Time interval between onsets of target/non-target stimulus (in ms) (here: 2000ms)
+squaresize:							the size of the target/nontarget shape in canvas height percentage (default: 5%)
+backgroundsize:						the size of the white background in canvas height percentage (default: 50%)
+/minValidLatency:					minimum latency in ms that is considered valid and not anticipatory (default: 200)
+
+/showPracticeFeedback:				true (1): error feedback is presented during practice 
+									false (0): no feedback is provided during practice (default)
+									
+</usermanual>
+
+
+**************************************************************************************************************
+**************************************************************************************************************
+	EDITABLE PARAMETERS: change editable parameters here
+**************************************************************************************************************
+**************************************************************************************************************
+
+<parameters>
+/ SOA = 2000
+/ squaresize = 5%
+/ backgroundsize = 50%
+/ minValidLatency = 200
+/showPracticeFeedback = false
+</parameters>
+
+**************************************************************************************************************
+**************************************************************************************************************
+	EDITABLE INSTRUCTIONS: change instructions here
+**************************************************************************************************************
+**************************************************************************************************************
+
+<instruct>
+/ fontstyle = ("Arial", 4%, true, false, false, false, 5, 0)
+/ screencolor = black
+/ txcolor = white
+</instruct>
+
+<page page1>
+^^In the following task, you will be presented a series of stimuli consisting of a large white square with a small black square inside it. 
+^^On some trials, the small square will be near the top of the white square. These are target stimuli.
+^^On other trials, the small square will be near the bottom. These are NOT target stimuli.
+^^Continue to see the stimuli.
+</page>
+
+<page practiceOver>
+^^You have completed practice. The task will now begin.
+</page>
+
+
+<text finish>
+/ items = ("Thank you!")
+/ fontstyle = ("Arial", 8%, true, false, false, false, 5, 1)
+/ position = (50%, 50%)
+/ size = (80%, 10%)
+/ vjustify = center
+/ valign = center
+/ halign = center
+</text>
+
+<text exit>
+/ items = ("<press spacebar to exit>")
+/ fontstyle = ("Arial", 3%, false, false, false, false, 5, 1)
+/ position = (50%, 90%)
+/ size = (80%, 5%)
+/ vjustify = center
+/ valign = center
+/ halign = center
+</text>
+
+
+<text instructions>
+/ fontstyle = ("Arial", 4%, true, false, false, false, 5, 0)
+/ items = ("Your task is to decide if each stimulus is a target or non-target. 
+~nPress the space bar <%expressions.buttoninstruct1%> as quickly as you can whenever you see a target (top square). 
+~nDo nothing when you see a non-target (bottom square). 
+~nThe task lasts approximately 23 minutes, so you must concentrate to perform well. First you will have 3 minutes to practice. 
+~nPress the space bar to begin practice.")
+/ size = (90%, 80%)
+/ hjustify = left
+/ vjustify = center
+</text>
+
+****************************************************************************************************
+general instruction expressions: adjust the instruction text depending on device used to run script
+****************************************************************************************************
+<expressions>
+/ buttoninstruct1 = if (computer.touch && !computer.hasKeyboard) {"button located on the bottom of your screen";} else {"";}
+</expressions>
+
+
+
+**************************************************************************************************************
+				!!!REMAINING CODE: Customize after careful consideration only!!!
+**************************************************************************************************************
+
+
+**************************************************************************************************************
+**************************************************************************************************************
+	DEFAULTS
+**************************************************************************************************************
+**************************************************************************************************************
+script requires Inquisit 6.5.2.0 or higher
+
+<defaults>
+/ canvasaspectratio = (4,3)
+/ minimumversion = "6.5.2.0"
+/ fontstyle = ("Arial", 3.5%, false, false, false, false, 5, 0)
+/ screencolor = black
+/ txbgcolor = black
+/ txcolor = white
+</defaults>
+
+**************************************************************************************************************
+**************************************************************************************************************
+	DATA
+**************************************************************************************************************
+**************************************************************************************************************
+
+Note: data file explanations under User Manual Information at the top
+
+*******
+raw data
+*******
+
+<data>
+/ columns = (build, computer.platform, date, time, subject, group, session, 
+blockcode, blocknum, trialcode, trialnum, 
+values.frequency, 
+response, correct, latency,
+values.anticipatoryResponse, values.commissionerror values.postCommissionHit)
+</data>
+
+*******
+summary data
+*******
+
+<summarydata>
+/ columns = (inquisit.version, computer.platform, script.startDate, script.startTime, script.subjectId, script.groupId, script.sessionId, 
+script.elapsedTime, script.completed,
+parameters.minValidLatency, 
+values.sum_anticipatoryResponses, expressions.percentAnticipatoryResponses, 
+values.propcorrect_practice, 
+expressions.overallproportioncorrect, expressions.meanPostCommissionRT,
+expressions.meanHitRT, expressions.SDHitRT, expressions.hitRate, expressions.omissionsRate, 
+expressions.commissionRate, expressions.z_hr, expressions.z_FAr, expressions.dprime,
+expressions.meanHitRT_LF, expressions.SDHitRT_LF, expressions.hitRate_LF, expressions.omissionsRate_LF, 
+expressions.commissionRate_LF, expressions.z_hr_LF, expressions.z_FAr_LF, expressions.dprime_LF,
+expressions.meanHitRT_HF, expressions.SDHitRT_HF, expressions.hitRate_HF, expressions.omissionsRate_HF, 
+expressions.commissionRate_HF, expressions.z_hr_HF, expressions.z_FAr_HF, expressions.dprime_HF,
+values.meanHitRT_LF1, values.SDHitRT_LF1, values.hitRate_LF1,values.omissionsRate_LF1,
+values.commissionRate_LF1, values.z_hr_LF1, values.z_FAr_LF1, values.dprime_LF1,
+values.meanHitRT_LF2, values.SDHitRT_LF2, values.hitRate_LF2,values.omissionsRate_LF2,
+values.commissionRate_LF2, values.z_hr_LF2, values.z_FAr_LF2, values.dprime_LF2,
+values.meanHitRT_HF1, values.SDHitRT_HF1, values.hitRate_HF1,values.omissionsRate_HF1,
+values.commissionRate_HF1, values.z_hr_HF1, values.z_FAr_HF1, values.dprime_HF1,
+values.meanHitRT_HF2, values.SDHitRT_HF2, values.hitRate_HF2,values.omissionsRate_HF2,
+values.commissionRate_HF2, values.z_hr_HF2, values.z_FAr_HF2, values.dprime_HF2)
+</summarydata>
+
+**************************************************************************************************************
+**************************************************************************************************************
+	VALUES: automatically updated
+**************************************************************************************************************
+**************************************************************************************************************
+                                    
+/frequency:					0 = practice; 1 = low frequency; 2 = high frequency
+/propcorrect_practice:		stores the proportion correct of practice trials
+/anticipatoryResponse:		1 = response is anticipatory; 0 = response is not anticipatory
+/sum_anticipatoryResponses:	sums up all anticipatory responses across test blocks
+/commissionerror:			1 = commission error; 0 = no commission error
+/postCommissionHit:			1= hit immediately after a commission error; 0 = not a hit immediately after a commission error
+/meanHitRT_LF1:				mean hit latency in first low frequency block
+/SDHitRT_LF1:				standard deviation of all hit latencies in first low frequency block
+/hitRate_LF1:				mean hit rate in first low frequency block
+/omissionsRate_LF1:			mean omissions rate in first low frequency block
+/commissionRate_LF1:		mean false alarm rate in first low frequency block
+/z_hr_LF1:					z-value of mean hit rate in first low frequency block
+/z_FAr_LF1:					z-value of mean False Alarm rate in first low frequency block
+/dprime_LF1:				d' (parametric measure of discriminability) in first low frequency block
+/meanHitRT_LF2:				mean hit latency in second low frequency block
+/SDHitRT_LF2:				standard deviation of all hit latencies in second low frequency block
+/hitRate_LF2:				mean hit rate in second low frequency block
+/omissionsRate_LF2:			mean omissions rate in second low frequency block
+/commissionRate_LF2:		mean false alarm rate in second low frequency block
+/z_hr_LF2:					z-value of mean hit rate in second low frequency block
+/z_FAr_LF2:					z-value of mean False Alarm rate in second low frequency block
+/dprime_LF2:				d' (parametric measure of discriminability) in second low frequency block
+/meanHitRT_HF1:				mean hit latency in first high frequency block
+/SDHitRT_HF1:				standard deviation of all hit latencies in first high frequency block
+/hitRate_HF1:				mean hit rate in first high frequency block
+/omissionsRate_HF1:			mean omissions rate in first high frequency block
+/commissionRate_HF1:		mean false alarm rate in first high frequency block
+/z_hr_HF1:					z-value of mean hit rate in first high frequency block
+/z_FAr_HF1:					z-value of mean False Alarm rate in first high frequency block
+/dprime_HF1:				d' (parametric measure of discriminability) in first high frequency block
+/meanHitRT_HF2:				mean hit latency in second high frequency block
+/SDHitRT_HF2:				standard deviation of all hit latencies in second high frequency block
+/hitRate_HF2:				mean hit rate in second high frequency block
+/omissionsRate_HF2:			mean omissions rate in second high frequency block
+/commissionRate_HF2:		mean false alarm rate in second high frequency block
+/z_hr_HF2:					z-value of mean hit rate in second high frequency block
+/z_FAr_HF2:					z-value of mean False Alarm rate in second high frequency block
+/dprime_HF2:				d' (parametric measure of discriminability) in second high frequency block
+
+<values>
+/ frequency = 0
+/ propcorrect_practice = 0
+/ anticipatoryResponse = 0
+/ sum_anticipatoryResponses = 0
+/ commissionerror = 0
+/ postCommissionHit = 0
+/ meanHitRT_LF1 = 0
+/ SDHitRT_LF1 = 0
+/ hitRate_LF1 = 0
+/ omissionsRate_LF1 = 0
+/ commissionRate_LF1 = 0
+/ z_hr_LF1 = 0
+/ z_FAr_LF1 = 0
+/ dprime_LF1 = 0
+/ meanHitRT_LF2 = 0
+/ SDHitRT_LF2 = 0
+/ hitRate_LF2 = 0
+/ omissionsRate_LF2 = 0
+/ commissionRate_LF2 = 0
+/ z_hr_LF2 = 0
+/ z_FAr_LF2 = 0
+/ dprime_LF2 = 0
+/ meanHitRT_HF1 = 0
+/ SDHitRT_HF1 = 0
+/ hitRate_HF1 = 0
+/ omissionsRate_HF1 = 0
+/ commissionRate_HF1 = 0
+/ z_hr_HF1 = 0
+/ z_FAr_HF1 = 0
+/ dprime_HF1 = 0
+/ meanHitRT_HF2 = 0
+/ SDHitRT_HF2 = 0
+/ hitRate_HF2 = 0
+/ omissionsRate_HF2 = 0
+/ commissionRate_HF2 = 0
+/ z_hr_HF2 = 0
+/ z_FAr_HF2 = 0
+/ dprime_HF2 = 0
+</values>
+
+**************************************************************************************************************
+**************************************************************************************************************
+	EXPRESSIONS
+**************************************************************************************************************
+**************************************************************************************************************
+
+Notes: 
+(a) the following summary statistic exclude all anticipatory responses
+(b) z-scores were adjusted according to Gregg & Sedikides (2010, p.148)
+If the hit rate / FA rate is 0 => 0.005 is used instead
+IF the hit rate / FA rate is 1.0 => 0.995 is used instead
+
+
+/overallproportioncorrect:		overall proportion correct of all experimental trials (across all test blocks)
+/meanPostCommissionRT:			mean correct hit latencies committed immediately after a commission error
+
+/meanHitRT:						mean hit latency of all experimental trials (across all test blocks)
+/SDHitRT:						standard deviation of all hit latencies (across all test blocks)
+/hitRate:						mean hit rate (across all test blocks)
+/omissionsRate:					mean omissions rate (across all test blocks)
+/commissionRate:				mean false alarm rate (across all test blocks)
+/z_hr:							z-value of mean hit rate (across all test blocks)
+/z_FAr:							z-value of mean False Alarm rate (across all test blocks)
+/dprime:						d' (parametric measure of discriminability). (across all test blocks)
+
+/meanHitRT_LF:					mean hit latency in low frequency condition (across both low frequency blocks)
+/SDHitRT_LF:					standard deviation of all hit latencies in low frequency condition (across both low frequency blocks)
+/hitRate_LF:					mean hit rate in low frequency condition (across both low frequency blocks)
+/omissionsRate_LF:				mean omissions rate in low frequency condition (across both low frequency blocks)
+/commissionRate_LF:				mean false alarm rate in low frequency condition (across both low frequency blocks)
+/z_hr_LF:						z-value of mean hit rate in low frequency condition (across both low frequency blocks)
+/z_FAr_LF:						z-value of mean False Alarm rate in low frequency condition (across both low frequency blocks)
+/dprime_LF:						d' (parametric measure of discriminability) in low frequency condition (across both low frequency blocks)
+
+/meanHitRT_HF:					mean hit latency in high frequency condition (across both high frequency blocks)
+/SDHitRT_HF:					standard deviation of all hit latencies in high frequency condition (across both high frequency blocks)
+/hitRate_HF:					mean hit rate in high frequency condition (across both high frequency blocks)
+/omissionsRate_HF:				mean omissions rate in high frequency condition (across both high frequency blocks)
+/commissionRate_HF:				mean false alarm rate in high frequency condition (across both high frequency blocks)
+/z_hr_HF:						z-value of mean hit rate in high frequency condition (across both high frequency blocks)
+/z_FAr_HF:						z-value of mean False Alarm rate in high frequency condition (across both high frequency blocks)
+/dprime_HF:						d' (parametric measure of discriminability) in high frequency condition (across both high frequency blocks)
+
+/meanHitRT_LF_perblock:			mean hit latency in low frequency condition - resets after each block
+/SDHitRT_LF_perblock:			standard deviation of all hit latencies in low frequency condition  - resets after each block
+/hitRate_LF_perblock:			mean hit rate in low frequency condition - resets after each block
+/omissionsRate_LF_perblock:		mean omissions rate in low frequency condition - resets after each block
+/commissionRate_LF_perblock:	mean false alarm rate in low frequency condition - resets after each block
+/z_hr_LF_perblock:				z-value of mean hit rate in low frequency condition - resets after each block
+/z_FAr_LF_perblock:				z-value of mean False Alarm rate in low frequency condition - resets after each block
+/dprime_LF_perblock:			d' (parametric measure of discriminability) in low frequency condition - resets after each block
+
+/meanHitRT_HF_perblock:			mean hit latency in high frequency condition - resets after each block
+/SDHitRT_HF_perblock:			standard deviation of all hit latencies in high frequency condition - resets after each block
+/hitRate_HF_perblock:			mean hit rate in high frequency condition - resets after each block
+/omissionsRate_HF_perblock:		mean omissions rate in high frequency condition - resets after each block
+/commissionRate_HF_perblock:	mean false alarm rate in high frequency condition - resets after each block
+/z_hr_HF_perblock:				z-value of mean hit rate in high frequency condition - resets after each block
+/z_FAr_HF_perblock:				z-value of mean False Alarm rate in high frequency condition - resets after each block
+/dprime_HF_perblock:			d' (parametric measure of discriminability) in high frequency condition - resets after each block
+
+/percentAnticipatoryResponses:	percentage of anticipatory response during test trials
+
+
+<expressions>
+/ overallproportioncorrect = list.accuracyoverall.mean
+/ meanPostCommissionRT = list.postcommissionRT.mean
+
+/ meanHitRT = list.targetlatencies.mean
+/ SDHitRT = list.targetlatencies.standarddeviation
+/ hitRate = list.targetaccuracy.mean
+/ omissionsRate = 1-expressions.hitRate
+/ commissionRate = 1-list.nontargetaccuracy.mean
+
+/ z_hr = if (expressions.hitRate == 0){
+			zofp(expressions.hitRate + 0.005);
+		} else if (expressions.hitRate == 1){
+			zofp(expressions.hitRate - 0.005);
+		} else {
+			zofp(expressions.hitRate);
+		}
+
+
+/ z_FAr = if (expressions.commissionRate == 0){
+			zofp(expressions.commissionRate + 0.005);
+		 } else if (expressions.commissionRate == 1){
+			zofp(expressions.commissionRate - 0.005); 
+		 } else {
+			zofp(expressions.commissionRate);			 
+		 }
+
+
+/ dprime = (expressions.z_hr-expressions.z_FAr)
+
+/ meanHitRT_LF = list.targetlatencies_LF.mean
+/ SDHitRT_LF = list.targetlatencies_LF.standarddeviation
+/ hitRate_LF = list.targetaccuracy_LF.mean
+/ omissionsRate_LF = 1-expressions.hitRate_LF
+/ commissionRate_LF = 1-list.nontargetaccuracy_LF.mean
+/ z_hr_LF = 
+if (expressions.hitRate_LF == 0){
+	zofp(expressions.hitRate_LF + 0.005);
+} else if (expressions.hitRate_LF == 1){
+	zofp(expressions.hitRate_LF - 0.005);
+} else {
+	zofp(expressions.hitRate_LF);	
+}
+
+/ z_FAr_LF = if (expressions.commissionRate_LF == 0){
+	zofp(expressions.commissionRate_LF + 0.005);
+} else if (expressions.commissionRate_LF == 1 ){
+	zofp(expressions.commissionRate_LF - 0.005);
+} else {
+	zofp(expressions.commissionRate_LF);
+}
+
+/ dprime_LF = (expressions.z_hr_LF-expressions.z_FAr_LF)
+
+/ meanHitRT_HF = list.targetlatencies_HF.mean
+/ SDHitRT_HF = list.targetlatencies_HF.standarddeviation
+/ hitRate_HF = list.targetaccuracy_HF.mean
+/ omissionsRate_HF = 1-expressions.hitRate_HF
+/ commissionRate_HF = 1-list.nontargetaccuracy_HF.mean
+/ z_hr_HF = 
+if (expressions.hitRate_HF == 0){
+	zofp(expressions.hitRate_HF + 0.005);
+} else if (expressions.hitRate_HF == 1){
+	zofp(expressions.hitRate_HF - 0.005);
+} else {
+	zofp(expressions.hitRate_HF);
+}
+
+/ z_FAr_HF = 
+if (expressions.commissionRate_HF == 0){
+	zofp(expressions.commissionRate_HF + 0.005);
+} else if (expressions.commissionRate_HF == 1){
+	zofp(expressions.commissionRate_HF - 0.005);
+} else {
+	zofp(expressions.commissionRate_HF);	
+}
+
+/ dprime_HF = (expressions.z_hr_HF-expressions.z_FAr_HF)
+
+/ meanHitRT_LF_perblock = list.targetlatencies_LF_perblock.mean
+/ SDHitRT_LF_perblock = list.targetlatencies_LF_perblock.standarddeviation
+/ hitRate_LF_perblock = list.targetaccuracy_LF_perblock.mean
+/ omissionsRate_LF_perblock = 1-expressions.hitRate_LF_perblock
+/ commissionRate_LF_perblock = 1-list.nontargetaccuracy_LF_perblock.mean
+
+/ z_hr_LF_perblock = 
+if (expressions.hitRate_LF_perblock == 0){
+	zofp(expressions.hitRate_LF_perblock + 0.005);
+} else if (expressions.hitRate_LF_perblock == 1){
+	zofp(expressions.hitRate_LF_perblock - 0.005);
+} else {
+	zofp(expressions.hitRate_LF_perblock);
+}
+
+/ z_FAr_LF_perblock = 
+if (expressions.commissionRate_LF_perblock == 0){
+	zofp(expressions.commissionRate_LF_perblock + 0.005);
+} else if (expressions.commissionRate_LF_perblock == 1){
+	zofp(expressions.commissionRate_LF_perblock - 0.005);
+} else {
+	zofp(expressions.commissionRate_LF_perblock);	
+}
+/ dprime_LF_perblock = (expressions.z_hr_LF_perblock-expressions.z_FAr_LF_perblock)
+
+/ meanHitRT_HF_perblock = list.targetlatencies_HF_perblock.mean
+/ SDHitRT_HF_perblock = list.targetlatencies_HF_perblock.standarddeviation
+/ hitRate_HF_perblock = list.targetaccuracy_HF_perblock.mean
+/ omissionsRate_HF_perblock = 1-expressions.hitRate_HF_perblock
+/ commissionRate_HF_perblock = 1-list.nontargetaccuracy_HF_perblock.mean
+
+/ z_hr_HF_perblock = 
+if (expressions.hitRate_HF_perblock == 0){
+	zofp(expressions.hitRate_HF_perblock + 0.005);
+} else if (expressions.hitRate_HF_perblock == 1){
+	zofp(expressions.hitRate_HF_perblock - 0.005);
+} else {
+	zofp(expressions.hitRate_HF_perblock);
+}
+
+/ z_FAr_HF_perblock = 
+if (expressions.commissionRate_HF_perblock == 0){
+	zofp(expressions.commissionRate_HF_perblock + 0.005);
+} else if (expressions.commissionRate_HF_perblock == 1){
+	zofp(expressions.commissionRate_HF_perblock - 0.005);
+} else {
+	zofp(expressions.commissionRate_HF_perblock);	
+}
+
+/ dprime_HF_perblock = (expressions.z_hr_HF_perblock-expressions.z_FAr_HF_perblock)
+/percentAnticipatoryResponses = values.sum_anticipatoryResponses/list.accuracyoverall.itemCount*100
+</expressions>
+
+**************************************************************************************************************
+**************************************************************************************************************
+	INSTRUCTIONS
+**************************************************************************************************************
+**************************************************************************************************************
+
+<trial showInstruction>
+/ stimulusframes = [1=instructions]
+/ validresponse = (" ")
+/ correctresponse = (" ")
+</trial>
+
+<trial showTarget>
+/ stimulusframes = [1=background, target, targetTxt]
+/ validresponse = (" ")
+/ correctresponse = (" ")
+</trial>
+
+<trial showNonTarget>
+/ stimulusframes = [1=background, nonTarget, nonTargetTxt]
+/ validresponse = (" ")
+/ correctresponse = (" ")
+</trial>
+
+<trial blank>
+
+//for touchscreens: present the inactive response buttons
+/ validresponse = (" ")
+/ isvalidresponse = [
+	return false;
+]
+
+/ response = noresponse
+/ trialduration = parameters.SOA
+</trial>
+
+<trial finish>
+/ timeout = 250
+/ stimulusframes = [1 = finish]
+/ recorddata = false
+</trial>
+
+**************************************************************************************************************
+**************************************************************************************************************
+	STIMULI
+**************************************************************************************************************
+**************************************************************************************************************
+
+*********************************************
+errorfeedback
+*********************************************
+<text errorfeedback>
+/ items = ("ERROR")
+/ fontstyle = ("Arial", 15%, true, false, false, false, 5, 0)
+/ position = (50%, 50%)
+/ size = (80%, 12%)
+/ txcolor = red
+</text>
+
+*********************************************
+Visual test targets used in T.O.V.A. *
+*********************************************
+<shape background>
+/ color = white
+/ shape = rectangle
+/ size = (parameters.backgroundsize * 0.75%, parameters.backgroundsize)
+/ position = (50%, 50%)
+/ valign = center
+/ halign = center
+</shape>
+
+<shape eraseStimuli>
+/ color = black
+/ shape = rectangle
+/ size = (parameters.backgroundsize * 0.75%, parameters.backgroundsize)
+/ position = (50%, 50%)
+/ valign = center
+/ halign = center
+</shape>
+
+<shape target>
+/ color = black
+/ shape = rectangle
+/ size = (parameters.squaresize * 0.75, parameters.squaresize)
+/ position = (50%, 35%)
+/ valign = center
+/ halign = center
+</shape>
+
+<shape nonTarget>
+/ color = black
+/ shape = rectangle
+/ size = (parameters.squaresize * 0.75, parameters.squaresize)
+/ position = (50%, 65%)
+/ valign = center
+/ halign = center
+</shape>
+
+**********************
+Illustration text  *
+**********************
+<text targetTxt>
+/ fontstyle = ("Arial", 5%, true, false, false, false, 5, 0)
+/ items = ("This is a target. 
+Press the space bar to continue")
+/ position = (50%, 90%)
+/ size = (80%, 12%)
+</text>
+
+<text nonTargetTxt>
+/ fontstyle = ("Arial", 5%, true, false, false, false, 5, 0)
+/ items = ("This is NOT a target. 
+Press the space bar to continue")
+/ position = (50%, 90%)
+/ size = (80%, 12%)
+</text>
+
+**************************************************************************************************************
+**************************************************************************************************************
+	LISTS	
+**************************************************************************************************************
+**************************************************************************************************************
+
+*************************************************
+Data Lists: used for descriptive statistics
+store correct latencies/accuracy data
+fill up during runtime
+*************************************************
+
+<list accuracyoverall>
+</list>
+
+<list targetaccuracy>
+</list>
+
+<list nontargetaccuracy>
+</list>
+
+<list targetlatencies>
+</list>
+
+<list targetaccuracy_HF>
+</list>
+
+<list nontargetaccuracy_HF>
+</list>
+
+<list targetlatencies_HF>
+</list>
+
+<list targetaccuracy_HF_perblock>
+</list>
+
+<list nontargetaccuracy_HF_perblock>
+</list>
+
+<list targetlatencies_HF_perblock>
+</list>
+
+<list targetaccuracy_LF>
+</list>
+
+<list nontargetaccuracy_LF>
+</list>
+
+<list targetlatencies_LF>
+</list>
+
+<list targetaccuracy_LF_perblock>
+</list>
+
+<list nontargetaccuracy_LF_perblock>
+</list>
+
+<list targetlatencies_LF_perblock>
+</list>
+
+<list postcommissionRT>
+</list>
+
+**************************************************************************************************************
+**************************************************************************************************************
+	TRIALS 	
+**************************************************************************************************************
+**************************************************************************************************************
+
+<trial target>
+/ ontrialbegin = [
+	values.postCommissionHit = 0;
+]
+/ stimulustimes = [0=background, target; 100=eraseStimuli]
+/ validresponse = (" ")
+/ correctresponse = (" ")
+/ beginresponsetime = 0
+/ trialduration = parameters.SOA
+/ ontrialend = [
+	if (trial.target.latency < parameters.minValidLatency) {
+		values.anticipatoryResponse = 1;
+		values.sum_anticipatoryResponses += 1;
+	} else {
+		values.anticipatoryResponse = 0;
+	}
+	if (values.anticipatoryResponse == 0) {
+		list.accuracyoverall.appendItem(trial.target.correct);
+		list.targetaccuracy.appendItem(trial.target.correct);
+		if (values.frequency == 1) {
+			list.targetaccuracy_LF.appendItem(trial.target.correct);
+			list.targetaccuracy_LF_perblock.appendItem(trial.target.correct);
+		} else {
+			list.targetaccuracy_HF.appendItem(trial.target.correct);
+			list.targetaccuracy_HF_perblock.appendItem(trial.target.correct);
+		}
+		if (trial.target.correct) {
+			if (values.commissionerror == 1) {
+				values.postCommissionHit = 1;
+				list.postcommissionRT.appendItem(trial.target.latency);
+			}
+			list.targetlatencies.appendItem(trial.target.latency);
+			if (values.frequency == 1) {
+				list.targetlatencies_LF.appendItem(trial.target.latency);
+				list.targetlatencies_LF_perblock.appendItem(trial.target.latency);
+			} else {
+				list.targetlatencies_HF.appendItem(trial.target.latency);
+				list.targetlatencies_HF_perblock.appendItem(trial.target.latency);
+			}
+		}
+	}
+	values.commissionerror = 0;
+]
+</trial>
+
+<trial nonTarget>
+/ ontrialbegin = [
+	values.commissionerror = 0;
+	values.postCommissionHit = 0;
+]
+/ stimulustimes = [0=background, nonTarget; 100=eraseStimuli]
+/ validresponse = (" ", noresponse)
+/ correctresponse = (noresponse)
+/ beginresponsetime = 0
+/ trialduration = parameters.SOA
+/ ontrialend = [
+	if (trial.nonTarget.latency < parameters.minValidLatency) {
+		values.anticipatoryResponse = 1;
+		values.sum_anticipatoryResponses += 1;
+	} else {
+		values.anticipatoryResponse = 0;
+	}
+	if (values.anticipatoryResponse == 0) {
+		if (trial.nonTarget.error) {
+			values.commissionerror = 1;
+		} else {
+			values.commissionerror = 0;
+		}
+		list.accuracyoverall.appendItem(trial.nonTarget.correct);
+		list.nontargetaccuracy.appendItem(trial.nonTarget.correct);
+		if (values.frequency == 1) {
+			list.nontargetaccuracy_LF.appendItem(trial.nonTarget.correct);
+			list.nontargetaccuracy_LF_perblock.appendItem(trial.nonTarget.correct);
+		} else {
+			list.nontargetaccuracy_HF.appendItem(trial.nonTarget.correct);
+			list.nontargetaccuracy_HF_perblock.appendItem(trial.nonTarget.correct);
+		}
+	}
+]
+</trial>
+
+**************************************************************************************************************
+**************************************************************************************************************
+	BLOCKS
+**************************************************************************************************************
+**************************************************************************************************************
+
+<block instructions>
+/ trials = [
+	1=showTarget; 
+	2=showNonTarget; 
+	3=showInstruction; 
+	4=blank;
+]
+/ recorddata = false
+</block>
+
+<block practice>
+/ onblockbegin = [
+	if (parameters.showPracticeFeedback == false){
+		text.errorfeedback.textColor = black;
+	}
+]
+/ trials = [1-50 = noreplace(target, nontarget)]
+/ onblockend = [
+	values.propcorrect_practice = list.accuracyoverall.mean;
+	values.sum_anticipatoryResponses = 0;
+	list.accuracyoverall.reset();
+	list.nontargetaccuracy.reset();
+	list.targetaccuracy.reset();
+	list.targetlatencies.reset();
+	list.nontargetaccuracy_HF.reset();
+	list.targetaccuracy_HF.reset();
+	list.targetlatencies_HF.reset();
+	list.nontargetaccuracy_LF.reset();
+	list.targetaccuracy_LF.reset();
+	list.targetlatencies_LF.reset();
+	list.nontargetaccuracy_HF_perblock.reset();
+	list.targetaccuracy_HF_perblock.reset();
+	list.targetlatencies_HF_perblock.reset();
+	list.nontargetaccuracy_LF_perblock.reset();
+	list.targetaccuracy_LF_perblock.reset();
+	list.targetlatencies_LF_perblock.reset();
+	list.postcommissionRT.reset();
+]
+/ postinstructions = (practiceOver)
+/ errormessage = true(errorfeedback, 100)
+</block>
+
+<block lowFrequency1>
+/ onblockbegin = [
+	values.frequency = 1;
+]
+/ trials = [1-162 = noreplace(
+target, target, target, target, target, target, target, target, target, 
+target, target, target, target, target, target, target, target, target, 
+nontarget, nontarget, nontarget, nontarget, nontarget, nontarget, nontarget, nontarget, nontarget, nontarget, 
+nontarget, nontarget, nontarget, nontarget, nontarget, nontarget, nontarget, nontarget, nontarget, nontarget, 
+nontarget, nontarget, nontarget, nontarget, nontarget, nontarget, nontarget, nontarget, nontarget, nontarget, 
+nontarget, nontarget, nontarget, nontarget, nontarget, nontarget, nontarget, nontarget, nontarget, nontarget, 
+nontarget, nontarget, nontarget, nontarget, nontarget, nontarget, nontarget, nontarget, nontarget, nontarget, 
+nontarget, nontarget, nontarget, nontarget, nontarget, nontarget, nontarget, nontarget, nontarget, nontarget, 
+nontarget, nontarget, nontarget)]
+/ onblockend = [
+	values.meanHitRT_LF1 = expressions.meanHitRT_LF_perblock;
+	values.SDHitRT_LF1 = expressions.SDHitRT_LF_perblock;
+	values.hitRate_LF1 = expressions.hitRate_LF_perblock;
+	values.omissionsRate_LF1 = expressions.omissionsRate_LF_perblock;
+	values.commissionRate_LF1 = expressions.commissionRate_LF_perblock;
+	values.z_hr_LF1 = expressions.z_hr_LF_perblock;
+	values.z_FAr_LF1 = expressions.z_FAr_LF_perblock;
+	values.dprime_LF1 = expressions.dprime_LF_perblock;
+	list.nontargetaccuracy_LF_perblock.reset();
+	list.targetaccuracy_LF_perblock.reset();
+	list.targetlatencies_LF_perblock.reset();
+]
+</block>
+
+<block lowFrequency2>
+/ onblockbegin = [
+	values.frequency = 1;
+]
+/ trials = [1-162 = noreplace(
+target, target, target, target, target, target, target, target, target, 
+target, target, target, target, target, target, target, target, target, 
+nontarget, nontarget, nontarget, nontarget, nontarget, nontarget, nontarget, nontarget, nontarget, nontarget, 
+nontarget, nontarget, nontarget, nontarget, nontarget, nontarget, nontarget, nontarget, nontarget, nontarget, 
+nontarget, nontarget, nontarget, nontarget, nontarget, nontarget, nontarget, nontarget, nontarget, nontarget, 
+nontarget, nontarget, nontarget, nontarget, nontarget, nontarget, nontarget, nontarget, nontarget, nontarget, 
+nontarget, nontarget, nontarget, nontarget, nontarget, nontarget, nontarget, nontarget, nontarget, nontarget, 
+nontarget, nontarget, nontarget, nontarget, nontarget, nontarget, nontarget, nontarget, nontarget, nontarget, 
+nontarget, nontarget, nontarget)]]
+/ onblockend = [
+	values.meanHitRT_LF2 = expressions.meanHitRT_LF_perblock;
+	values.SDHitRT_LF2 = expressions.SDHitRT_LF_perblock;
+	values.hitRate_LF2 = expressions.hitRate_LF_perblock;
+	values.omissionsRate_LF2 = expressions.omissionsRate_LF_perblock;
+	values.commissionRate_LF2 = expressions.commissionRate_LF_perblock;
+	values.z_hr_LF2 = expressions.z_hr_LF_perblock;
+	values.z_FAr_LF2 = expressions.z_FAr_LF_perblock;
+	values.dprime_LF2 = expressions.dprime_LF_perblock;
+	list.nontargetaccuracy_LF_perblock.reset();
+	list.targetaccuracy_LF_perblock.reset();
+	list.targetlatencies_LF_perblock.reset();
+]
+</block>
+
+<block hiFrequency1>
+/ onblockbegin = [
+	values.frequency = 2;
+]
+/ trials = [1-162 = noreplace(
+nontarget, nontarget, nontarget, nontarget, nontarget, nontarget, nontarget, nontarget, nontarget,
+nontarget, nontarget, nontarget, nontarget, nontarget, nontarget, nontarget, nontarget, nontarget,
+target, target, target, target, target, target, target, target, target, target,
+target, target, target, target, target, target, target, target, target, target,
+target, target, target, target, target, target, target, target, target, target,
+target, target, target, target, target, target, target, target, target, target,
+target, target, target, target, target, target, target, target, target, target,
+target, target, target, target, target, target, target, target, target, target,
+target, target, target,)]
+/ onblockend = [
+	values.meanHitRT_HF1 = expressions.meanHitRT_HF_perblock;
+	values.SDHitRT_HF1 = expressions.SDHitRT_HF_perblock;
+	values.hitRate_HF1 = expressions.hitRate_HF_perblock;
+	values.omissionsRate_HF1 = expressions.omissionsRate_HF_perblock;
+	values.commissionRate_HF1 = expressions.commissionRate_HF_perblock;
+	values.z_hr_HF1 = expressions.z_hr_HF_perblock;
+	values.z_FAr_HF1 = expressions.z_FAr_HF_perblock;
+	values.dprime_HF1 = expressions.dprime_HF_perblock;
+	list.nontargetaccuracy_HF_perblock.reset();
+	list.targetaccuracy_HF_perblock.reset();
+	list.targetlatencies_HF_perblock.reset();
+]
+</block>
+
+<block hiFrequency2>
+/ onblockbegin = [
+	values.frequency = 2;
+]
+/ trials = [1-162 = noreplace(
+nontarget, nontarget, nontarget, nontarget, nontarget, nontarget, nontarget, nontarget, nontarget,
+nontarget, nontarget, nontarget, nontarget, nontarget, nontarget, nontarget, nontarget, nontarget,
+target, target, target, target, target, target, target, target, target, target,
+target, target, target, target, target, target, target, target, target, target,
+target, target, target, target, target, target, target, target, target, target,
+target, target, target, target, target, target, target, target, target, target,
+target, target, target, target, target, target, target, target, target, target,
+target, target, target, target, target, target, target, target, target, target,
+target, target, target,)]
+/ onblockend = [
+	values.meanHitRT_HF2 = expressions.meanHitRT_HF_perblock;
+	values.SDHitRT_HF2 = expressions.SDHitRT_HF_perblock;
+	values.hitRate_HF2 = expressions.hitRate_HF_perblock;
+	values.omissionsRate_HF2 = expressions.omissionsRate_HF_perblock;
+	values.commissionRate_HF2 = expressions.commissionRate_HF_perblock;
+	values.z_hr_HF2 = expressions.z_hr_HF_perblock;
+	values.z_FAr_HF2 = expressions.z_FAr_HF_perblock;
+	values.dprime_HF2 = expressions.dprime_HF_perblock;
+	list.nontargetaccuracy_HF_perblock.reset();
+	list.targetaccuracy_HF_perblock.reset();
+	list.targetlatencies_HF_perblock.reset();
+]
+</block>
+
+<block finish>
+/ trials = [
+	1 = finish;
+]
+</block>
+
+**************************************************************************************************************
+**************************************************************************************************************
+	EXPERIMENT 
+**************************************************************************************************************
+**************************************************************************************************************
+
+<expt tova>
+/ preinstructions = (page1)
+/ blocks = [
+	1=instructions; 
+	2=Practice; 
+	3=lowFrequency1;
+	4=lowFrequency2; 	
+	5=hiFrequency1;
+	6=hiFrequency2;	
+	7 = finish;
+]
+</expt>
+
+<monkey>
+/ latencydistribution = normal(220, 50)
+</monkey>
+
+**************************************************************************************************************
+												End of File
+**************************************************************************************************************

@@ -1,0 +1,339 @@
+/* Reset and base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: black;
+    color: white;
+    overflow: hidden;
+    width: 100vw;
+    height: 100vh;
+    user-select: none;
+}
+
+#app {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+/* Screen management */
+.screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    background-color: black;
+}
+
+.screen.active {
+    display: flex;
+}
+
+/* Content containers */
+.content {
+    text-align: center;
+    max-width: 800px;
+    padding: 40px;
+    line-height: 1.6;
+}
+
+.content h1 {
+    font-size: 48px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.content h2 {
+    font-size: 32px;
+    font-weight: bold;
+    margin-bottom: 30px;
+}
+
+.content p {
+    font-size: 20px;
+    margin-bottom: 20px;
+}
+
+/* Buttons */
+.btn {
+    background-color: #333;
+    color: white;
+    border: 2px solid #666;
+    padding: 15px 30px;
+    font-size: 18px;
+    font-family: Arial, sans-serif;
+    cursor: pointer;
+    margin: 10px;
+    transition: all 0.2s;
+}
+
+.btn:hover {
+    background-color: #555;
+    border-color: #888;
+}
+
+.btn:active {
+    background-color: #222;
+}
+
+/* Stimulus display */
+#stimulus-screen {
+    justify-content: center;
+    align-items: center;
+    background-color: black;
+}
+
+#stimulus-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#background-square {
+    width: 50vh;   /* 50% of canvas height - perfect square */
+    height: 50vh;  /* 50% of canvas height - perfect square */
+    background-color: white;
+    position: relative;
+    display: none;
+}
+
+#target-square {
+    width: 5vh;    /* 5% of canvas height - perfect square */
+    height: 5vh;   /* 5% of canvas height - perfect square */
+    background-color: black;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    /* Position will be set dynamically: 35% (target) or 65% (non-target) */
+}
+
+/* Target positions */
+#target-square.target {
+    top: 35%;
+    transform: translate(-50%, -50%);
+}
+
+#target-square.nontarget {
+    top: 65%;
+    transform: translate(-50%, -50%);
+}
+
+/* Error feedback */
+#error-feedback {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 60px;
+    font-weight: bold;
+    color: red;
+    display: none;
+    z-index: 100;
+}
+
+/* Subject dialog */
+.dialog {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.dialog-content {
+    background-color: #222;
+    padding: 40px;
+    border-radius: 8px;
+    border: 2px solid #666;
+    min-width: 400px;
+}
+
+.dialog-content h3 {
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 24px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    background-color: #333;
+    color: white;
+    border: 1px solid #666;
+    border-radius: 4px;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #999;
+}
+
+/* Transition screen */
+#transition-screen {
+    text-align: center;
+    padding: 50px;
+    background-color: #000;
+    color: #fff;
+}
+
+#transition-screen .content {
+    margin-top: 200px;
+}
+
+/* Sample stimulus styles */
+.sample-stimulus {
+    display: flex;
+    justify-content: center;
+    margin: 40px 0;
+}
+
+.sample-background {
+    width: 50vh;
+    height: 50vh;
+    background-color: white;
+    position: relative;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(255, 255, 255, 0.2);
+}
+
+.sample-target {
+    width: 5vh;
+    height: 5vh;
+    background-color: black;
+    position: absolute;
+    left: 50%;
+    top: 35%;
+    transform: translate(-50%, -50%);
+}
+
+.sample-nontarget {
+    width: 5vh;
+    height: 5vh;
+    background-color: black;
+    position: absolute;
+    left: 50%;
+    top: 65%;
+    transform: translate(-50%, -50%);
+}
+
+.sample-description {
+    font-size: 18px;
+    line-height: 1.6;
+    margin: 30px 0;
+    text-align: center;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Data download section */
+#data-download {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #666;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+/* Navigation buttons section */
+#navigation-buttons {
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+/* Responsive adjustments */
+@media (max-height: 600px) {
+    .content {
+        padding: 20px;
+    }
+    
+    .content h1 {
+        font-size: 36px;
+    }
+    
+    .content h2 {
+        font-size: 24px;
+    }
+    
+    .content p {
+        font-size: 16px;
+    }
+}
+
+/* Fullscreen styles */
+body:-webkit-full-screen {
+    width: 100%;
+    height: 100%;
+}
+
+body:-moz-full-screen {
+    width: 100%;
+    height: 100%;
+}
+
+body:fullscreen {
+    width: 100%;
+    height: 100%;
+}
+
+/* Hide cursor during stimulus presentation */
+#stimulus-screen.active {
+    cursor: none;
+}
+
+/* Ensure no scrollbars in fullscreen */
+html, body {
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+}
+
+/* Loading indicator */
+.loading {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #666;
+    border-radius: 50%;
+    border-top-color: white;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+} 

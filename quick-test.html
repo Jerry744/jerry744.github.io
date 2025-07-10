@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>T.O.V.A. Quick Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: black;
+            color: white;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .debug-panel {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            color: black;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            max-width: 300px;
+            z-index: 1000;
+        }
+        
+        .control-panel {
+            position: fixed;
+            bottom: 10px;
+            left: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            color: black;
+            padding: 10px;
+            border-radius: 5px;
+            z-index: 1000;
+        }
+        
+        .control-panel button {
+            margin: 2px;
+            padding: 5px 10px;
+            font-size: 12px;
+        }
+        
+        #stimulus-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            background-color: black;
+        }
+        
+        #stimulus-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        #background-square {
+            width: 50vh;
+            height: 50vh;
+            background-color: white;
+            position: relative;
+            display: none;
+        }
+        
+        #target-square {
+            width: 5vh;
+            height: 5vh;
+            background-color: black;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        #target-square.target {
+            top: 35%;
+            transform: translate(-50%, -50%);
+        }
+        
+        #target-square.nontarget {
+            top: 65%;
+            transform: translate(-50%, -50%);
+        }
+        
+        .welcome {
+            text-align: center;
+            padding: 50px;
+        }
+        
+        .btn {
+            background: #333;
+            color: white;
+            border: 1px solid #666;
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+        }
+        
+        .btn:hover {
+            background: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="debug-panel">
+        <div><strong>Debug Info:</strong></div>
+        <div>Phase: <span id="debug-phase">-</span></div>
+        <div>Block: <span id="debug-block">-</span></div>
+        <div>Trial: <span id="debug-trial">-</span></div>
+        <div>Type: <span id="debug-type">-</span></div>
+        <div>Last RT: <span id="debug-rt">-</span>ms</div>
+        <div>Total Trials: <span id="debug-total">-</span></div>
+    </div>
+    
+    <div class="control-panel">
+        <div><strong>Quick Controls:</strong></div>
+        <button onclick="quickTest.skipToTest()">Skip to Test</button>
+        <button onclick="quickTest.speedUp()">Speed Up (100ms SOA)</button>
+        <button onclick="quickTest.normalSpeed()">Normal Speed</button>
+        <button onclick="quickTest.showStats()">Show Stats</button>
+        <button onclick="quickTest.downloadData()">Download Data</button>
+    </div>
+
+    <div id="welcome-screen">
+        <div class="welcome">
+            <h1>T.O.V.A. Quick Test Mode</h1>
+            <p>This is a debug/development version with shortened trials for testing.</p>
+            <p><strong>Changes from full version:</strong></p>
+            <ul style="text-align: left; max-width: 400px; margin: 0 auto;">
+                <li>Practice: 6 trials (instead of 50)</li>
+                <li>Each test block: 20 trials (instead of 162)</li>
+                <li>Debug panel shows real-time info</li>
+                <li>Quick controls for testing</li>
+            </ul>
+            <br>
+            <button class="btn" onclick="quickTest.start()">Start Quick Test</button>
+            <button class="btn" onclick="window.location.href='index.html'">Full Test</button>
+        </div>
+    </div>
+
+    <div id="stimulus-screen">
+        <div id="stimulus-container">
+            <div id="background-square">
+                <div id="target-square"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="finish-screen" style="display:none;">
+        <div class="welcome">
+            <h1>Quick Test Complete!</h1>
+            <div id="results-summary"></div>
+            <button class="btn" onclick="quickTest.downloadData()">Download Data</button>
+            <button class="btn" onclick="location.reload()">Restart</button>
+        </div>
+    </div>
+
+    <script>
+        class QuickTOVA {
+            constructor() {
+                // Shortened version for testing
+                this.params = {
+                    SOA: 2000,
+                    stimulusDuration: 100,
+                    minValidLatency: 200
+                };
+
+                this.state = {
+                    currentPhase: 'welcome',
+                    currentBlock: null,
+                    currentTrial: 0,
+                    blockTrials: [],
+                    trialInProgress: false,
+                    testStartTime: null
+                };
+
+                this.subject = {
+                    name: 'QuickTest',
+                    group: 1,
+                    session: 1
+                };
+
+                this.rawData = [];
+                this.blockStats = {
+                    practice: { correct: [], anticipatory: 0 },
+                    lowFrequency1: { targetAcc: [], nontargetAcc: [], targetRT: [], anticipatory: 0 },
+                    lowFrequency2: { targetAcc: [], nontargetAcc: [], targetRT: [], anticipatory: 0 },
+                    hiFrequency1: { targetAcc: [], nontargetAcc: [], targetRT: [], anticipatory: 0 },
+                    hiFrequency2: { targetAcc: [], nontargetAcc: [], targetRT: [], anticipatory: 0 }
+                };
+
+                this.stimulusStartTime = 0;
+                this.responseTime = 0;
+                this.currentTimeout = null;
+                this.stimulusTimeout = null;
+
+                this.setupEventListeners();
+                this.updateDebug();
+            }
+
+            setupEventListeners() {
+                document.addEventListener('keydown', (e) => {
+                    if (e.code === 'Space') {
+                        e.preventDefault();
+                        this.handleSpacePress();
+                    }
+                });
+            }
+
+            updateDebug() {
+                document.getElementById('debug-phase').textContent = this.state.currentPhase;
+                document.getElementById('debug-block').textContent = this.state.currentBlock || '-';
+                document.getElementById('debug-trial').textContent = `${this.state.currentTrial + 1}/${this.state.blockTrials.length}`;
+                document.getElementById('debug-type').textContent = this.state.blockTrials[this.state.currentTrial] || '-';
+                document.getElementById('debug-total').textContent = this.rawData.length;
+            }
+
+            start() {
+                this.state.testStartTime = performance.now();
+                this.startPractice();
+            }
+
+            startPractice() {
+                this.state.currentPhase = 'practice';
+                this.state.currentBlock = 'practice';
+                this.state.currentTrial = 0;
+                this.generateTrialSequence('practice');
+                this.showStimulus();
+            }
+
+            generateTrialSequence(blockType) {
+                const trials = [];
+
+                switch (blockType) {
+                    case 'practice':
+                        // 6 trials for quick testing
+                        for (let i = 0; i < 3; i++) {
+                            trials.push('target');
+                            trials.push('nontarget');
+                        }
+                        break;
+
+                    case 'lowFrequency1':
+                    case 'lowFrequency2':
+                        // 20 trials, 4 targets, 16 non-targets
+                        for (let i = 0; i < 4; i++) trials.push('target');
+                        for (let i = 0; i < 16; i++) trials.push('nontarget');
+                        break;
+
+                    case 'hiFrequency1':
+                    case 'hiFrequency2':
+                        // 20 trials, 16 targets, 4 non-targets
+                        for (let i = 0; i < 16; i++) trials.push('target');
+                        for (let i = 0; i < 4; i++) trials.push('nontarget');
+                        break;
+                }
+
+                // Shuffle trials
+                for (let i = trials.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [trials[i], trials[j]] = [trials[j], trials[i]];
+                }
+
+                this.state.blockTrials = trials;
+                this.updateDebug();
+            }
+
+            showStimulus() {
+                if (this.state.currentTrial >= this.state.blockTrials.length) {
+                    this.endBlock();
+                    return;
+                }
+
+                const isTarget = this.state.blockTrials[this.state.currentTrial] === 'target';
+                
+                document.getElementById('welcome-screen').style.display = 'none';
+                document.getElementById('stimulus-screen').style.display = 'flex';
+                
+                this.state.trialInProgress = true;
+                this.stimulusStartTime = performance.now();
+                this.responseTime = null;
+
+                const backgroundSquare = document.getElementById('background-square');
+                const targetSquare = document.getElementById('target-square');
+                
+                backgroundSquare.style.display = 'block';
+                targetSquare.className = isTarget ? 'target' : 'nontarget';
+
+                this.stimulusTimeout = setTimeout(() => {
+                    backgroundSquare.style.display = 'none';
+                }, this.params.stimulusDuration);
+
+                this.currentTimeout = setTimeout(() => {
+                    this.endTrial();
+                }, this.params.SOA);
+
+                this.updateDebug();
+            }
+
+            handleSpacePress() {
+                const currentTime = performance.now();
+                if (this.state.trialInProgress) {
+                    this.recordResponse(currentTime);
+                }
+            }
+
+            recordResponse(responseTime) {
+                if (this.responseTime === null) {
+                    this.responseTime = responseTime;
+                }
+            }
+
+            endTrial() {
+                clearTimeout(this.currentTimeout);
+                clearTimeout(this.stimulusTimeout);
+                
+                const isTarget = this.state.blockTrials[this.state.currentTrial] === 'target';
+                const latency = this.responseTime ? (this.responseTime - this.stimulusStartTime) : this.params.SOA;
+                const responded = this.responseTime !== null;
+                
+                let correct = false;
+                if (isTarget && responded) correct = true;
+                else if (!isTarget && !responded) correct = true;
+
+                const anticipatory = responded && latency < this.params.minValidLatency;
+                let commissionError = false;
+                if (!isTarget && responded && !anticipatory) {
+                    commissionError = true;
+                }
+
+                // Record data
+                const trialData = {
+                    subject: this.subject.name,
+                    blockcode: this.state.currentBlock,
+                    trialcode: isTarget ? 'target' : 'nonTarget',
+                    trialnum: this.state.currentTrial + 1,
+                    response: responded ? 57 : 0,
+                    correct: correct ? 1 : 0,
+                    latency: Math.round(latency),
+                    anticipatoryResponse: anticipatory ? 1 : 0,
+                    commissionerror: commissionError ? 1 : 0
+                };
+
+                this.rawData.push(trialData);
+
+                // Update debug
+                document.getElementById('debug-rt').textContent = Math.round(latency);
+
+                // Update stats
+                if (!anticipatory) {
+                    this.updateBlockStats(isTarget, correct, latency);
+                } else {
+                    this.blockStats[this.state.currentBlock].anticipatory++;
+                }
+
+                this.state.trialInProgress = false;
+                this.state.currentTrial++;
+
+                setTimeout(() => {
+                    this.showStimulus();
+                }, 100);
+            }
+
+            updateBlockStats(isTarget, correct, latency) {
+                const stats = this.blockStats[this.state.currentBlock];
+
+                if (this.state.currentBlock === 'practice') {
+                    stats.correct.push(correct);
+                } else {
+                    if (isTarget) {
+                        stats.targetAcc.push(correct);
+                        if (correct) {
+                            stats.targetRT.push(latency);
+                        }
+                    } else {
+                        stats.nontargetAcc.push(correct);
+                    }
+                }
+            }
+
+            endBlock() {
+                switch (this.state.currentBlock) {
+                    case 'practice':
+                        this.startNextBlock('lowFrequency1');
+                        break;
+                    case 'lowFrequency1':
+                        this.startNextBlock('lowFrequency2');
+                        break;
+                    case 'lowFrequency2':
+                        this.startNextBlock('hiFrequency1');
+                        break;
+                    case 'hiFrequency1':
+                        this.startNextBlock('hiFrequency2');
+                        break;
+                    case 'hiFrequency2':
+                        this.finishTest();
+                        break;
+                }
+            }
+
+            startNextBlock(blockName) {
+                this.state.currentBlock = blockName;
+                this.state.currentTrial = 0;
+                this.generateTrialSequence(blockName);
+                setTimeout(() => {
+                    this.showStimulus();
+                }, 500);
+            }
+
+            finishTest() {
+                document.getElementById('stimulus-screen').style.display = 'none';
+                document.getElementById('finish-screen').style.display = 'block';
+                
+                const summary = this.calculateQuickSummary();
+                document.getElementById('results-summary').innerHTML = `
+                    <h3>Quick Results:</h3>
+                    <p>Total Trials: ${this.rawData.length}</p>
+                    <p>Overall Accuracy: ${(summary.accuracy * 100).toFixed(1)}%</p>
+                    <p>Mean RT: ${summary.meanRT.toFixed(0)}ms</p>
+                    <p>Anticipatory Responses: ${summary.anticipatory}</p>
+                `;
+                
+                this.updateDebug();
+            }
+
+            calculateQuickSummary() {
+                const testData = this.rawData.filter(d => d.blockcode !== 'practice');
+                const correct = testData.filter(d => d.correct === 1).length;
+                const rts = testData.filter(d => d.correct === 1 && d.latency < 2000).map(d => d.latency);
+                const anticipatory = testData.filter(d => d.anticipatoryResponse === 1).length;
+
+                return {
+                    accuracy: testData.length > 0 ? correct / testData.length : 0,
+                    meanRT: rts.length > 0 ? rts.reduce((a, b) => a + b, 0) / rts.length : 0,
+                    anticipatory: anticipatory
+                };
+            }
+
+            // Quick controls
+            skipToTest() {
+                this.state.currentBlock = 'lowFrequency1';
+                this.state.currentTrial = 0;
+                this.generateTrialSequence('lowFrequency1');
+                this.showStimulus();
+            }
+
+            speedUp() {
+                this.params.SOA = 100;
+                this.params.stimulusDuration = 50;
+                console.log('Speed mode: SOA=100ms, stimulus=50ms');
+            }
+
+            normalSpeed() {
+                this.params.SOA = 2000;
+                this.params.stimulusDuration = 100;
+                console.log('Normal speed restored');
+            }
+
+            showStats() {
+                console.log('Current stats:', this.blockStats);
+                console.log('Raw data:', this.rawData);
+            }
+
+            downloadData() {
+                const csv = ['subject,block,trial,type,response,correct,latency,anticipatory,commission'];
+                this.rawData.forEach(row => {
+                    csv.push([
+                        row.subject, row.blockcode, row.trialnum, row.trialcode,
+                        row.response, row.correct, row.latency, 
+                        row.anticipatoryResponse, row.commissionerror
+                    ].join(','));
+                });
+
+                const blob = new Blob([csv.join('\n')], { type: 'text/csv' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = 'tova_quick_test.csv';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+            }
+        }
+
+        // Initialize quick test
+        const quickTest = new QuickTOVA();
+    </script>
+</body>
+</html> 

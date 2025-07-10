@@ -1,86 +1,434 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-US">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RAILab</title>
-    <link rel="stylesheet" href="https://use.typekit.net/ztk2zln.css">
-    <link rel="stylesheet" href="web_style.css">
-    <link rel="icon" href="icon.png" type="image/png">
+    <title>T.O.V.A. Test Demo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #000000;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            color: white;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 40px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .header h1 {
+            font-size: 48px;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        
+        .header p {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+        
+        .demo-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+        
+        .demo-section {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 8px 32px rgba(255, 255, 255, 0.1);
+        }
+        
+        .demo-section h3 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #ffd700;
+        }
+        
+        .stimulus-demo {
+            background: white;
+            width: 200px;
+            height: 200px;
+            margin: 20px auto;
+            border-radius: 10px;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(255, 255, 255, 0.2);
+        }
+        
+        .target-square {
+            width: 30px;
+            height: 30px;
+            background: black;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .target-demo {
+            top: 30%;
+        }
+        
+        .nontarget-demo {
+            top: 60%;
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .feature {
+            background: rgba(255, 255, 255, 0.08);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 6px 24px rgba(255, 255, 255, 0.1);
+        }
+        
+        .feature-icon {
+            font-size: 30px;
+            margin-bottom: 10px;
+        }
+        
+        .launch-section {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 15px;
+            padding: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 8px 32px rgba(255, 255, 255, 0.1);
+        }
+        
+        .launch-btn {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a52);
+            border: none;
+            color: white;
+            padding: 20px 40px;
+            font-size: 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin: 10px;
+            box-shadow: 0 10px 30px rgba(255, 107, 107, 0.4);
+            transition: all 0.3s ease;
+        }
+        
+        .launch-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(255, 107, 107, 0.6);
+        }
+        
+        .secondary-btn {
+            background: linear-gradient(45deg, #4ecdc4, #44a08d);
+            box-shadow: 0 10px 30px rgba(78, 205, 196, 0.4);
+        }
+        
+        .secondary-btn:hover {
+            box-shadow: 0 15px 40px rgba(78, 205, 196, 0.6);
+        }
+        
+        .info-text {
+            margin: 20px 0;
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        
+        .warning {
+            background: rgba(255, 193, 7, 0.15);
+            border: 2px solid #ffc107;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 8px 32px rgba(255, 193, 7, 0.2);
+        }
+        
+        .warning h4 {
+            color: #ffc107;
+            margin-top: 0;
+        }
+        
+        .consent-section {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 8px 32px rgba(255, 255, 255, 0.1);
+        }
+        
+        .consent-checkbox {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .consent-label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            font-size: 18px;
+            line-height: 1.5;
+            padding: 10px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .consent-label:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        #consent-checkbox {
+            width: 20px;
+            height: 20px;
+            margin-right: 15px;
+            cursor: pointer;
+        }
+        
+        .consent-text {
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        @media (max-width: 768px) {
+            .demo-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .container {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 36px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <div class="header">
-        <a href="index.html">
-            <div class="logo">
-                <img src="logo.svg" alt="">
+    <div class="container">
+        <div class="header">
+            <h1>Continuous Attention Test</h1>
+            <p>Test of Variables of Attention</p>
+            <p>HTML/JavaScript based</p>
+        </div>
+
+        <div class="demo-grid">
+            <div class="demo-section">
+                <h3>🎯 Target Stimulus</h3>
+                <div class="stimulus-demo">
+                    <div class="target-square target-demo"></div>
+                </div>
+                <p>When the small black square appears at the <strong>top</strong>, <strong>press the spacebar immediately</strong></p>
             </div>
-        </a>
-        <div class="menu">
-            <ul>
-                <li><a href="">Product</a></li>
-                <li><a href="">Vision</a></li>
-                <li> <a href="">About Us</a></li>
+
+            <div class="demo-section">
+                <h3>❌ Non-Target Stimulus</h3>
+                <div class="stimulus-demo">
+                    <div class="target-square nontarget-demo"></div>
+                </div>
+                <p>When the small black square appears at the <strong>bottom</strong>, <strong>do not press any key</strong></p>
+            </div>
+        </div>
+
+        <div class="features">
+            <div class="feature">
+                <div class="feature-icon">⏱️</div>
+                <h4>High Precision Timing</h4>
+                <p>Sub-millisecond response time measurement</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🖥️</div>
+                <h4>Fullscreen Mode</h4>
+                <p>Immersive testing environment</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">📊</div>
+                <h4>Scientific Data</h4>
+                <p>Complete statistical analysis report</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">⌨️</div>
+                <h4>Spacebar Control</h4>
+                <p>Simple and intuitive operation</p>
+            </div>
+        </div>
+
+        <div class="warning">
+            <h4>⚠️ Pre-Test Instructions</h4>
+            <ul style="text-align: left;">
+                <li>Adjust the screen brightness to a lower level</li>
+                <li>The test will automatically enter fullscreen mode</li>
+                <li>Feel free to ask questions during the test</li>
+                <li></li>
             </ul>
         </div>
-    </div>
-    <div class="centered-content">
-        <iframe src='https://my.spline.design/halfmindlogo-d18122a33ac831ee41b1090fadc2d594//' frameborder='0' width='100%' height='800'></iframe>
-    </div>
-    
-    <div class="separator"></div>
-    <div class="container">
-        <div class="content">
-            <input type="radio" name="indicator" checked id="home">
-            <input type="radio" name="indicator" id="blog">
-            <input type="radio" name="indicator" id="specs">
-            <input type="radio" name="indicator" id="code">
-            <div class="list">
-                <label for="home" class="home">
-                    <i class="fas fa-home"></i>
-                    <span class="topic">Bunny</span>
-                </label>
-                <label for="blog" class="blog">
-                    <i class="fas fa-home"></i>
-                    <span class="topic">Rabbit</span>
-                </label>
-                <label for="specs" class="specs">
-                    <i class="fas fa-home"></i>
-                    <span class="topic">Specs</span>
-                </label>
-                <label for="code" class="code">
-                    <i class="fas fa-home"></i>
-                    <span class="topic">More</span>
-                </label>
-                <div class="indicator"></div>
+
+        <div class="consent-section">
+            <h4>📋 Informed Consent Form</h4>
+            <div class="consent-text" style="text-align: left; max-height: 400px; overflow-y: auto; padding: 20px; background: rgba(0,0,0,0.3); border-radius: 10px; margin: 20px 0;">
+                <h5>A study about attention</h5>
+                <p>You are invited to participate in a research study titled <strong>A multi-sensory intervention to nudge towards focus</strong>. This research is conducted as part of the MSc graduation project at Industrial Design Engineering at TU Delft. This study is being done by Zhengyang Liu (Jerry) and supervised by Professor Evangelos Niforatos.</p>
+                
+                <p><strong>Contact person:</strong> Jerry Liu, z.liu-77@student.tudelft.nl, +31 06 30935942</p>
+                
+                <p>The purpose of this research study is to understand effective nudging for improved attention in work with physiological activity sensing, and will take you approximately 30 minutes to complete. The data will be used for training and testing an attention-sensing (deep learning) algorithm with millimetre-wave radar. We will be asking you to complete a general task on desk and provide feedback on your perceived attention level and emotions.</p>
+                
+                <h5>Informed consent participant</h5>
+                <ul>
+                    <li>I participate in this research voluntarily.</li>
+                    <li>I acknowledge that I received sufficient information and explanation about the research and that all my questions have been answered satisfactorily. I was given sufficient time to consent my participation. I can ask questions for further clarification at any moment during the research. I can also withdraw at any time without any reason, particularly when I feel unsecure, anxious or stressed caused by the test setup.</li>
+                    <li>I am aware that this research consists of the following activities:
+                        <ul>
+                            <li>In-person interview</li>
+                            <li>Task completion on desk</li>
+                            <li>Observation with audio transcribing</li>
+                        </ul>
+                    </li>
+                    <li>I understand that taking part in the study involves the following risks:
+                        <ul>
+                            <li>Electrical failure</li>
+                            <li>Not CE certified product prototypes</li>
+                            <li>Stress or other mental discomfort</li>
+                        </ul>
+                    </li>
+                    <li>I understand that these will be mitigated by a. not touching any conductive devices, b. well insulated prototypes, c. controlled low power with DC power supply only.</li>
+                    <li>I understand that taking part in the study also involves collecting specific personally identifiable information (PII) Informed consent form and associated personally identifiable research data (PIRD) including audio-transcribed dialog, cardiac activity health data with the potential risk of my identity being revealed public, which are considered as sensitive data within GDPR legislation.</li>
+                    <li>I will refrain from mentioning topics that may held me vulnerable, and I have the right to stop recording and revert what has been recorded at any time.</li>
+                    <li>I understand that the following steps will be taken to minimise the threat of a data breach, and protect my identity in the event of such a breach: anonymous data collection, detached storage of PII and PIRD, transcription, limited local access, storage in TU Delft project space.</li>
+                    <li>I understand that the personal data I provide will be destroyed one month after the termination of study scheduled in August 2025.</li>
+                    <li>I agree that my responses, views or other input can be quoted anonymously in research outputs.</li>
+                    <li>I will have no symptoms relating to Covid and I will receive a copy of this consent form.</li>
+                </ul>
+                
+                <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.3);">
+                    <p><strong>Date:</strong> ___ / ___ / ______</p>
+                    <!-- <p><strong>Signature:</strong> _________________________</p> -->
+                </div>
             </div>
-            <div class="text-content">
-                <div class="home text">
-                    <div class="title">Meet Bunny, the Flexible Powder Dispenser.</div>
-                    <img src="img-front.png" alt="" class="img-content">
-                    <p>LLorem ipsum odor amet, consectetuer adipiscing elit. Finibus curae urna urna cursus ultrices vivamus faucibus cursus nascetur. Sociosqu consequat pellentesque montes litora odio feugiat commodo faucibus. Turpis eget cursus maecenas urna in amet conubia feugiat posuere. Commodo senectus quis facilisi montes hac adipiscing tortor. Ligula tincidunt pulvinar sit ultricies varius a magna aliquet leo. Suspendisse penatibus sodales montes euismod mus est convallis. Efficitur habitasse posuere luctus maecenas tellus aptent luctus natoque.</p>
-                    <p>Dolor aenean nisl class, vel laoreet parturient ligula diam. Maecenas turpis ex sodales viverra arcu sollicitudin non tincidunt. Mollis venenatis lacinia eleifend curabitur ipsum; vestibulum ridiculus mauris? Consequat natoque pellentesque dui amet sit at. Quam ex enim interdum sagittis ligula imperdiet. Mus rhoncus arcu, habitasse dis mauris condimentum metus luctus habitant? Mi mi gravida habitant congue accumsan class curabitur tempor? Imperdiet odio gravida tempus vulputate semper pretium duis netus.</p>
-                    <p>Vehicula odio suscipit condimentum sagittis cubilia ad posuere ut. Fermentum penatibus tempus class phasellus nec! Nullam suscipit tempus fames laoreet euismod consequat curae nisl. Orci donec torquent lobortis, vulputate ante hac. Consequat consectetur nam condimentum ullamcorper ultricies cras malesuada ut viverra. Suspendisse a mi, bibendum varius at urna molestie. Amet volutpat nascetur commodo eros habitasse. Imperdiet nec aptent inceptos pharetra potenti nisi fames. Tristique venenatis aliquam sagittis porta nam dolor elit cras.</p>
-                    <p>Ridiculus faucibus fermentum nullam tristique duis sagittis nec. Pellentesque diam amet tincidunt iaculis hendrerit vulputate dignissim netus vulputate. Ullamcorper porttitor sociosqu, blandit magna mus quisque? Luctus magnis dictum class est ultrices mauris. Conubia erat velit varius ut sit curabitur ut nibh habitasse. Diam velit metus dui nulla ante habitant dignissim tincidunt. Sagittis porta orci ligula amet amet lorem aptent.</p>
-                </div>
-                <div class="blog text">
-                    <div class="title">Planned Product Line sooon.</div>
-                    <p>Vehicula odio suscipit condimentum sagittis cubilia ad posuere ut. Fermentum penatibus tempus class phasellus nec! Nullam suscipit tempus fames laoreet euismod consequat curae nisl. Orci donec torquent lobortis, vulputate ante hac. Consequat consectetur nam condimentum ullamcorper ultricies cras malesuada ut viverra. Suspendisse a mi, bibendum varius at urna molestie. Amet volutpat nascetur commodo eros habitasse. Imperdiet nec aptent inceptos pharetra potenti nisi fames. Tristique venenatis aliquam sagittis porta nam dolor elit cras.</p>
-                    <p>Ridiculus faucibus fermentum nullam tristique duis sagittis nec. Pellentesque diam amet tincidunt iaculis hendrerit vulputate dignissim netus vulputate. Ullamcorper porttitor sociosqu, blandit magna mus quisque? Luctus magnis dictum class est ultrices mauris. Conubia erat velit varius ut sit curabitur ut nibh habitasse. Diam velit metus dui nulla ante habitant dignissim tincidunt. Sagittis porta orci ligula amet amet lorem aptent.</p>
-                </div>
-                <div class="specs text">
-                    <div class="title">Bunny Specifications</div>
-                    <p>Vehicula odio suscipit condimentum sagittis cubilia ad posuere ut. Fermentum penatibus tempus class phasellus nec! Nullam suscipit tempus fames laoreet euismod consequat curae nisl. Orci donec torquent lobortis, vulputate ante hac. Consequat consectetur nam condimentum ullamcorper ultricies cras malesuada ut viverra. Suspendisse a mi, bibendum varius at urna molestie. Amet volutpat nascetur commodo eros habitasse. Imperdiet nec aptent inceptos pharetra potenti nisi fames. Tristique venenatis aliquam sagittis porta nam dolor elit cras.</p>
-                    <p>Ridiculus faucibus fermentum nullam tristique duis sagittis nec. Pellentesque diam amet tincidunt iaculis hendrerit vulputate dignissim netus vulputate. Ullamcorper porttitor sociosqu, blandit magna mus quisque? Luctus magnis dictum class est ultrices mauris. Conubia erat velit varius ut sit curabitur ut nibh habitasse. Diam velit metus dui nulla ante habitant dignissim tincidunt. Sagittis porta orci ligula amet amet lorem aptent.</p>
-                </div>
-                <div class="code text">
-                    <div class="title">Codes</div>
-                    <p>Vehicula odio suscipit condimentum sagittis cubilia ad posuere ut. Fermentum penatibus tempus class phasellus nec! Nullam suscipit tempus fames laoreet euismod consequat curae nisl. Orci donec torquent lobortis, vulputate ante hac. Consequat consectetur nam condimentum ullamcorper ultricies cras malesuada ut viverra. Suspendisse a mi, bibendum varius at urna molestie. Amet volutpat nascetur commodo eros habitasse. Imperdiet nec aptent inceptos pharetra potenti nisi fames. Tristique venenatis aliquam sagittis porta nam dolor elit cras.</p>
-                    <p>Ridiculus faucibus fermentum nullam tristique duis sagittis nec. Pellentesque diam amet tincidunt iaculis hendrerit vulputate dignissim netus vulputate. Ullamcorper porttitor sociosqu, blandit magna mus quisque? Luctus magnis dictum class est ultrices mauris. Conubia erat velit varius ut sit curabitur ut nibh habitasse. Diam velit metus dui nulla ante habitant dignissim tincidunt. Sagittis porta orci ligula amet amet lorem aptent.</p>
-                </div>
+            
+            <div class="consent-checkbox">
+                <input type="checkbox" id="consent-checkbox">
+                <label for="consent-checkbox" class="consent-label">
+                    <span class="consent-text">
+                        <strong>I have read and understood the informed consent form above, and I agree to participate in this research study.</strong>
+                    </span>
+                </label>
             </div>
         </div>
 
+        <div class="launch-section">
+            <h3>🚀 Start Test</h3>
+            <p class="info-text">Click the button below to start the T.O.V.A. attention test</p>
+            
+            <a href="full-test.html" class="launch-btn">
+                🧪 Start Full Test
+            </a>
+            
+            <a href="https://zhengyang-liu.notion.site/TOVA-Test-Manual-22a31aa3af9180b6a0bcd621c4d5b489?source=copy_link" class="launch-btn secondary-btn">
+                📖 View Instructions
+            </a>
+            
+            <div class="info-text">
+                <p><strong>Test Structure:</strong></p>
+                <p>Practice (3 min) → TOVA Test (24 min)</p>
+                <!-- <p><strong>Data Output:</strong> Raw Data + Summary Statistics</p> -->
+            </div>
+        </div>
     </div>
 
+    <script>
+                    // Add interactive effects
+            document.addEventListener('DOMContentLoaded', () => {
+                // Add animation effects for demo stimuli
+                const demos = document.querySelectorAll('.stimulus-demo');
+                
+                demos.forEach(demo => {
+                    demo.addEventListener('mouseenter', () => {
+                        demo.style.transform = 'scale(1.1)';
+                        demo.style.transition = 'transform 0.3s ease';
+                        demo.style.boxShadow = '0 15px 45px rgba(255, 255, 255, 0.3)';
+                    });
+                    
+                    demo.addEventListener('mouseleave', () => {
+                        demo.style.transform = 'scale(1)';
+                        demo.style.boxShadow = '0 10px 30px rgba(255, 255, 255, 0.2)';
+                    });
+                });
+
+            // Check browser compatibility
+            if (!document.documentElement.requestFullscreen) {
+                const warning = document.querySelector('.warning');
+                warning.innerHTML += '<p style="color: #ff6b6b; margin-top: 15px;"><strong>Note:</strong> Your browser may not support fullscreen mode. We recommend using Chrome or Firefox.</p>';
+            }
+
+            // Add keyboard shortcuts
+            document.addEventListener('keydown', (e) => {
+                if (e.code === 'Space') {
+                    e.preventDefault();
+                    checkConsentAndProceed();
+                }
+            });
+
+            // Handle checkbox state changes
+            const consentCheckbox = document.getElementById('consent-checkbox');
+            const startTestBtn = document.querySelector('.launch-btn[href="index.html"]');
+            
+            consentCheckbox.addEventListener('change', function() {
+                updateButtonState();
+            });
+
+            function updateButtonState() {
+                if (consentCheckbox.checked) {
+                    startTestBtn.classList.remove('disabled');
+                } else {
+                    startTestBtn.classList.add('disabled');
+                }
+            }
+
+            // Add click handlers for launch buttons
+            document.querySelectorAll('.launch-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    if (btn.href && btn.href.includes('index.html')) {
+                        e.preventDefault();
+                        checkConsentAndProceed();
+                    }
+                });
+            });
+
+            function checkConsentAndProceed() {
+                const consentChecked = document.getElementById('consent-checkbox').checked;
+                
+                if (!consentChecked) {
+                    alert('⚠️ Please read and accept the informed consent statement before starting the test.\n\nYou must acknowledge that you are aware of your data being recorded and that you can quit at any time without consequences.');
+                    return;
+                }
+                
+                window.location.href = 'index.html';
+            }
+
+            // Initialize button state
+            updateButtonState();
+        });
+    </script>
 </body>
-</html>
+</html> 

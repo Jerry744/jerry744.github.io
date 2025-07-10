@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>T.O.V.A. - Test of Variables of Attention</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Welcome Screen -->
+        <div id="welcome-screen" class="screen active">
+            <div class="content">
+                <h1>T.O.V.A.</h1>
+                <h2>Test of Variables of Attention</h2>
+                <p>In the following task, you will be presented a series of stimuli consisting of a large white square with a small black square inside it.</p>
+                <p>On some trials, the small square will be near the top of the white square. These are target stimuli.</p>
+                <p>On other trials, the small square will be near the bottom. These are NOT target stimuli.</p>
+                <p>Continue to see the stimuli.</p>
+                <button id="continue-btn" class="btn">Continue</button>
+            </div>
+        </div>
+
+        <!-- Instructions Screen -->
+        <div id="instructions-screen" class="screen">
+            <div class="content">
+                <h2>Instructions</h2>
+                <p>Your task is to decide if each stimulus is a target or non-target.</p>
+                <p><strong>Press the space bar as quickly as you can whenever you see a target (top square).</strong></p>
+                <p><strong>Do nothing when you see a non-target (bottom square).</strong></p>
+                <p>The task lasts approximately 23 minutes, so you must concentrate to perform well. First you will have 3 minutes to practice.</p>
+                <button id="view-samples-btn" class="btn">View Sample Stimuli</button>
+            </div>
+        </div>
+
+        <!-- Target Sample Screen -->
+        <div id="target-sample-screen" class="screen">
+            <div class="content">
+                <h2>🎯 Target Stimulus Example</h2>
+                <div class="sample-stimulus">
+                    <div class="sample-background">
+                        <div class="sample-target"></div>
+                    </div>
+                </div>
+                <p class="sample-description">
+                    <strong>This is a Target stimulus.</strong><br>
+                    When you see the small black square at the <strong>TOP</strong> of the white background,<br>
+                    press the <strong>SPACEBAR</strong> as quickly as possible.
+                </p>
+                <button id="next-sample-btn" class="btn">Next: Non-Target Example</button>
+            </div>
+        </div>
+
+        <!-- Non-Target Sample Screen -->
+        <div id="nontarget-sample-screen" class="screen">
+            <div class="content">
+                <h2>❌ Non-Target Stimulus Example</h2>
+                <div class="sample-stimulus">
+                    <div class="sample-background">
+                        <div class="sample-nontarget"></div>
+                    </div>
+                </div>
+                <p class="sample-description">
+                    <strong>This is a Non-target stimulus.</strong><br>
+                    When you see the small black square at the <strong>BOTTOM</strong> of the white background,<br>
+                    <strong>DO NOT PRESS ANY KEY</strong> - simply wait for the next stimulus.
+                </p>
+                <button id="start-practice-btn" class="btn">Start Practice</button>
+            </div>
+        </div>
+
+        <!-- Empty Transition Screen -->
+        <div id="transition-screen" class="screen">
+            <div class="content">
+                <h2></h2>
+            </div>
+        </div>
+
+        <!-- Stimulus Display -->
+        <div id="stimulus-screen" class="screen">
+            <div id="stimulus-container">
+                <div id="background-square">
+                    <div id="target-square"></div>
+                </div>
+            </div>
+            <div id="error-feedback">ERROR</div>
+        </div>
+
+        <!-- Practice Over Screen -->
+        <div id="practice-over-screen" class="screen">
+            <div class="content">
+                <h2>Practice Complete</h2>
+                <p>You have completed practice. The task will now begin.</p>
+                <button id="start-test-btn" class="btn">Continue (Space)</button>
+            </div>
+        </div>
+
+        <!-- Practice Finished Screen -->
+        <div id="practice-finished-screen" class="screen">
+            <div class="content">
+                <h2>Practice Finished</h2>
+                <p>You have successfully completed the practice session.</p>
+                <p><strong>Press SPACEBAR to begin TOVA test.</strong></p>
+                <button id="begin-tova-btn" class="btn">Begin TOVA Test</button>
+            </div>
+        </div>
+
+        <!-- Finish Screen -->
+        <div id="finish-screen" class="screen">
+            <div class="content">
+                <h1>Thank you!</h1>
+                <p>The test is complete.</p>
+                <div id="data-download">
+                    <button id="download-raw-btn" class="btn">Download Raw Data</button>
+                    <button id="download-summary-btn" class="btn">Download Summary Data</button>
+                </div>
+                <div id="navigation-buttons">
+                    <button id="restart-btn" class="btn">Start New Test</button>
+                    <button id="return-btn" class="btn">Return to Main Page</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Subject Info Dialog -->
+        <div id="subject-dialog" class="dialog">
+            <div class="dialog-content">
+                <h3>Subject Information</h3>
+                <form id="subject-form">
+                    <div class="form-group">
+                        <label for="subject-name">Subject Name:</label>
+                        <input type="text" id="subject-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="group-id">Group ID:</label>
+                        <input type="number" id="group-id" value="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="session-id">Session ID:</label>
+                        <input type="number" id="session-id" value="1" required>
+                    </div>
+                    <button type="submit" class="btn">Start Test</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="tova.js"></script>
+</body>
+</html> 
