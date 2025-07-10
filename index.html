@@ -210,6 +210,17 @@
             color: rgba(255, 255, 255, 0.9);
         }
         
+        a {
+            color: #ffb366;
+            font-weight: bold;
+            text-decoration: none;
+        }
+        
+        a:hover {
+            color: #ffc080;
+            text-decoration: underline;
+        }
+        
         @media (max-width: 768px) {
             .demo-grid {
                 grid-template-columns: 1fr;
@@ -229,7 +240,7 @@
     <div class="container">
         <div class="header">
             <h1>Continuous Attention Test</h1>
-            <p>Test of Variables of Attention</p>
+            <p>Enabled by <a href="https://halfmind.tech">halfmind.tech</a></p>
             <p>HTML/JavaScript based</p>
         </div>
 
@@ -287,51 +298,42 @@
         <div class="consent-section">
             <h4>📋 Informed Consent Form</h4>
             <div class="consent-text" style="text-align: left; max-height: 400px; overflow-y: auto; padding: 20px; background: rgba(0,0,0,0.3); border-radius: 10px; margin: 20px 0;">
-                <h5>A study about attention</h5>
-                <p>You are invited to participate in a research study titled <strong>A multi-sensory intervention to nudge towards focus</strong>. This research is conducted as part of the MSc graduation project at Industrial Design Engineering at TU Delft. This study is being done by Zhengyang Liu (Jerry) and supervised by Professor Evangelos Niforatos.</p>
+                <h5>Before you start:</h5>
+                <p>Thank you for considering trying this test. Please read this information carefully so you understand what this tool does — and what it doesn't.</p>
                 
-                <p><strong>Contact person:</strong> Jerry Liu, z.liu-77@student.tudelft.nl, +31 06 30935942</p>
+                <h5>Purpose of the Test:</h5>
+                <p>This tool is a prototype inspired by the Test of Variables of Attention (TOVA), a type of Continuous Performance Test (CPT). It was created as part of a graduation project to test design ideas and user experience. It is for demonstration and research purposes only — it is not a medical diagnostic tool.</p>
                 
-                <p>The purpose of this research study is to understand effective nudging for improved attention in work with physiological activity sensing, and will take you approximately 30 minutes to complete. The data will be used for training and testing an attention-sensing (deep learning) algorithm with millimetre-wave radar. We will be asking you to complete a general task on desk and provide feedback on your perceived attention level and emotions.</p>
+                <h5>What You Will Do:</h5>
+                <p>You will complete a short series of repetitive tasks that measure reaction time and attention. It should take about 30 minutes.</p>
                 
-                <h5>Informed consent participant</h5>
-                <ul>
-                    <li>I participate in this research voluntarily.</li>
-                    <li>I acknowledge that I received sufficient information and explanation about the research and that all my questions have been answered satisfactorily. I was given sufficient time to consent my participation. I can ask questions for further clarification at any moment during the research. I can also withdraw at any time without any reason, particularly when I feel unsecure, anxious or stressed caused by the test setup.</li>
-                    <li>I am aware that this research consists of the following activities:
-                        <ul>
-                            <li>In-person interview</li>
-                            <li>Task completion on desk</li>
-                            <li>Observation with audio transcribing</li>
-                        </ul>
-                    </li>
-                    <li>I understand that taking part in the study involves the following risks:
-                        <ul>
-                            <li>Electrical failure</li>
-                            <li>Not CE certified product prototypes</li>
-                            <li>Stress or other mental discomfort</li>
-                        </ul>
-                    </li>
-                    <li>I understand that these will be mitigated by a. not touching any conductive devices, b. well insulated prototypes, c. controlled low power with DC power supply only.</li>
-                    <li>I understand that taking part in the study also involves collecting specific personally identifiable information (PII) Informed consent form and associated personally identifiable research data (PIRD) including audio-transcribed dialog, cardiac activity health data with the potential risk of my identity being revealed public, which are considered as sensitive data within GDPR legislation.</li>
-                    <li>I will refrain from mentioning topics that may held me vulnerable, and I have the right to stop recording and revert what has been recorded at any time.</li>
-                    <li>I understand that the following steps will be taken to minimise the threat of a data breach, and protect my identity in the event of such a breach: anonymous data collection, detached storage of PII and PIRD, transcription, limited local access, storage in TU Delft project space.</li>
-                    <li>I understand that the personal data I provide will be destroyed one month after the termination of study scheduled in August 2025.</li>
-                    <li>I agree that my responses, views or other input can be quoted anonymously in research outputs.</li>
-                    <li>I will have no symptoms relating to Covid and I will receive a copy of this consent form.</li>
-                </ul>
+                <h5>Voluntary Participation:</h5>
+                <p>Your participation is completely voluntary. You may stop at any time, for any reason, without any penalty.</p>
                 
-                <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.3);">
-                    <p><strong>Date:</strong> ___ / ___ / ______</p>
-                    <!-- <p><strong>Signature:</strong> _________________________</p> -->
-                </div>
+                <h5>Risks & Discomfort:</h5>
+                <p>There are no known significant risks, but the test may feel repetitive or tiring. Take breaks if needed, or exit at any time.</p>
+                
+                <h5>Data Privacy:</h5>
+                <p>This is a demo version. No data will be collected or stored by the system. When you finish, your results will be available for you to download locally. You are responsible for saving or sharing them if you wish — the data is not sent anywhere else.</p>
+                
+                <h5>How Your Data Is Used:</h5>
+                <p>Since no data is stored on the server, we do not keep any of your test results. If you choose to share your results with others (for example, with a healthcare professional), that is entirely up to you.</p>
+                
+                <h5>Questions & Concerns:</h5>
+                <p>If you have any questions about this tool, please feel free to contact me at z.liu-77@student.tudelft.nl.</p>
+                
+                <h5>Consent:</h5>
+                <p>By clicking "Start" or proceeding with the test, you acknowledge that you have read and understood this information and voluntarily agree to try this demo.</p>
+                
+                <h5>Disclaimer:</h5>
+                <p><strong>This test cannot and does not diagnose ADHD or any other condition. Please consult a qualified specialist if you have concerns about ADHD or related symptoms.</strong></p>
             </div>
             
             <div class="consent-checkbox">
                 <input type="checkbox" id="consent-checkbox">
                 <label for="consent-checkbox" class="consent-label">
                     <span class="consent-text">
-                        <strong>I have read and understood the informed consent form above, and I agree to participate in this research study.</strong>
+                        <strong>I have read and understood the informed consent form above, and I voluntarily agree to try this demo.</strong>
                     </span>
                 </label>
             </div>
@@ -352,6 +354,7 @@
             <div class="info-text">
                 <p><strong>Test Structure:</strong></p>
                 <p>Practice (3 min) → TOVA Test (24 min)</p>
+                <p>Check out my task management product for ADHD'ers at <a href="https://halfmind.tech">halfmind.tech</a></p>
                 <!-- <p><strong>Data Output:</strong> Raw Data + Summary Statistics</p> -->
             </div>
         </div>
@@ -432,4 +435,4 @@
         });
     </script>
 </body>
-</html> 
+</html>
