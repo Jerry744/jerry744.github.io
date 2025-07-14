@@ -515,46 +515,57 @@ class TOVA {
             }
         });
 
-        // Calculate statistics
+        // Get browser platform information
+        const getBrowserPlatform = () => {
+            const userAgent = navigator.userAgent;
+            if (userAgent.includes('Chrome')) return 'chrome';
+            if (userAgent.includes('Firefox')) return 'firefox';
+            if (userAgent.includes('Safari') && !userAgent.includes('Chrome')) return 'safari';
+            if (userAgent.includes('Edge')) return 'edge';
+            if (userAgent.includes('Opera')) return 'opera';
+            return 'unknown';
+        };
+
+        // Calculate statistics with exact column names matching summary file format
         this.summaryData = {
-            version: '1.0.0',
-            platform: navigator.platform,
-            startDate: this.subject.startDate,
-            startTime: this.subject.startTime,
-            subjectId: this.subject.name,
-            groupId: this.subject.group,
-            sessionId: this.subject.session,
-            elapsedTime: Math.round(performance.now() - this.state.testStartTime),
-            completed: 1,
-            minValidLatency: this.params.minValidLatency,
-            sum_anticipatoryResponses: totalAnticipatory,
-            percentAnticipatoryResponses: (totalAnticipatory / this.rawData.filter(d => d.frequency > 0).length * 100),
+            'inquisit.version': '6.6.1', // Match the version format from sample
+            'computer.platform': getBrowserPlatform(), // Use browser platform instead of OS platform
+            'startDate': this.subject.startDate,
+            'startTime': this.subject.startTime,
+            'subjectId': this.subject.name,
+            'groupId': this.subject.group,
+            'sessionId': this.subject.session,
+            'elapsedTime': Math.round(performance.now() - this.state.testStartTime),
+            'completed': 1,
+            'minValidLatency': this.params.minValidLatency,
+            'sum_anticipatoryResponses': totalAnticipatory,
+            'percentAnticipatoryResponses': (totalAnticipatory / this.rawData.filter(d => d.frequency > 0).length * 100),
 
             // Practice
-            propcorrect_practice: this.mean(this.blockStats.practice.correct),
+            'propcorrect_practice': this.mean(this.blockStats.practice.correct),
 
             // Overall
-            overallproportioncorrect: this.mean(allTargetAcc.concat(allNontargetAcc)),
-            meanPostCommissionRT: this.mean(this.postCommissionHits),
-            meanHitRT: this.mean(allTargetRT),
-            SDHitRT: this.standardDeviation(allTargetRT),
-            hitRate: this.mean(allTargetAcc),
-            omissionsRate: 1 - this.mean(allTargetAcc),
-            commissionRate: 1 - this.mean(allNontargetAcc),
+            'overallproportioncorrect': this.mean(allTargetAcc.concat(allNontargetAcc)),
+            'meanPostCommissionRT': this.mean(this.postCommissionHits),
+            'meanHitRT': this.mean(allTargetRT),
+            'SDHitRT': this.standardDeviation(allTargetRT),
+            'hitRate': this.mean(allTargetAcc),
+            'omissionsRate': 1 - this.mean(allTargetAcc),
+            'commissionRate': 1 - this.mean(allNontargetAcc),
 
             // Low frequency
-            meanHitRT_LF: this.mean(lfTargetRT),
-            SDHitRT_LF: this.standardDeviation(lfTargetRT),
-            hitRate_LF: this.mean(lfTargetAcc),
-            omissionsRate_LF: 1 - this.mean(lfTargetAcc),
-            commissionRate_LF: 1 - this.mean(lfNontargetAcc),
+            'meanHitRT_LF': this.mean(lfTargetRT),
+            'SDHitRT_LF': this.standardDeviation(lfTargetRT),
+            'hitRate_LF': this.mean(lfTargetAcc),
+            'omissionsRate_LF': 1 - this.mean(lfTargetAcc),
+            'commissionRate_LF': 1 - this.mean(lfNontargetAcc),
 
             // High frequency
-            meanHitRT_HF: this.mean(hfTargetRT),
-            SDHitRT_HF: this.standardDeviation(hfTargetRT),
-            hitRate_HF: this.mean(hfTargetAcc),
-            omissionsRate_HF: 1 - this.mean(hfTargetAcc),
-            commissionRate_HF: 1 - this.mean(hfNontargetAcc),
+            'meanHitRT_HF': this.mean(hfTargetRT),
+            'SDHitRT_HF': this.standardDeviation(hfTargetRT),
+            'hitRate_HF': this.mean(hfTargetAcc),
+            'omissionsRate_HF': 1 - this.mean(hfTargetAcc),
+            'commissionRate_HF': 1 - this.mean(hfNontargetAcc),
 
             // Individual blocks
             ...this.calculateIndividualBlockStats()
@@ -590,26 +601,34 @@ class TOVA {
             return rate;
         };
 
+        // Debug logging
+        console.log('Calculating z-scores with hit rates and commission rates:');
+        console.log('Overall hit rate:', this.summaryData.hitRate);
+        console.log('Overall commission rate:', this.summaryData.commissionRate);
+
         // Overall
-        const hitRate = adjustRate(this.summaryData.hitRate);
-        const faRate = adjustRate(this.summaryData.commissionRate);
-        this.summaryData.z_hr = this.normalInverse(hitRate);
-        this.summaryData.z_FAr = this.normalInverse(faRate);
-        this.summaryData.dprime = this.summaryData.z_hr - this.summaryData.z_FAr;
+        const hitRate = adjustRate(this.summaryData['hitRate']);
+        const faRate = adjustRate(this.summaryData['commissionRate']);
+        console.log('Adjusted overall hit rate:', hitRate);
+        console.log('Adjusted overall commission rate:', faRate);
+        
+        this.summaryData['z_hr'] = this.normalInverse(hitRate);
+        this.summaryData['z_FAr'] = this.normalInverse(faRate);
+        this.summaryData['dprime'] = this.summaryData['z_hr'] - this.summaryData['z_FAr'];
 
         // Low frequency
-        const hitRate_LF = adjustRate(this.summaryData.hitRate_LF);
-        const faRate_LF = adjustRate(this.summaryData.commissionRate_LF);
-        this.summaryData.z_hr_LF = this.normalInverse(hitRate_LF);
-        this.summaryData.z_FAr_LF = this.normalInverse(faRate_LF);
-        this.summaryData.dprime_LF = this.summaryData.z_hr_LF - this.summaryData.z_FAr_LF;
+        const hitRate_LF = adjustRate(this.summaryData['hitRate_LF']);
+        const faRate_LF = adjustRate(this.summaryData['commissionRate_LF']);
+        this.summaryData['z_hr_LF'] = this.normalInverse(hitRate_LF);
+        this.summaryData['z_FAr_LF'] = this.normalInverse(faRate_LF);
+        this.summaryData['dprime_LF'] = this.summaryData['z_hr_LF'] - this.summaryData['z_FAr_LF'];
 
         // High frequency
-        const hitRate_HF = adjustRate(this.summaryData.hitRate_HF);
-        const faRate_HF = adjustRate(this.summaryData.commissionRate_HF);
-        this.summaryData.z_hr_HF = this.normalInverse(hitRate_HF);
-        this.summaryData.z_FAr_HF = this.normalInverse(faRate_HF);
-        this.summaryData.dprime_HF = this.summaryData.z_hr_HF - this.summaryData.z_FAr_HF;
+        const hitRate_HF = adjustRate(this.summaryData['hitRate_HF']);
+        const faRate_HF = adjustRate(this.summaryData['commissionRate_HF']);
+        this.summaryData['z_hr_HF'] = this.normalInverse(hitRate_HF);
+        this.summaryData['z_FAr_HF'] = this.normalInverse(faRate_HF);
+        this.summaryData['dprime_HF'] = this.summaryData['z_hr_HF'] - this.summaryData['z_FAr_HF'];
 
         // Individual blocks
         ['LF1', 'LF2', 'HF1', 'HF2'].forEach(suffix => {
@@ -618,6 +637,12 @@ class TOVA {
             this.summaryData[`z_hr_${suffix}`] = this.normalInverse(hr);
             this.summaryData[`z_FAr_${suffix}`] = this.normalInverse(far);
             this.summaryData[`dprime_${suffix}`] = this.summaryData[`z_hr_${suffix}`] - this.summaryData[`z_FAr_${suffix}`];
+        });
+
+        console.log('Final z-scores:', {
+            z_hr: this.summaryData['z_hr'],
+            z_FAr: this.summaryData['z_FAr'],
+            dprime: this.summaryData['dprime']
         });
     }
 
@@ -639,40 +664,50 @@ class TOVA {
     }
 
     normalInverse(p) {
-        // Approximation of the inverse normal CDF (z-score from probability)
-        // Using Beasley-Springer-Moro algorithm
-        const a = [0, -3.969683028665376e+01, 2.209460984245205e+02, -2.759285104469687e+02, 1.383577518672690e+02, -3.066479806614716e+01, 2.506628277459239e+00];
-        const b = [0, -5.447609879822406e+01, 1.615858368580409e+02, -1.556989798598866e+02, 6.680131188771972e+01, -1.328068155288572e+01];
-        const c = [0, -7.784894002430293e-03, -3.223964580411365e-01, -2.400758277161838e+00, -2.549732539343734e+00, 4.374664141464968e+00, 2.938163982698783e+00];
-        const d = [0, 7.784695709041462e-03, 3.224671290700398e-01, 2.445134137142996e+00, 3.754408661907416e+00];
-
-        if (p <= 0 || p >= 1) return 0;
-
-        const q = p - 0.5;
-        let r, x;
-
-        if (Math.abs(q) <= 0.425) {
-            r = 0.180625 - q * q;
-            x = q * (((((((a[7] * r + a[6]) * r + a[5]) * r + a[4]) * r + a[3]) * r + a[2]) * r + a[1]) * r + a[0]) /
-                (((((((b[7] * r + b[6]) * r + b[5]) * r + b[4]) * r + b[3]) * r + b[2]) * r + b[1]) * r + 1);
-        } else {
-            r = q < 0 ? p : 1 - p;
-            r = Math.sqrt(-Math.log(r));
-            
-            if (r <= 5) {
-                r = r - 1.6;
-                x = (((((((c[7] * r + c[6]) * r + c[5]) * r + c[4]) * r + c[3]) * r + c[2]) * r + c[1]) * r + c[0]) /
-                    ((((((d[6] * r + d[5]) * r + d[4]) * r + d[3]) * r + d[2]) * r + d[1]) * r + 1);
-            } else {
-                r = r - 5;
-                x = (((((((c[7] * r + c[6]) * r + c[5]) * r + c[4]) * r + c[3]) * r + c[2]) * r + c[1]) * r + c[0]) /
-                    ((((((d[6] * r + d[5]) * r + d[4]) * r + d[3]) * r + d[2]) * r + d[1]) * r + 1);
-            }
-            
-            if (q < 0) x = -x;
+        // Robust approximation of the inverse normal CDF (z-score from probability)
+        // Using Peter John Acklam's algorithm
+        
+        // Ensure p is in valid range
+        if (isNaN(p) || p <= 0 || p >= 1) {
+            console.warn(`Invalid probability for normalInverse: ${p}`);
+            return 0;
         }
 
-        return x;
+        // Coefficients for the rational approximation
+        const a = [-3.969683028665376e+01, 2.209460984245205e+02, -2.759285104469687e+02, 
+                   1.383577518672690e+02, -3.066479806614716e+01, 2.506628277459239e+00];
+        const b = [-5.447609879822406e+01, 1.615858368580409e+02, -1.556989798598866e+02,
+                   6.680131188771972e+01, -1.328068155288572e+01];
+        const c = [-7.784894002430293e-03, -3.223964580411365e-01, -2.400758277161838e+00,
+                   -2.549732539343734e+00, 4.374664141464968e+00, 2.938163982698783e+00];
+        const d = [7.784695709041462e-03, 3.224671290700398e-01, 2.445134137142996e+00,
+                   3.754408661907416e+00];
+
+        // Define break-points
+        const pLow = 0.02425;
+        const pHigh = 1 - pLow;
+
+        let result;
+
+        if (p < pLow) {
+            // Rational approximation for lower region
+            const q = Math.sqrt(-2 * Math.log(p));
+            result = (((((c[0] * q + c[1]) * q + c[2]) * q + c[3]) * q + c[4]) * q + c[5]) /
+                     ((((d[0] * q + d[1]) * q + d[2]) * q + d[3]) * q + 1);
+        } else if (p <= pHigh) {
+            // Rational approximation for central region
+        const q = p - 0.5;
+            const r = q * q;
+            result = (((((a[0] * r + a[1]) * r + a[2]) * r + a[3]) * r + a[4]) * r + a[5]) * q /
+                     (((((b[0] * r + b[1]) * r + b[2]) * r + b[3]) * r + b[4]) * r + 1);
+        } else {
+            // Rational approximation for upper region
+            const q = Math.sqrt(-2 * Math.log(1 - p));
+            result = -(((((c[0] * q + c[1]) * q + c[2]) * q + c[3]) * q + c[4]) * q + c[5]) /
+                      ((((d[0] * q + d[1]) * q + d[2]) * q + d[3]) * q + 1);
+        }
+
+        return result;
     }
 
     // Data export functions
@@ -683,26 +718,31 @@ class TOVA {
             'correct', 'latency', 'anticipatoryResponse', 'commissionerror', 'postCommissionHit'
         ];
 
-        const csv = [headers.join('\t')];
+        const csv = [headers.join(',')];
         this.rawData.forEach(row => {
-            const line = headers.map(header => row[header] || '').join('\t');
+            const line = headers.map(header => row[header] || '').join(',');
             csv.push(line);
         });
 
         const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, -5);
-        const filename = `tova_raw_${this.subject.name}_${timestamp}.txt`;
-        this.downloadFile(csv.join('\n'), filename, 'text/plain');
+        const filename = `tova_raw_${this.subject.name}_${timestamp}.csv`;
+        this.downloadFile(csv.join('\n'), filename, 'text/csv');
     }
 
     downloadSummaryData() {
-        const headers = Object.keys(this.summaryData);
-        const values = Object.values(this.summaryData);
+        // Define the exact column order to match the summary file format
+        const columnOrder = [
+            'inquisit.version', 'computer.platform', 'startDate', 'startTime', 'subjectId', 'groupId', 'sessionId', 'elapsedTime', 'completed', 'minValidLatency', 'sum_anticipatoryResponses', 'percentAnticipatoryResponses', 'propcorrect_practice', 'overallproportioncorrect', 'meanPostCommissionRT', 'meanHitRT', 'SDHitRT', 'hitRate', 'omissionsRate', 'commissionRate', 'z_hr', 'z_FAr', 'dprime', 'meanHitRT_LF', 'SDHitRT_LF', 'hitRate_LF', 'omissionsRate_LF', 'commissionRate_LF', 'z_hr_LF', 'z_FAr_LF', 'dprime_LF', 'meanHitRT_HF', 'SDHitRT_HF', 'hitRate_HF', 'omissionsRate_HF', 'commissionRate_HF', 'z_hr_HF', 'z_FAr_HF', 'dprime_HF', 'meanHitRT_LF1', 'SDHitRT_LF1', 'hitRate_LF1', 'omissionsRate_LF1', 'commissionRate_LF1', 'z_hr_LF1', 'z_FAr_LF1', 'dprime_LF1', 'meanHitRT_LF2', 'SDHitRT_LF2', 'hitRate_LF2', 'omissionsRate_LF2', 'commissionRate_LF2', 'z_hr_LF2', 'z_FAr_LF2', 'dprime_LF2', 'meanHitRT_HF1', 'SDHitRT_HF1', 'hitRate_HF1', 'omissionsRate_HF1', 'commissionRate_HF1', 'z_hr_HF1', 'z_FAr_HF1', 'dprime_HF1', 'meanHitRT_HF2', 'SDHitRT_HF2', 'hitRate_HF2', 'omissionsRate_HF2', 'commissionRate_HF2', 'z_hr_HF2', 'z_FAr_HF2', 'dprime_HF2'
+        ];
 
-        const csv = [headers.join('\t'), values.join('\t')];
+        const headers = columnOrder;
+        const values = columnOrder.map(key => this.summaryData[key] || '');
+
+        const csv = [headers.join(','), values.join(',')];
 
         const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, -5);
-        const filename = `tova_summary_${this.subject.name}_${timestamp}.txt`;
-        this.downloadFile(csv.join('\n'), filename, 'text/plain');
+        const filename = `tova_summary_${this.subject.name}_${timestamp}.csv`;
+        this.downloadFile(csv.join('\n'), filename, 'text/csv');
     }
 
     downloadFile(content, filename, contentType) {
@@ -733,4 +773,4 @@ class TOVA {
 // Initialize the test when the page loads
 document.addEventListener('DOMContentLoaded', () => {
     window.tova = new TOVA();
-}); 
+});
