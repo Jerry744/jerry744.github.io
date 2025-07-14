@@ -86,6 +86,9 @@ class TOVA {
 
         // Subject form
         document.getElementById('subject-form').addEventListener('submit', this.handleSubjectForm.bind(this));
+        
+        // Back to main button
+        document.getElementById('back-to-main-btn').addEventListener('click', () => this.returnToMain());
 
         // Prevent context menu
         document.addEventListener('contextmenu', e => e.preventDefault());
@@ -765,7 +768,7 @@ class TOVA {
 
     returnToMain() {
         if (confirm('Are you sure you want to return to the main page? All current data will be cleared.')) {
-            window.location.href = 'demo.html';
+            window.location.href = 'index.html';
         }
     }
 }

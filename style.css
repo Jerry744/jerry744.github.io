@@ -196,6 +196,30 @@ body {
     border-color: #999;
 }
 
+/* Button group for form buttons */
+.button-group {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.button-group .btn {
+    margin: 0;
+    flex: 1;
+    max-width: 200px;
+}
+
+.btn-secondary {
+    background-color: #555;
+    border-color: #777;
+}
+
+.btn-secondary:hover {
+    background-color: #666;
+    border-color: #999;
+}
+
 /* Transition screen */
 #transition-screen {
     text-align: center;
