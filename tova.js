@@ -86,7 +86,7 @@ class TOVA {
 
         // Subject form
         document.getElementById('subject-form').addEventListener('submit', this.handleSubjectForm.bind(this));
-        
+
         // Back to main button
         document.getElementById('back-to-main-btn').addEventListener('click', () => this.returnToMain());
 
@@ -131,6 +131,8 @@ class TOVA {
     handleSubjectForm(e) {
         e.preventDefault();
         this.subject.name = document.getElementById('subject-name').value;
+        this.subject.age = parseInt(document.getElementById('subject-age').value);
+        this.subject.gender = document.getElementById('subject-gender').value;
         this.subject.group = parseInt(document.getElementById('group-id').value);
         this.subject.session = parseInt(document.getElementById('session-id').value);
         
@@ -531,11 +533,11 @@ class TOVA {
 
         // Calculate statistics with exact column names matching summary file format
         this.summaryData = {
-            'inquisit.version': '6.6.1', // Match the version format from sample
             'computer.platform': getBrowserPlatform(), // Use browser platform instead of OS platform
             'startDate': this.subject.startDate,
             'startTime': this.subject.startTime,
             'subjectId': this.subject.name,
+            'age': this.subject.age,
             'groupId': this.subject.group,
             'sessionId': this.subject.session,
             'elapsedTime': Math.round(performance.now() - this.state.testStartTime),
@@ -571,7 +573,10 @@ class TOVA {
             'commissionRate_HF': 1 - this.mean(hfNontargetAcc),
 
             // Individual blocks
-            ...this.calculateIndividualBlockStats()
+            ...this.calculateIndividualBlockStats(),
+            
+            // Subject demographics
+            'gender': this.subject.gender
         };
 
         // Calculate z-scores and d-prime
@@ -735,7 +740,7 @@ class TOVA {
     downloadSummaryData() {
         // Define the exact column order to match the summary file format
         const columnOrder = [
-            'inquisit.version', 'computer.platform', 'startDate', 'startTime', 'subjectId', 'groupId', 'sessionId', 'elapsedTime', 'completed', 'minValidLatency', 'sum_anticipatoryResponses', 'percentAnticipatoryResponses', 'propcorrect_practice', 'overallproportioncorrect', 'meanPostCommissionRT', 'meanHitRT', 'SDHitRT', 'hitRate', 'omissionsRate', 'commissionRate', 'z_hr', 'z_FAr', 'dprime', 'meanHitRT_LF', 'SDHitRT_LF', 'hitRate_LF', 'omissionsRate_LF', 'commissionRate_LF', 'z_hr_LF', 'z_FAr_LF', 'dprime_LF', 'meanHitRT_HF', 'SDHitRT_HF', 'hitRate_HF', 'omissionsRate_HF', 'commissionRate_HF', 'z_hr_HF', 'z_FAr_HF', 'dprime_HF', 'meanHitRT_LF1', 'SDHitRT_LF1', 'hitRate_LF1', 'omissionsRate_LF1', 'commissionRate_LF1', 'z_hr_LF1', 'z_FAr_LF1', 'dprime_LF1', 'meanHitRT_LF2', 'SDHitRT_LF2', 'hitRate_LF2', 'omissionsRate_LF2', 'commissionRate_LF2', 'z_hr_LF2', 'z_FAr_LF2', 'dprime_LF2', 'meanHitRT_HF1', 'SDHitRT_HF1', 'hitRate_HF1', 'omissionsRate_HF1', 'commissionRate_HF1', 'z_hr_HF1', 'z_FAr_HF1', 'dprime_HF1', 'meanHitRT_HF2', 'SDHitRT_HF2', 'hitRate_HF2', 'omissionsRate_HF2', 'commissionRate_HF2', 'z_hr_HF2', 'z_FAr_HF2', 'dprime_HF2'
+            'computer.platform', 'startDate', 'startTime', 'subjectId', 'age', 'groupId', 'sessionId', 'elapsedTime', 'completed', 'minValidLatency', 'sum_anticipatoryResponses', 'percentAnticipatoryResponses', 'propcorrect_practice', 'overallproportioncorrect', 'meanPostCommissionRT', 'meanHitRT', 'SDHitRT', 'hitRate', 'omissionsRate', 'commissionRate', 'z_hr', 'z_FAr', 'dprime', 'meanHitRT_LF', 'SDHitRT_LF', 'hitRate_LF', 'omissionsRate_LF', 'commissionRate_LF', 'z_hr_LF', 'z_FAr_LF', 'dprime_LF', 'meanHitRT_HF', 'SDHitRT_HF', 'hitRate_HF', 'omissionsRate_HF', 'commissionRate_HF', 'z_hr_HF', 'z_FAr_HF', 'dprime_HF', 'meanHitRT_LF1', 'SDHitRT_LF1', 'hitRate_LF1', 'omissionsRate_LF1', 'commissionRate_LF1', 'z_hr_LF1', 'z_FAr_LF1', 'dprime_LF1', 'meanHitRT_LF2', 'SDHitRT_LF2', 'hitRate_LF2', 'omissionsRate_LF2', 'commissionRate_LF2', 'z_hr_LF2', 'z_FAr_LF2', 'dprime_LF2', 'meanHitRT_HF1', 'SDHitRT_HF1', 'hitRate_HF1', 'omissionsRate_HF1', 'commissionRate_HF1', 'z_hr_HF1', 'z_FAr_HF1', 'dprime_HF1', 'meanHitRT_HF2', 'SDHitRT_HF2', 'hitRate_HF2', 'omissionsRate_HF2', 'commissionRate_HF2', 'z_hr_HF2', 'z_FAr_HF2', 'dprime_HF2', 'gender'
         ];
 
         const headers = columnOrder;
