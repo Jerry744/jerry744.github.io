@@ -1,0 +1,387 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: white;
+    color: black;
+    line-height: 1.6;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 40px;
+    border-bottom: 1px solid #eee;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.try-button {
+    background-color: black;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.try-button:hover {
+    background-color: #333;
+}
+
+.pricing, .about {
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.pricing:hover, .about:hover {
+    text-decoration: underline;
+}
+
+.main-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+.section {
+    margin-bottom: 60px;
+}
+
+.section-title {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.choices-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.choice-box {
+    background-color: #e5e5e5;
+    border: none;
+    border-radius: 12px;
+    padding: 20px 15px;
+    font-size: 14px;
+    color: black;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+    min-height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.choice-box:hover {
+    background-color: #ffcb9e;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* Popup Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+.modal-overlay.show {
+    display: flex;
+}
+
+.modal-card {
+    background-color: #ded8cf;
+    border-radius: 16px;
+    padding: 30px;
+    max-width: 500px;
+    width: 90%;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.modal-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: black;
+}
+
+.close-button {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: #ff8c00;
+    border: none;
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s ease;
+}
+
+.close-button:hover {
+    background-color: #ff6b00;
+}
+
+.modal-content {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.modal-description {
+    font-size: 16px;
+    color: black;
+    margin-bottom: 25px;
+    line-height: 1.5;
+}
+
+.timer-display {
+    font-size: 48px;
+    font-weight: bold;
+    color: black;
+    font-family: 'Courier New', monospace;
+    margin: 20px 0;
+}
+
+.timer-controls {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.timer-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.start-btn {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.start-btn:hover {
+    background-color: #45a049;
+}
+
+.pause-btn {
+    background-color: #ff9800;
+    color: white;
+}
+
+.pause-btn:hover {
+    background-color: #f57c00;
+}
+
+.reset-btn {
+    background-color: #f44336;
+    color: white;
+}
+
+.reset-btn:hover {
+    background-color: #da190b;
+}
+
+/* Bottom Banner Styles */
+.bottom-banner {
+    background-color: #000;
+    border-top: 1px solid #eee;
+    padding: 30px 0;
+    margin-top: 60px;
+}
+
+.banner-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    align-items: start;
+}
+
+.banner-left {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.banner-title {
+    font-size: 24px;
+    font-weight: bold;
+    color: rgb(255, 255, 255);
+}
+
+.banner-greeting {
+    font-size: 18px;
+    font-weight: 600;
+    color: rgb(255, 255, 255);
+}
+
+.banner-instruction {
+    font-size: 16px;
+    color: rgb(255, 255, 255);
+    line-height: 1.5;
+}
+
+.banner-description {
+    font-size: 14px;
+    color: #888;
+    line-height: 1.6;
+}
+
+.banner-disclaimer {
+    font-size: 12px;
+    color: #888;
+    line-height: 1.5;
+    /* font-style: italic; */
+}
+
+.banner-right {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    align-items: flex-end;
+}
+
+.banner-subtitle {
+    font-size: 20px;
+    font-weight: bold;
+    color: rgb(255, 255, 255);
+    text-align: right;
+}
+
+.banner-powered-by {
+    font-size: 14px;
+    color: #666;
+    text-align: right;
+}
+
+.banner-links {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-end;
+}
+
+.banner-link {
+    font-size: 14px;
+    font-weight: 600;
+    color: rgb(255, 255, 255);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.banner-link:hover {
+    color: #ff8c00;
+}
+
+@media (max-width: 768px) {
+    .choices-grid {
+        grid-template-columns: repeat(2, 1fr);
+        max-width: 400px;
+    }
+    
+    .header {
+        padding: 15px 20px;
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .header-right {
+        gap: 15px;
+    }
+
+    .modal-card {
+        margin: 20px;
+        padding: 25px;
+    }
+
+    .timer-display {
+        font-size: 36px;
+    }
+
+    .banner-content {
+        grid-template-columns: 1fr;
+        gap: 30px;
+        text-align: center;
+    }
+
+    .banner-right {
+        align-items: center;
+    }
+
+    .banner-subtitle, .banner-powered-by {
+        text-align: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .choices-grid {
+        grid-template-columns: 1fr;
+        max-width: 300px;
+    }
+
+    .modal-card {
+        margin: 15px;
+        padding: 20px;
+    }
+
+    .timer-controls {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .banner-content {
+        margin: 15px;
+        padding: 20px;
+    }
+
+    .timer-controls {
+        flex-direction: column;
+        align-items: center;
+    }
+}

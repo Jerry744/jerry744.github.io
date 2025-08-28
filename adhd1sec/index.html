@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ADHD 1 Sec</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Modal Overlay -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-card">
+            <div class="modal-header">
+                <div class="modal-title" id="modalTitle">Choose an option to get started</div>
+                <button class="close-button" id="closeButton">×</button>
+            </div>
+            <div class="modal-content">
+                <div class="modal-description" id="modalDescription">Click a choice box to see specific guidance.</div>
+                <div class="timer-display" id="timerDisplay">2:30</div>
+                <div class="timer-controls">
+                    <button class="timer-btn start-btn" id="startBtn" style="display: none;">Start</button>
+                    <button class="timer-btn pause-btn" id="pauseBtn">Pause</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <header class="header">
+        <div class="logo">ADHD 1 Sec</div>
+        <div class="header-right">
+            <button class="try-button">Try Halfmind</button>
+            <div class="pricing">Pricing: $0</div>
+            <div class="about">About us</div>
+        </div>
+    </header>
+
+    <main class="main-content" id="mainContent">
+        <!-- Sections will be dynamically generated from intervention.json -->
+    </main>
+
+    <!-- Bottom Banner -->
+    <footer class="bottom-banner">
+        <div class="banner-content">
+            <div class="banner-left">
+                <div class="banner-title">ADHD 1 Sec</div>
+                <div class="banner-greeting">Hey!</div>
+                <div class="banner-instruction">Listen to the website! Do as you are told.</div>
+                <div class="banner-description">ADHD1sec.com is a behavior supporting tool for one-click behavior change.</div>
+                <div class="banner-disclaimer">This website cannot replace therapy or medical treatment. Contact a therapist if you have any questions regarding ADHD.</div>
+            </div>
+            <div class="banner-right">
+                <div class="banner-subtitle">Save ADHD in 1 sec</div>
+                <div class="banner-powered-by">Powered by <a href="https://halfmind.tech" target="_blank" class="banner-link">halfmind.tech</a></div>
+                <div class="banner-links">
+                    <a href="#" class="banner-link">About us</a>
+                    <a href="#" class="banner-link">Contact</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Global variables
+        let interventionData = null;
+        
+        // Timer functionality
+        let timerInterval;
+        let timeLeft = 150; // 2:30 in seconds
+        let isRunning = false;
+        let currentTaskTime = 150; // Store the current task's timer value
+
+        // DOM elements
+        const modalOverlay = document.getElementById('modalOverlay');
+        const modalTitle = document.getElementById('modalTitle');
+        const timerDisplay = document.getElementById('timerDisplay');
+        const startBtn = document.getElementById('startBtn');
+        const pauseBtn = document.getElementById('pauseBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const closeButton = document.getElementById('closeButton');
+        const mainContent = document.getElementById('mainContent');
+
+        // Load intervention data and generate HTML
+        async function loadInterventionData() {
+            try {
+                const response = await fetch('intervention.json');
+                interventionData = await response.json();
+                generateSections();
+                addEventListeners();
+            } catch (error) {
+                console.error('Error loading intervention data:', error);
+                mainContent.innerHTML = '<p>Error loading intervention data. Please refresh the page.</p>';
+            }
+        }
+
+        // Generate HTML sections from JSON data
+        function generateSections() {
+            if (!interventionData) return;
+            
+            mainContent.innerHTML = '';
+            
+            interventionData.sections.forEach(section => {
+                const sectionElement = document.createElement('section');
+                sectionElement.className = 'section';
+                
+                // Create section title
+                const titleElement = document.createElement('h2');
+                titleElement.className = 'section-title';
+                titleElement.textContent = section.name;
+                sectionElement.appendChild(titleElement);
+                
+                // Create choices grid
+                const gridElement = document.createElement('div');
+                gridElement.className = 'choices-grid';
+                
+                // Create choice boxes for each entry
+                section.entries.forEach(entry => {
+                    const buttonElement = document.createElement('button');
+                    buttonElement.className = 'choice-box';
+                    buttonElement.setAttribute('data-section', section.id);
+                    buttonElement.setAttribute('data-timer', entry.timer_sec);
+                    buttonElement.setAttribute('data-action', entry.action);
+                    buttonElement.textContent = entry.state;
+                    gridElement.appendChild(buttonElement);
+                });
+                
+                sectionElement.appendChild(gridElement);
+                mainContent.appendChild(sectionElement);
+            });
+        }
+
+        // Add event listeners to dynamically generated choice boxes
+        function addEventListeners() {
+            document.querySelectorAll('.choice-box').forEach(box => {
+                box.addEventListener('click', function() {
+                    const title = this.textContent;
+                    const timer = parseInt(this.dataset.timer);
+                    const action = this.dataset.action;
+                    const sectionType = parseInt(this.dataset.section);
+                    showModal(title, timer, action, sectionType);
+                });
+            });
+        }
+
+        // Show modal function
+        function showModal(title, timer, action, sectionType) {
+            // Set title based on section type
+            if (sectionType === 1) {
+                modalTitle.textContent = `I need to ${title.toLowerCase()} now`;
+            } else if (sectionType === 2) {
+                modalTitle.textContent = `Stop ${title.toLowerCase()} addictively`;
+            } else if (sectionType === 3) {
+                modalTitle.textContent = `I probably ${title.toLowerCase()}`;
+            }
+            
+            modalDescription.textContent = action;
+            currentTaskTime = timer; // Store the current task's timer value
+            modalOverlay.classList.add('show');
+            resetTimer(timer);
+            startTimer(); // Auto-start timer when modal appears
+        }
+
+        // Hide modal function
+        function hideModal() {
+            modalOverlay.classList.remove('show');
+            stopTimer();
+            resetTimer(currentTaskTime); // Reset timer to the current task's time when modal is closed
+        }
+
+        // Timer functions
+        function startTimer() {
+            if (!isRunning) {
+                isRunning = true;
+                startBtn.style.display = 'none';
+                pauseBtn.style.display = 'inline-block';
+                
+                timerInterval = setInterval(() => {
+                    timeLeft--;
+                    updateTimerDisplay();
+                    
+                    if (timeLeft <= 0) {
+                        stopTimer();
+                        alert('Time is up! Complete your task.');
+                        // Reset timer after user confirms the alert
+                        resetTimer(currentTaskTime);
+                    }
+                }, 1000);
+            }
+        }
+
+        function pauseTimer() {
+            if (isRunning) {
+                isRunning = false;
+                startBtn.style.display = 'inline-block';
+                pauseBtn.style.display = 'none';
+                clearInterval(timerInterval);
+            }
+        }
+
+        function stopTimer() {
+            isRunning = false;
+            clearInterval(timerInterval);
+            startBtn.style.display = 'inline-block';
+            pauseBtn.style.display = 'none';
+        }
+
+        function resetTimer(customTime) {
+            stopTimer();
+            timeLeft = customTime || 150; // Use custom time or default to 2:30
+            updateTimerDisplay();
+            // Show start button by default when reset (not auto-start)
+            startBtn.style.display = 'inline-block';
+            pauseBtn.style.display = 'none';
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            timerDisplay.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        // Event listeners
+        startBtn.addEventListener('click', startTimer);
+        pauseBtn.addEventListener('click', pauseTimer);
+        closeButton.addEventListener('click', hideModal);
+
+        // Close modal when clicking outside
+        modalOverlay.addEventListener('click', function(e) {
+            if (e.target === modalOverlay) {
+                hideModal();
+            }
+        });
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && modalOverlay.classList.contains('show')) {
+                hideModal();
+            }
+        });
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            loadInterventionData();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,127 @@
+{
+    "sections": [
+      {
+        "id": 1,
+        "name": "Immediate needs & routines",
+        "entries": [
+          {
+            "state": "Eat",
+            "timer_sec": 60,
+            "action": "Grab a quick protein snack now (yogurt, nuts, or a boiled egg) and a glass of water."
+          },
+          {
+            "state": "Go to toilet",
+            "timer_sec": 120,
+            "action": "Go to the bathroom now."
+          },
+          {
+            "state": "Wear clothes",
+            "timer_sec": 120,
+            "action": "Adjust one layer now (add or remove)."
+          },
+          {
+            "state": "Drink",
+            "timer_sec": 60,
+            "action": "Fill your cup with tap water and take 3 sips now."
+          },
+          {
+            "state": "Sleep (after 2 a.m.)",
+            "timer_sec": 300,
+            "action": "Dim lights, enable Do Not Disturb, taking deep breathing for 1 minute, then go to bed."
+          },
+          {
+            "state": "Get out of bed",
+            "timer_sec": 3,
+            "action": "3-2-1—stand up now. Ignore cold temperature, Open curtains, sip water, and do a 2-minute stretch."
+          },
+          {
+            "state": "Take medicine",
+            "timer_sec": 60,
+            "action": "Take your medication now with water and tap ‘Done’ to log it."
+          },
+          {
+            "state": "Baby-sitting",
+            "timer_sec": 60,
+            "action": "Safety sweep: doors/windows locked, hazards away, child within sight, water/snack ready. Alerts set to ‘important only’."
+          },
+          {
+            "state": "Concentrate",
+            "timer_sec": 60,
+            "action": "Put away everything that distracts you. Clean your desk and take a deep breath. Tasks are challenging but you are capable enough!"
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "name": "I need to stop addictive behavior",
+        "entries": [
+          {
+            "state": "Masturbating",
+            "timer_sec": 120,
+            "action": "Redirect that energy: wash your face & clean up, do push-ups 10 times, and stretch for 2 minutes."
+          },
+          {
+            "state": "Gaming",
+            "timer_sec": 180,
+            "action": "Save and exit the game within 3 minutes. Replace with a 5-minute offline activity like stretching or hydration."
+          },
+          {
+            "state": "Staying in bed",
+            "timer_sec": 60,
+            "action": "Sit up now. Put your feet on the floor and stand within 1 minute. Bear the cold temperature!"
+          },
+          {
+            "state": "Drinking",
+            "timer_sec": 0,
+            "action": "Stop drinking immediately. Drink water and step away from alcohol. If craving, set a 10-minute delay before deciding again."
+          },
+          {
+            "state": "Eating too much",
+            "timer_sec": 90,
+            "action": "Put the food aside now. Drink a glass of water and wait 90 seconds before deciding if you’re still hungry."
+          },
+          {
+            "state": "Phone-scrolling",
+            "timer_sec": 60,
+            "action": "Lock your phone for 1 minute. Place it out of reach and replace with one short, intentional activity (one household chore, like desk clean-up!)."
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "name": "I probably…",
+        "entries": [
+          {
+            "state": "forgot something",
+            "timer_sec": 120,
+            "action": "Check your calendar, notes, or reminders within 2 minutes."
+          },
+          {
+            "state": "procrastinated",
+            "timer_sec": 60,
+            "action": "Start with a 1-minute action on the task. Any progress counts."
+          },
+          {
+            "state": "am in panic attack",
+            "timer_sec": 180,
+            "action": "Do a 3-minute grounding exercise: slow breathing and 5-4-3-2-1 sensory check."
+          },
+          {
+            "state": "am drunk",
+            "timer_sec": 0,
+            "action": "Stop alcohol intake now. Drink water immediately and ensure you are in a safe place."
+          },
+          {
+            "state": "am regretting",
+            "timer_sec": 120,
+            "action": "Pause and journal for 2 minutes. Write one small step to improve or move forward."
+          },
+          {
+            "state": "in danger",
+            "timer_sec": 0,
+            "action": "Call emergency services now. Move to a safe space immediately."
+          }
+        ]
+      }
+    ]
+  }
