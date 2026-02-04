@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HalfMind — Product</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; -webkit-overflow-scrolling: touch; }
+    body {
+      font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
+      width: 100%;
+      min-height: 100%;
+      background: #000;
+      color: #fff;
+      overflow-x: hidden;
+    }
+
+    /* Fixed four-corner layout */
+    :root {
+      --corner-padding: 60px; /* Fixed padding for all corners, matches Figma */
+    }
+    .corner {
+      position: fixed;
+      z-index: 20;
+      padding: var(--corner-padding);
+      max-width: 45%;
+      pointer-events: none;
+    }
+    .corner * { pointer-events: auto; }
+    .corner-top-left { top: 0; left: 0; text-align: left; }
+    .corner-top-right { top: 0; right: 0; text-align: right; }
+    .corner-bottom-left { bottom: 0; left: 0; text-align: left; max-width: 52%; }
+    .corner-bottom-right { bottom: 0; right: 0; text-align: right; }
+
+    /* Figma typography: Poppins 60px/400 for nav, 35px/600 for intro, 60px/600 for action */
+    .title-main { font-size: 60px; font-weight: 400; line-height: 1.5; color: #fff; }
+    .link-shop { font-size: 60px; font-weight: 400; line-height: 1.5; color: #fff; text-decoration: none; opacity: 0.9; }
+    .link-shop:hover { opacity: 1; text-decoration: underline; }
+    .intro { font-size: 35px; font-weight: 600; line-height: 1.5; max-width: 560px; color: #fff; opacity: 0.9; }
+    .action { font-size: 60px; font-weight: 600; line-height: 1.5; color: #fff; opacity: 0.9; }
+
+    /* Text blocks with swap support */
+    .text-block { position: relative; min-height: 2.5em; }
+    .text-block .line { display: block; }
+    .text-block .original, .text-block .swap {
+      display: block;
+      transition: opacity 0.5s ease, visibility 0.5s;
+    }
+    .text-block .swap {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+    .text-block.swapped .original { opacity: 0; visibility: hidden; }
+    .text-block.swapped .swap { opacity: 1; visibility: visible; }
+
+    /* Scroll section: drives animation */
+    .scroll-section {
+      min-height: 400vh;
+      position: relative;
+    }
+    .pin-wrap {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .anim-wrap {
+      width: 100%;
+      max-width: min(90vw, 420px);
+      padding: 2rem;
+    }
+    .anim-wrap svg {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    /* Mobile: scale typography, hide action corner */
+    @media (max-width: 768px) {
+      .title-main { font-size: clamp(28px, 8vw, 48px); }
+      .link-shop { font-size: clamp(28px, 8vw, 48px); }
+      .intro { font-size: clamp(18px, 4vw, 28px); }
+      .action { font-size: clamp(28px, 8vw, 48px); }
+      .corner-bottom-right { display: none; }
+      .corner-top-left, .corner-top-right, .corner-bottom-left { max-width: 85%; padding: 1rem; }
+      .anim-wrap { max-width: 95vw; padding: 1rem; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Four corner text blocks -->
+  <aside class="corner corner-top-left">
+    <div class="text-block" id="title-block">
+      <span class="original">
+        <span class="title-main line">Halfmind Bolb</span>
+      </span>
+      <span class="swap">
+        <span class="title-main line">Product page</span>
+      </span>
+    </div>
+  </aside>
+  <aside class="corner corner-top-right">
+    <a href="#" class="link-shop">Shop</a>
+  </aside>
+  <aside class="corner corner-bottom-left">
+    <div class="text-block" id="intro-block">
+      <span class="original">
+        <p class="intro line">Zen, snapped into place.<br>For MagSafe purists.</p>
+      </span>
+      <span class="swap">
+        <p class="intro line">A minimal timer, in the same way of a timer.</p>
+      </span>
+    </div>
+  </aside>
+  <aside class="corner corner-bottom-right">
+    <span class="action">Scroll</span>
+  </aside>
+
+  <!-- Scroll-driven animation area -->
+  <section class="scroll-section">
+    <div class="pin-wrap">
+      <div class="anim-wrap">
+        <svg id="isometric" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 544.67 731.12">
+          <defs>
+            <style>
+              .cls-1 { fill: url(#radial-gradient); }
+              .cls-2 {
+                fill: none;
+                stroke: #fff;
+                stroke-linecap: round;
+                stroke-linejoin: round;
+              }
+            </style>
+            <radialGradient id="radial-gradient" cx="272.33" cy="272.33" fx="272.33" fy="272.33" r="272.33" gradientUnits="userSpaceOnUse">
+              <stop offset="0" stop-color="#ffa555"/>
+              <stop offset="1" stop-color="#ffbd6a" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+          <circle class="cls-1" id="glow" cx="272.33" cy="272.33" r="272.33" style="opacity:0"/>
+          <path class="cls-2" d="M160.08,338.64c-13.34-19.65-24.56-45.3-23.78-70.19.12-3.73.39-7.43.81-11.14,3.15-27.83,14.72-54.05,33.17-75.13.14-.16.28-.32.42-.47,14.19-16.06,31.95-28.58,51.87-36.51,5.96-2.37,12.01-4.3,18.24-5.81,18.38-4.46,37.49-5.03,56.11-1.65,14.85,2.69,29.15,7.86,42.3,15.27,17.19,9.69,32.04,23.03,43.55,39.06,12.75,17.75,21.03,38.31,24.2,59.92.67,4.58,1.11,9.17,1.31,13.79.92,20.61-2.81,41.17-10.91,60.14-1.77,4.14-3.73,8.18-5.89,12.13-8.14,14.84-18.94,28.06-31.88,38.97-8.82,7.44-18.21,13.53-28.61,18.56-17.84,8.63-37.35,13.25-57.17,13.54-22.97.33-46.41-9.78-64.76-21.93-19.07-12.64-36.13-29.62-48.97-48.53Z"/>
+          <path class="cls-2" d="M420.2,636.06c-.42,7.7-.85,15.4-1.27,23.1-.86,15.7-11,28.33-22.3,37.42-11.64,9.37-25.55,16.03-39.46,20.93-27.72,9.76-59.22,13.59-88.34,13.07-29.12-.52-60.47-5.46-87.84-16.19-13.62-5.34-27.51-12.61-38.75-22.27-6.04-5.19-11.56-11.3-15.5-18.33-3.39-6.07-5.51-12.69-5.72-19.72l-.69-22.99"/>
+          <path class="cls-2" d="M190.09,568.44c-11.71,3.5-22.84,7.84-33.54,13.84-9.09,5.09-18.1,11.63-24.93,19.7-6.88,8.14-11.61,18.01-11.28,29.1.21,6.99,2.41,13.55,5.88,19.52,4.07,7,9.77,13.03,15.94,18.11,11.41,9.41,25.43,16.45,39.09,21.61,27.46,10.37,58.81,15.13,87.91,15.64,29.1.5,60.61-3.18,88.41-12.62,13.95-4.73,27.97-11.19,39.77-20.31,11.39-8.8,22-21.27,22.86-36.99,1.11-20.2-14.41-36.12-28.89-46.07-15.34-10.55-34.11-17.86-51.85-22.65-35.71-9.64-76.29-11.65-112.81-6.67"/>
+          <line class="cls-2" x1="226.67" y1="408.94" x2="226.64" y2="601.94"/>
+          <line class="cls-2" x1="190.42" y1="602.17" x2="188.29" y2="388.69"/>
+          <path class="cls-2" d="M190.42,602.17c.04,3.78,4.78,5.99,7.5,6.92,3.51,1.19,6.98,1.61,10.66,1.58,3.68-.02,7.14-.48,10.64-1.72,2.71-.96,7.42-3.24,7.42-7.01"/>
+          <path class="cls-2" d="M136.57,264.11c-9.38,17.96-6.11,40.25.32,57.66,6.79,18.4,18.37,35.57,31.83,49.59,13.47,14.05,30.13,26.3,48.19,33.95,17.1,7.24,39.12,11.66,57.67,3.78"/>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    gsap.registerPlugin(ScrollTrigger);
+
+    const svg = document.getElementById('isometric');
+    const strokes = svg.querySelectorAll('.cls-2');
+    const glow = document.getElementById('glow');
+    const titleBlock = document.getElementById('title-block');
+    const introBlock = document.getElementById('intro-block');
+
+    // Set up stroke-dasharray/dashoffset for line trace
+    strokes.forEach(function (el) {
+      const len = el.getTotalLength();
+      el.setAttribute('stroke-dasharray', len);
+      el.setAttribute('stroke-dashoffset', len);
+    });
+
+    // Scroll-linked timeline: progress 0–1 maps to full scroll through section
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: '.scroll-section',
+        start: 'top top',
+        end: 'bottom bottom',
+        scrub: 1,
+        pin: '.pin-wrap',
+        anticipatePin: 1,
+      },
+    });
+
+    // 1. Line trace (0–45% scroll): strokes draw in sequentially
+    tl.to(strokes, {
+      attr: { 'stroke-dashoffset': 0 },
+      duration: 0.45,
+      ease: 'power3.out',
+      stagger: 0.04,
+      overwrite: true,
+    }, 0);
+
+    // 2. Glow fade in (35–55% scroll)
+    tl.to(glow, {
+      opacity: 1,
+      duration: 0.2,
+      ease: 'power2.out',
+    }, 0.35);
+
+    // 3. Breathing: 100% → 60% opacity (55–70% scroll)
+    tl.to(glow, {
+      opacity: 0.6,
+      duration: 0.15,
+      ease: 'sine.inOut',
+    }, 0.55);
+
+    // 4. Breathing back: 60% → 100% (70–85% scroll)
+    tl.to(glow, {
+      opacity: 1,
+      duration: 0.15,
+      ease: 'sine.inOut',
+    }, 0.7);
+
+    // 5. Hold at end (85–100%)
+    tl.to({}, { duration: 0.15 }, 0.85);
+
+    // Text swap: when scroll progress crosses ~55% (aligned with glow fade-in)
+    ScrollTrigger.create({
+      trigger: '.scroll-section',
+      start: 'top top',
+      end: 'bottom bottom',
+      scrub: 0.5,
+      onUpdate: (self) => {
+        const p = self.progress;
+        if (p >= 0.55) {
+          titleBlock.classList.add('swapped');
+          introBlock.classList.add('swapped');
+        } else {
+          titleBlock.classList.remove('swapped');
+          introBlock.classList.remove('swapped');
+        }
+      },
+    });
+
+  </script>
+</body>
+</html>
