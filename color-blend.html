@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Color Wheel - 12 Balls</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <style>
+    body {
+      margin: 0;
+      padding: 2rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background: #000000;
+    }
+  </style>
+</head>
+<body>
+  <svg width="400" height="400" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+    <!-- Outer translate: place content at canvas center (200, 200) -->
+    <g transform="translate(200, 200)">
+      <!-- Inner group: all coords relative to center (0, 0), rotation around origin -->
+      <g id="rotating">
+        <!-- 80px square corners: ±40 from center, 20px circles at corners -->
+        <circle cx="-40" cy="-40" r="20" fill="#fff"/>
+        <circle cx="40" cy="-40" r="20" fill="#fff"/>
+        <circle cx="40" cy="40" r="20" fill="#fff"/>
+        <circle cx="-40" cy="40" r="20" fill="#fff"/>
+        <!-- Ball positions: angle = 0°, 30°, 60°, ... 330° -->
+        <circle cx="100" cy="0" r="14" fill="hsl(0, 100%, 50%)"/>
+        <circle cx="86.6" cy="50" r="14" fill="hsl(30, 100%, 50%)"/>
+        <circle cx="50" cy="86.6" r="14" fill="hsl(60, 100%, 50%)"/>
+        <circle cx="0" cy="100" r="14" fill="hsl(90, 100%, 50%)"/>
+        <circle cx="-50" cy="86.6" r="14" fill="hsl(120, 100%, 50%)"/>
+        <circle cx="-86.6" cy="50" r="14" fill="hsl(150, 100%, 50%)"/>
+        <circle cx="-100" cy="0" r="14" fill="hsl(180, 100%, 50%)"/>
+        <circle cx="-86.6" cy="-50" r="14" fill="hsl(210, 100%, 50%)"/>
+        <circle cx="-50" cy="-86.6" r="14" fill="hsl(240, 100%, 50%)"/>
+        <circle cx="0" cy="-100" r="14" fill="hsl(270, 100%, 50%)"/>
+        <circle cx="50" cy="-86.6" r="14" fill="hsl(300, 100%, 50%)"/>
+        <circle cx="86.6" cy="-50" r="14" fill="hsl(330, 100%, 50%)"/>
+      </g>
+    </g>
+  </svg>
+  <script>
+    // 10 deg/s => 360° in 36s | content centered at (0,0), rotate around center
+    gsap.set("#rotating", { transformOrigin: "center center" });
+    gsap.timeline({ repeat: -1 })
+      .to("#rotating", { rotation: 360, duration: 36, ease: "none" })
+      .to({}, { duration: 5 })
+      .to("#rotating", { rotation: 0, duration: 36, ease: "none" })
+      .to({}, { duration: 5 });
+  </script>
+</body>
+</html>
