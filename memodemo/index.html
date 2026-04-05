@@ -1,0 +1,956 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MEMO Whiteboard Scanner | Full Project Overview & KPI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Space+Grotesk:wght@700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --deep-space-blue: #0b3b60;
+      --eerie-black: #1a1a1a;
+      --arctic-horizon: #93bbd4;
+      --tangerine: #f47e48;
+      --soft-cloud: #f0f0f0;
+      --white: #ffffff;
+      --silver-mist: #b2b2b2;
+
+      --deep-space-100: #e6eff5;
+      --deep-space-200: #bcd2e3;
+      --deep-space-300: #93b5d1;
+      --deep-space-400: #6998bf;
+      --deep-space-500: #417cad;
+      --deep-space-600: #2c6593;
+      --deep-space-700: #1f557a;
+      --deep-space-800: #144764;
+      --deep-space-900: #0b3b60;
+
+      --tangerine-100: #fde8df;
+      --tangerine-200: #fbcab7;
+      --tangerine-300: #f9ad90;
+      --tangerine-400: #f78f68;
+      --tangerine-500: #f47e48;
+      --tangerine-600: #de6f3f;
+      --tangerine-700: #c85f36;
+      --tangerine-800: #b24f2d;
+      --tangerine-900: #9c4024;
+
+      --ink: var(--eerie-black);
+      --ink-soft: #3d4a56;
+      --card: rgba(255, 255, 255, 0.92);
+      --line: rgba(11, 59, 96, 0.18);
+      --shadow: 0 16px 36px rgba(8, 28, 46, 0.28);
+      --radius: 18px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 8% 18%, rgba(244, 126, 72, 0.34), transparent 34%),
+        radial-gradient(circle at 92% 10%, rgba(147, 187, 212, 0.38), transparent 36%),
+        linear-gradient(142deg, var(--deep-space-900) 0%, var(--deep-space-700) 42%, var(--deep-space-500) 72%, var(--arctic-horizon) 100%);
+      font-family: "Inter", "Helvetica", sans-serif;
+      font-weight: 400;
+      line-height: 1.55;
+    }
+
+    .grain {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.08;
+      background-image: radial-gradient(#000 0.45px, transparent 0.45px);
+      background-size: 4px 4px;
+      z-index: 0;
+    }
+
+    .container {
+      width: min(1120px, 92%);
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero {
+      padding: 64px 0 28px;
+      animation: rise 0.8s ease-out both;
+    }
+
+    .eyebrow {
+      display: inline-block;
+      letter-spacing: 0.12em;
+      font-size: 12px;
+      text-transform: uppercase;
+      color: var(--white);
+      font-family: "Helvetica", "Arial", sans-serif;
+      font-weight: 700;
+      border: 1px solid rgba(255, 255, 255, 0.45);
+      border-radius: 999px;
+      padding: 6px 12px;
+      background: linear-gradient(90deg, rgba(11, 59, 96, 0.35), rgba(244, 126, 72, 0.42));
+    }
+
+    h1 {
+      font-family: "Space Grotesk", "Inter", sans-serif;
+      font-weight: 700;
+      font-size: clamp(34px, 5vw, 60px);
+      line-height: 1.08;
+      margin: 16px 0 14px;
+      max-width: 880px;
+      color: var(--white);
+    }
+
+    .hero p {
+      font-size: clamp(16px, 2.1vw, 21px);
+      color: #e7f1f7;
+      max-width: 880px;
+      margin: 0;
+    }
+
+    .hero-meta {
+      margin-top: 22px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .chip {
+      padding: 8px 12px;
+      border-radius: 999px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      font-family: "Helvetica", "Arial", sans-serif;
+      font-weight: 700;
+      background: rgba(255, 255, 255, 0.16);
+      border: 1px solid rgba(255, 255, 255, 0.32);
+      font-size: 13px;
+      color: var(--white);
+    }
+
+    .section {
+      margin: 18px 0;
+      padding: 24px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background:
+        linear-gradient(165deg, rgba(255, 255, 255, 0.95) 0%, rgba(240, 240, 240, 0.95) 100%);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(4px);
+      animation: rise 0.8s ease-out both;
+    }
+
+    .section h2 {
+      margin: 0 0 12px;
+      font-size: clamp(24px, 3.2vw, 34px);
+      font-family: "Inter", "Helvetica", sans-serif;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .section p {
+      margin: 8px 0;
+      color: var(--ink);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 16px;
+    }
+
+    .card {
+      grid-column: span 12;
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 16px;
+      animation: rise 0.7s ease-out both;
+    }
+
+    .card h3 {
+      margin: 0 0 6px;
+      font-family: "Inter", "Helvetica", sans-serif;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .kpi {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      margin: 10px 0 4px;
+    }
+
+    .kpi strong {
+      font-size: clamp(28px, 4vw, 44px);
+      line-height: 1;
+      color: var(--deep-space-blue);
+      font-family: "Space Grotesk", "Inter", sans-serif;
+    }
+
+    .kpi span {
+      font-size: 14px;
+      color: var(--ink-soft);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .muted {
+      font-size: 13px;
+      color: #3f3f46;
+    }
+
+    .flow {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    .flow-step {
+      border: 1px dashed rgba(11, 59, 96, 0.28);
+      border-radius: 12px;
+      padding: 14px;
+      background:
+        linear-gradient(120deg, rgba(147, 187, 212, 0.17) 0%, rgba(255, 255, 255, 0.9) 65%);
+    }
+
+    .flow-step h3 {
+      margin: 0 0 4px;
+      font-size: 17px;
+      font-family: "Inter", "Helvetica", sans-serif;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .bars {
+      margin-top: 14px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .bar {
+      display: grid;
+      grid-template-columns: 180px 1fr 92px;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+    }
+
+    .track {
+      background: rgba(31, 41, 51, 0.12);
+      height: 12px;
+      border-radius: 999px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .fill {
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--tangerine-500), var(--deep-space-500), var(--deep-space-700));
+      transform-origin: left;
+      animation: grow 1.1s ease-out both;
+    }
+
+    .narrative-grid {
+      margin-top: 12px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    @media (min-width: 768px) {
+      .narrative-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    .narrative-card {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 16px;
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.98), var(--deep-space-100));
+    }
+
+    .narrative-card strong {
+      display: block;
+      font-size: 15px;
+      color: var(--deep-space-900);
+      margin-bottom: 6px;
+    }
+
+    .narrative-card .step-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      background: var(--tangerine-500);
+      color: var(--white);
+      font-size: 14px;
+      font-weight: 700;
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+
+    .dual-lane {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+      margin-top: 14px;
+    }
+
+    @media (min-width: 900px) {
+      .dual-lane {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .lane-card {
+      border-radius: 14px;
+      padding: 18px;
+      border: 2px solid var(--line);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .lane-card.runtime {
+      background: linear-gradient(160deg, rgba(147, 187, 212, 0.22), rgba(255, 255, 255, 0.96));
+      border-color: rgba(65, 124, 173, 0.45);
+    }
+
+    .lane-card.devops {
+      background: linear-gradient(160deg, rgba(244, 126, 72, 0.12), rgba(255, 255, 255, 0.96));
+      border-color: rgba(244, 126, 72, 0.35);
+    }
+
+    .lane-card h3 {
+      margin: 0 0 10px;
+      font-size: 18px;
+    }
+
+    .lane-badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 999px;
+      margin-bottom: 10px;
+    }
+
+    .lane-badge.phone {
+      background: var(--deep-space-700);
+      color: var(--white);
+    }
+
+    .lane-badge.lab {
+      background: var(--tangerine-200);
+      color: var(--deep-space-900);
+    }
+
+    .visual-pipeline {
+      margin-top: 16px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+      align-items: stretch;
+    }
+
+    @media (min-width: 768px) {
+      .visual-pipeline {
+        grid-template-columns: 1fr auto 1fr auto 1fr;
+        align-items: center;
+      }
+    }
+
+    .pipe-arrow {
+      text-align: center;
+      font-size: 22px;
+      color: var(--deep-space-600);
+      font-weight: 700;
+      padding: 4px 0;
+    }
+
+    @media (min-width: 768px) {
+      .pipe-arrow {
+        padding: 0 4px;
+      }
+    }
+
+    .pipe-stage {
+      border-radius: 14px;
+      padding: 14px;
+      border: 1px dashed rgba(11, 59, 96, 0.35);
+      background: var(--white);
+      min-height: 120px;
+    }
+
+    .pipe-stage h4 {
+      margin: 0 0 8px;
+      font-size: 14px;
+      color: var(--deep-space-800);
+    }
+
+    .mock-photo {
+      height: 72px;
+      border-radius: 8px;
+      background:
+        linear-gradient(135deg, rgba(80, 80, 90, 0.35) 0%, rgba(200, 200, 210, 0.5) 40%, rgba(244, 126, 72, 0.25) 100%);
+      position: relative;
+      box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.5);
+    }
+
+    .mock-photo::after {
+      content: "";
+      position: absolute;
+      inset: 12px;
+      border: 2px dashed rgba(11, 59, 96, 0.55);
+      border-radius: 4px;
+      transform: rotate(-4deg);
+    }
+
+    .mock-white {
+      height: 72px;
+      border-radius: 8px;
+      background: var(--white);
+      box-shadow: 0 8px 24px rgba(8, 28, 46, 0.15);
+      border: 1px solid rgba(11, 59, 96, 0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      color: var(--ink-soft);
+    }
+
+    .stat-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .stat-pill {
+      background: var(--deep-space-100);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 13px;
+    }
+
+    .stat-pill em {
+      font-style: normal;
+      font-weight: 700;
+      color: var(--deep-space-900);
+    }
+
+    .future-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+      margin-top: 14px;
+    }
+
+    @media (min-width: 768px) {
+      .future-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .future-card {
+      border-radius: 14px;
+      padding: 16px;
+      background: var(--white);
+      border: 1px solid var(--line);
+    }
+
+    .future-card h3 {
+      margin: 0 0 8px;
+      font-size: 17px;
+    }
+
+    .fps-demo {
+      margin-top: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(31, 41, 51, 0.1);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .fps-demo::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 35%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--tangerine-400), var(--deep-space-500));
+      animation: sweep 2.2s ease-in-out infinite alternate;
+    }
+
+    @keyframes sweep {
+      from {
+        transform: translateX(0);
+        opacity: 0.85;
+      }
+      to {
+        transform: translateX(190%);
+        opacity: 1;
+      }
+    }
+
+    .auto-funnel {
+      margin-top: 16px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+
+    @media (min-width: 640px) {
+      .auto-funnel {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    .funnel-block {
+      border-radius: 12px;
+      padding: 14px;
+      text-align: center;
+      border: 1px solid var(--line);
+      font-size: 13px;
+    }
+
+    .funnel-block.ok {
+      background: linear-gradient(180deg, rgba(147, 187, 212, 0.35), rgba(255, 255, 255, 0.95));
+    }
+
+    .funnel-block.retry {
+      background: linear-gradient(180deg, rgba(244, 126, 72, 0.2), rgba(255, 255, 255, 0.95));
+    }
+
+    .funnel-block.drop {
+      background: linear-gradient(180deg, rgba(31, 41, 51, 0.12), rgba(255, 255, 255, 0.95));
+    }
+
+    .funnel-block strong {
+      display: block;
+      font-size: 15px;
+      margin-bottom: 6px;
+      color: var(--deep-space-900);
+    }
+
+    table.kpi-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 12px;
+      font-size: 14px;
+    }
+
+    table.kpi-table th,
+    table.kpi-table td {
+      border: 1px solid var(--line);
+      padding: 10px 12px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    table.kpi-table th {
+      background: var(--deep-space-100);
+      color: var(--deep-space-900);
+      font-weight: 700;
+    }
+
+    table.kpi-table td:first-child {
+      font-weight: 700;
+      white-space: nowrap;
+      color: var(--deep-space-800);
+    }
+
+    .footer {
+      margin: 24px 0 40px;
+      padding: 12px 2px;
+      font-size: 13px;
+      color: #ddeaf3;
+      text-align: center;
+    }
+
+    @media (min-width: 768px) {
+      .card.span-3 { grid-column: span 3; }
+      .card.span-4 { grid-column: span 4; }
+      .card.span-6 { grid-column: span 6; }
+      .flow {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 760px) {
+      .section {
+        padding: 18px;
+      }
+
+      .bar {
+        grid-template-columns: 1fr;
+        gap: 6px;
+      }
+
+      .bar .track {
+        order: 3;
+      }
+    }
+
+    @keyframes rise {
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes grow {
+      from {
+        transform: scaleX(0);
+      }
+      to {
+        transform: scaleX(1);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="grain"></div>
+
+  <main class="container">
+    <section class="hero">
+      <span class="eyebrow">Client Delivery Narrative</span>
+      <h1>MEMO Whiteboard Scanner: Full Product KPI — App Experience + On-Device CNN</h1>
+      <p>
+        This page frames evaluation for the <strong>entire MEMO Whiteboard Scanner delivery</strong>: mobile scan UX,
+        on-device document corner intelligence, and engineering rigor. Model metrics matter, but sponsors
+        should judge outcomes on the path from capture to an acceptable corrected scan.
+      </p>
+      <div class="hero-meta">
+        <span class="chip">On-device only (no cloud)</span>
+        <span class="chip">Full automation</span>
+        <span class="chip">White-background output</span>
+        <span class="chip">Two-stage CNN + traceable eval</span>
+      </div>
+    </section>
+
+    <section class="section" style="animation-delay: 0.05s;">
+      <h2>1) Business Problem (End-to-End)</h2>
+      <p>
+        Users photograph whiteboards and documents in messy scenes: clutter, shadows, reflections, and tilt.
+        Early corner models could drift enough to create obvious perspective distortion.
+      </p>
+      <p>
+        <strong>What users actually experience</strong> is one product: if capture feels unreliable, inference is slow,
+        or geometry warps badly—even occasionally—trust collapses.
+        Acceptance should look at <em>end-to-end automation success</em> (acceptable white-background output without manual geometry steps),
+        not only offline pixel error.
+      </p>
+    </section>
+
+    <section class="section" style="animation-delay: 0.08s;">
+      <h2>2) Development vs Deployment</h2>
+      <p>
+        The work splits naturally into <strong>development</strong> (how we train, evaluate, and version the model) and
+        <strong>deployment</strong> (what ships on the device and runs for each scan). Same product — different phase and environment.
+      </p>
+      <div class="dual-lane" aria-label="Development versus deployment">
+        <div class="lane-card runtime">
+          <span class="lane-badge phone">Deployment</span>
+          <h3>On-device product (MEMO Whiteboard Scanner)</h3>
+          <p>
+            Capture a photo → CNN estimates corners → perspective crop → <strong>export with a clean white background</strong>.
+            Inference runs locally on the phone; <strong>no network</strong> is required for scan AI, which supports privacy, offline use, and stable latency.
+          </p>
+          <div class="stat-row">
+            <div class="stat-pill"><em>Where</em> · user device</div>
+            <div class="stat-pill"><em>What runs</em> · bundled model + app pipeline</div>
+          </div>
+        </div>
+        <div class="lane-card devops">
+          <span class="lane-badge lab">Development</span>
+          <h3>Model build &amp; evaluation</h3>
+          <p>
+            Label Studio ML hooks, Dockerized train/eval, CSV exports, and config-driven pipelines support
+            iteration and traceable KPI. The output of this phase is the <strong>model artifact</strong> that gets packaged into the app release.
+          </p>
+          <div class="stat-row">
+            <div class="stat-pill"><em>Where</em> · lab / CI / workstations</div>
+            <div class="stat-pill"><em>What ships out</em> · weights &amp; eval evidence</div>
+          </div>
+        </div>
+      </div>
+      <p class="muted" style="margin-top: 14px;">
+        Deployment is what end users run; development is how that on-device model is produced and measured before each release.
+      </p>
+    </section>
+
+    <section class="section" style="animation-delay: 0.1s;">
+      <h2>3) Unified Visual Output — Crop, Correct, Then “White Card” Consistency</h2>
+      <p>
+        Beyond raw corner accuracy, MEMO Whiteboard Scanner is designed so every successful scan <strong>looks like the same product</strong>:
+        the document content is flattened and placed on a <strong>neutral white background</strong>, instead of keeping messy desks, shadows, or color cast around the edges.
+      </p>
+      <div class="visual-pipeline" aria-label="Visual pipeline from photo to white card">
+        <div class="pipe-stage">
+          <h4>1 · Real photo</h4>
+          <div class="mock-photo" role="img" aria-label="Stylized messy scene"></div>
+          <p class="muted" style="margin-top: 8px; margin-bottom: 0;">Clutter, tilt, uneven lighting — typical meeting-room capture.</p>
+        </div>
+        <div class="pipe-arrow" aria-hidden="true">→</div>
+        <div class="pipe-stage">
+          <h4>2 · Corners + perspective</h4>
+          <p style="margin: 0; font-size: 13px;">CNN finds the board/paper boundary; we unwarp to a fronto-parallel crop (the “flat document”).</p>
+        </div>
+        <div class="pipe-arrow" aria-hidden="true">→</div>
+        <div class="pipe-stage">
+          <h4>3 · White-background export</h4>
+          <div class="mock-white">Unified “memo card” look</div>
+          <p class="muted" style="margin-top: 8px; margin-bottom: 0;">Same visual language for thumbnails, sharing, and downstream reading.</p>
+        </div>
+      </div>
+      <p style="margin-top: 14px;">
+        <strong>Why sponsors should care:</strong> two scans taken under different lighting can still <strong>present as one consistent brand artifact</strong>—important for demos, reports, and any flow where the image is reused outside the phone.
+      </p>
+    </section>
+
+    <section class="section" style="animation-delay: 0.11s;">
+      <h2>4) Technical Problem-Solving Method (Behind the Scenes)</h2>
+      <div class="flow">
+        <div class="flow-step">
+          <h3>Diagnose Failure Classes</h3>
+          <p>Class A: stable 10-30 px local edge ambiguity.</p>
+          <p>Class B: occasional 50-70+ px drift under scene distractors.</p>
+        </div>
+        <div class="flow-step">
+          <h3>Architectural Upgrade</h3>
+          <p>Stage 1 coarse global corners + Stage 2 local corner refiner.</p>
+          <p>Target: lower average error and suppress outliers.</p>
+        </div>
+        <div class="flow-step">
+          <h3>Data and Signal Improvement</h3>
+          <p>Expanded training samples and hard-scene coverage.</p>
+          <p>Grayscale + contrast enhancement to reduce color noise.</p>
+        </div>
+        <div class="flow-step">
+          <h3>Evidence &amp; Handoff</h3>
+          <p>Exported evaluation CSVs, visual samples, containerized workflows so improvements are measurable release-over-release.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" style="animation-delay: 0.15s;">
+      <h2>5) Model KPI Progress Snapshot</h2>
+      <p>
+        This section reports numbers that map to <strong>what users perceive</strong>: typical corner accuracy and how often geometry stays inside a
+        comfortable error band. We omit internal training-era baselines and “percent improvement vs early prototype” — those are useful for R&amp;D history,
+        not for sponsor or end-user decisions.
+      </p>
+      <div class="grid">
+        <article class="card span-6">
+          <div class="muted">Mean corner error (primary evaluation run)</div>
+          <div class="kpi"><strong>18.06</strong><span>px</span></div>
+          <div class="muted">Representative of current on-device model quality on the agreed validation set (CSV: results_251120_023740).</div>
+        </article>
+        <article class="card span-6">
+          <div class="muted">Cases with corner error &lt;50 px</div>
+          <div class="kpi"><strong>99%</strong><span>of cases</span></div>
+          <div class="muted">Share of evaluated cases where all corners stay within a 50 px band — the headline reliability criterion for automatic cropping.</div>
+        </article>
+      </div>
+
+      <div class="bars" style="margin-top: 18px;" aria-label="Share of cases under 50 px error">
+        <div class="bar">
+          <div>Cases with error &lt;50 px (target band)</div>
+          <div class="track"><div class="fill" style="width: 99%;"></div></div>
+          <div>99%</div>
+        </div>
+      </div>
+
+      <p class="muted" style="margin-top: 14px;">
+        <strong>How to read this:</strong> almost every case lands in the &lt;50 px band, so automatic perspective and white-background export stay visually stable.
+        A separate stress / distribution-shift evaluation can still be tracked internally for roadmap hardening — it does not change the product-facing headline above.
+      </p>
+    </section>
+
+    <section class="section" style="animation-delay: 0.2s;">
+      <h2>6) Client KPI Framework — Full Automation (No Manual Corner Editing)</h2>
+      <p>
+        MEMO Whiteboard Scanner does <strong>not</strong> expose a “drag the corners” self-adjustment UI. The product is built around
+        <strong>full pipeline automation</strong>: capture → on-device CNN → crop → white-background output. Sponsors should therefore measure
+        <strong>automation quality</strong> and <strong>end-to-end success</strong>, not manual correction time (which would be N/A by design).
+      </p>
+
+      <h3 style="margin-top: 18px; font-size: 1.15rem;">Product &amp; experience KPIs (aligned with full automation)</h3>
+      <table class="kpi-table" aria-label="Product KPI definitions for automated pipeline">
+        <thead>
+          <tr>
+            <th scope="col">KPI</th>
+            <th scope="col">What to measure (example)</th>
+            <th scope="col">Why it matters</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>One-shot automation success</td>
+            <td>% of captures where the <strong>automatic</strong> pipeline produces an acceptable white-background result without re-capture</td>
+            <td>Direct readout of “how often AI alone is enough” — the core promise of the product</td>
+          </tr>
+          <tr>
+            <td>First-pass quality</td>
+            <td>Mean corner error and share of cases under <strong>&lt;50 px</strong> (see §5 — e.g. ~18 px mean, <strong>99%</strong> within 50 px)</td>
+            <td>Confirms the automatic pipeline is not only “usually OK” but <strong>consistently</strong> inside a comfortable band</td>
+          </tr>
+          <tr>
+            <td>Re-capture / retry rate</td>
+            <td>% of sessions where the user discards and shoots again (or abandons)</td>
+            <td>Proxy for failure when there is no manual corner fix — replaces “manual correction time”</td>
+          </tr>
+          <tr>
+            <td>Time-to-final white card</td>
+            <td>Median seconds from shutter tap to <strong>final</strong> exported white-background image (no user geometry steps)</td>
+            <td>End-to-end speed of the automated path</td>
+          </tr>
+          <tr>
+            <td>Severe distortion / bad output rate</td>
+            <td>% of sessions where the automatic output is obviously warped or unusable (user-reported or QA-scored)</td>
+            <td>Tail risk — the main trust killer under full automation</td>
+          </tr>
+          <tr>
+            <td>Perceived responsiveness</td>
+            <td>Detection + crop + render latency; clear loading states</td>
+            <td>Automation feels instant and trustworthy, not “stuck processing”</td>
+          </tr>
+        </tbody>
+      </table>
+      <p class="muted" style="margin-top: 10px;">
+        <strong>How to read this with §5:</strong> low <strong>mean</strong> corner error plus <strong>≥99% of cases &lt;50 px</strong> explain why one-shot automation should feel reliable;
+        field KPIs (one-shot / re-capture) confirm the <em>on-device + white-card</em> experience in real rooms.
+      </p>
+
+      <div class="auto-funnel" aria-label="Illustrative automation outcomes without numeric targets">
+        <div class="funnel-block ok">
+          <strong>One-shot OK</strong>
+          Automatic pipeline accepted; white card looks right — <span class="muted">measure % in pilot</span>
+        </div>
+        <div class="funnel-block retry">
+          <strong>Re-capture</strong>
+          User shoots again (no corner UI) — <span class="muted">proxy for “model + framing” miss</span>
+        </div>
+        <div class="funnel-block drop">
+          <strong>Abandon / fail</strong>
+          Session ends without a usable export — <span class="muted">tail risk + UX clarity</span>
+        </div>
+      </div>
+
+      <div class="grid" style="margin-top: 22px;">
+        <article class="card span-3">
+          <h3>Model quality KPI</h3>
+          <p>Mean corner error (px) and <strong>share of cases with all corners &lt;50 px</strong> — headline numbers in §5.</p>
+          <p class="muted">Suggested gate on agreed validation data: mean ≤20 px; <strong>≥99% of cases</strong> with error &lt;50 px; monitor tail risk separately on stress sets.</p>
+        </article>
+        <article class="card span-3">
+          <h3>Engineering &amp; reliability</h3>
+          <p>Reproducible runs, CSV + visual traceability, stable app behavior when detection is empty or errors.</p>
+          <p class="muted">On-device bundle updates, crash-free sessions, graceful recovery (e.g. retry capture).</p>
+        </article>
+        <article class="card span-3">
+          <h3>Risk &amp; robustness</h3>
+          <p>Hard-scene buckets (shadow, clutter, glare, tilt) and stress/distribution-shift behavior.</p>
+          <p class="muted">Trend over time + regression gates before market push.</p>
+        </article>
+        <article class="card span-3">
+          <h3>Stakeholder narrative</h3>
+          <p>
+            The credible story is <strong>high automation with measurable tail-risk control</strong>:
+            users get a consistent white-background output without manual geometry work.
+          </p>
+          <p class="muted">Pair §5 (mean + 99% &lt;50 px) with one-shot success / re-capture rate from pilots.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" style="animation-delay: 0.25s;">
+      <h2>7) Presentation Narrative (App + Model)</h2>
+      <div class="narrative-grid">
+        <div class="narrative-card">
+          <span class="step-num">1</span><strong>Real-world capture</strong>
+          <p style="margin: 0;">Messy rooms break naive geometry; users judge one seamless product, not a research demo.</p>
+        </div>
+        <div class="narrative-card">
+          <span class="step-num">2</span><strong>Product surface</strong>
+          <p style="margin: 0;">Capture → automatic on-device pipeline → unified white-background output (no corner-dragging step).</p>
+        </div>
+        <div class="narrative-card">
+          <span class="step-num">3</span><strong>Intelligence layer</strong>
+          <p style="margin: 0;">Two-stage CNN + data/preprocessing; mean error and &lt;50 px case coverage per §5 (e.g. ~18 px mean, 99% within 50 px).</p>
+        </div>
+        <div class="narrative-card">
+          <span class="step-num">4</span><strong>Acceptance</strong>
+          <p style="margin: 0;">Agree model KPI for releases and automation KPI (one-shot / re-capture) for pilots.</p>
+        </div>
+      </div>
+      <p style="margin-top: 14px;">
+        Suggested external line:
+        <em>&quot;Fully automatic scans with a consistent white-background look — backed by transparent model metrics and tail-risk reporting.&quot;</em>
+      </p>
+    </section>
+
+    <section class="section" style="animation-delay: 0.3s;">
+      <h2>8) Next-Stage Roadmap — Presence Detection &amp; Real-Time Video</h2>
+      <p>
+        Upcoming work targets <strong>higher accuracy</strong> and <strong>faster, more visual feedback</strong> by moving beyond single-frame photo inference alone.
+      </p>
+      <div class="future-grid">
+        <div class="future-card">
+          <h3>Whiteboard presence detection</h3>
+          <p>
+            For <strong>MEMO Whiteboard Scanner</strong>, add a dedicated model stage that answers: <strong>“Is the MEMO whiteboard actually in frame?”</strong>
+            When the board is missing, partial, or dominated by clutter, we can <strong>skip or warn</strong> before expensive corner work — reducing false geometry and improving overall accuracy.
+          </p>
+          <p class="muted" style="margin-bottom: 0;">
+            Example: user points at a keyboard — presence score stays low → prompt to reframe instead of returning a warped “document.”
+          </p>
+        </div>
+        <div class="future-card">
+          <h3>Ultra-fast real-time video &amp; visualization</h3>
+          <p>
+            Move toward <strong>high-FPS on-device</strong> inference over the live preview stream, with overlays that show detected boundaries and stability in real time — so users learn how to frame once, not by trial-and-error after capture.
+          </p>
+          <div class="fps-demo" aria-hidden="true" title="Illustrative motion of a fast scanning bar"></div>
+          <p class="muted" style="margin-top: 8px; margin-bottom: 0;">
+            Illustrative bar: represents a target of <strong>continuous</strong> feedback (exact FPS will follow hardware profiling).
+          </p>
+        </div>
+      </div>
+      <p style="margin-top: 14px;">
+        Continuing priorities: more hard-case training data (shadow, clutter, reflection, extreme tilt), optional geometric consistency post-processing,
+        and pilot tracking of §6 KPIs so model upgrades map to measurable one-shot success and lower re-capture.
+      </p>
+    </section>
+
+    <div class="footer">
+      MEMO Whiteboard Scanner — Full project overview • Client and market-facing KPI communication
+    </div>
+  </main>
+</body>
+</html>
