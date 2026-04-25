@@ -1,0 +1,20 @@
+{
+  "name": "reminder-update",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build:flasher": "esbuild src/app.js --bundle --format=esm --platform=browser --outfile=src/flasher.bundle.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "esptool-js": "^0.6.0"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.0"
+  }
+}
