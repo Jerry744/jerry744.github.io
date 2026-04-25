@@ -17,6 +17,8 @@ import {
   setSelectedFirmwareFile,
   getSelectedPort,
   setProgress,
+  portStatusText,
+  highlightSelectPortButton,
   browserStatusText,
   prevStepBtn,
   nextStepBtn,
@@ -50,6 +52,8 @@ function goNextStep() {
   } else if (next === 2 && !browserSupported()) {
     setSimpleStatus(browserStatusText, "浏览器不支持，无法进入下一步。", "error");
   } else if (next === 3 && !getSelectedPort()) {
+    setSimpleStatus(portStatusText, "请先点击“选择串口”并在弹窗中选中设备端口。", "error");
+    highlightSelectPortButton();
     setStatus("请先在第二步选择串口", "error");
   }
 }
@@ -63,10 +67,8 @@ function goPrevStep() {
 }
 
 async function handleSelectPort() {
-  const ok = await selectPort();
-  if (ok) {
-    goNextStep();
-  }
+  await selectPort();
+  updateStepUI();
 }
 
 function handleRestart() {

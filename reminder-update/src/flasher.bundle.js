@@ -101,9 +101,16 @@ function updateStepUI() {
     const stepNumber = index + 1;
     card.classList.toggle("hidden", stepNumber !== currentStep);
   });
+  const waitingPortSelection = currentStep === 2 && !getSelectedPort();
   onboardingProgress.textContent = `\u7B2C ${currentStep} / 3 \u6B65`;
   prevStepBtn.disabled = busy || currentStep === 1;
   nextStepBtn.disabled = busy || currentStep === 3;
+  nextStepBtn.classList.toggle("primary", !waitingPortSelection && currentStep !== 3);
+}
+function highlightSelectPortButton() {
+  selectPortBtn.classList.remove("needs-attention");
+  void selectPortBtn.offsetWidth;
+  selectPortBtn.classList.add("needs-attention");
 }
 function showBrowserError() {
   browserErrorCard.classList.remove("hidden");
@@ -9483,6 +9490,8 @@ var require_app = __commonJS({
       } else if (next === 2 && !browserSupported()) {
         setSimpleStatus(browserStatusText, "\u6D4F\u89C8\u5668\u4E0D\u652F\u6301\uFF0C\u65E0\u6CD5\u8FDB\u5165\u4E0B\u4E00\u6B65\u3002", "error");
       } else if (next === 3 && !getSelectedPort()) {
+        setSimpleStatus(portStatusText, "\u8BF7\u5148\u70B9\u51FB\u201C\u9009\u62E9\u4E32\u53E3\u201D\u5E76\u5728\u5F39\u7A97\u4E2D\u9009\u4E2D\u8BBE\u5907\u7AEF\u53E3\u3002", "error");
+        highlightSelectPortButton();
         setStatus("\u8BF7\u5148\u5728\u7B2C\u4E8C\u6B65\u9009\u62E9\u4E32\u53E3", "error");
       }
     }
@@ -9494,10 +9503,8 @@ var require_app = __commonJS({
       }
     }
     async function handleSelectPort() {
-      const ok = await selectPort();
-      if (ok) {
-        goNextStep();
-      }
+      await selectPort();
+      updateStepUI();
     }
     function handleRestart() {
       setSelectedPort(null);

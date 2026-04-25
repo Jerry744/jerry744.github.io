@@ -114,9 +114,19 @@ export function updateStepUI() {
     card.classList.toggle("hidden", stepNumber !== currentStep);
   });
 
+  const waitingPortSelection = currentStep === 2 && !getSelectedPort();
+
   onboardingProgress.textContent = `第 ${currentStep} / 3 步`;
   prevStepBtn.disabled = busy || currentStep === 1;
   nextStepBtn.disabled = busy || currentStep === 3;
+  nextStepBtn.classList.toggle("primary", !waitingPortSelection && currentStep !== 3);
+}
+
+export function highlightSelectPortButton() {
+  selectPortBtn.classList.remove("needs-attention");
+  // Force reflow so repeated clicks can replay highlight animation.
+  void selectPortBtn.offsetWidth;
+  selectPortBtn.classList.add("needs-attention");
 }
 
 export function showBrowserError() {
