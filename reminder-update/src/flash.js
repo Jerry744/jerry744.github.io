@@ -1,5 +1,10 @@
 import { ESPLoader, Transport } from "esptool-js";
-import { FIRMWARE_PATH, FIXED_BAUDRATE, FLASH_TIMEOUT_MS } from "./constants.js";
+import {
+  FIRMWARE_MANIFEST_PATH,
+  FIRMWARE_FALLBACK_PATH,
+  FIXED_BAUDRATE,
+  FLASH_TIMEOUT_MS,
+} from "./constants.js";
 import {
   terminal,
   setStatus,
@@ -15,37 +20,44 @@ import {
   hideDoneStatus,
   getSelectedPort,
   setSelectedPort,
-  getSelectedFirmwareFile,
-  setSelectedFirmwareFile,
   isBusy,
   portStatusText,
   browserStatusText,
-  firmwareFileInput,
 } from "./ui.js";
 
 let abortController = null;
 
 export async function getFirmwareData() {
-  const builtInFirmwareURL = new URL(FIRMWARE_PATH, import.meta.url).toString();
-  const res = await fetch(builtInFirmwareURL, { cache: "no-store" });
-  if (res.ok) {
+  const manifestURL = new URL(FIRMWARE_MANIFEST_PATH, window.location.origin).toString();
+  const fallbackURL = new URL(FIRMWARE_FALLBACK_PATH, window.location.origin).toString();
+
+  const candidateURLs = [];
+  try {
+    const manifestRes = await fetch(manifestURL, { cache: "no-store" });
+    if (manifestRes.ok) {
+      const manifest = await manifestRes.json();
+      if (manifest?.firmwareUrl) {
+        candidateURLs.push(new URL(manifest.firmwareUrl, manifestURL).toString());
+      }
+    }
+  } catch (_error) {
+    terminal.writeLine(`提示：读取固件清单失败，将回退到默认地址：${manifestURL}`);
+  }
+
+  candidateURLs.push(fallbackURL);
+
+  for (const firmwareURL of candidateURLs) {
+    const res = await fetch(firmwareURL, { cache: "no-store" });
+    if (!res.ok) continue;
     return {
       data: new Uint8Array(await res.arrayBuffer()),
-      label: `在线内置固件：${builtInFirmwareURL}`,
+      label: `在线固件：${firmwareURL}`,
     };
   }
 
-  if (!getSelectedFirmwareFile()) {
-    throw new Error(
-      `无法读取在线内置固件：${builtInFirmwareURL}。请在第三步选择本地 .bin 固件文件后再刷写。`
-    );
-  }
-
-  const buf = await getSelectedFirmwareFile().arrayBuffer();
-  return {
-    data: new Uint8Array(buf),
-    label: `本地文件：${getSelectedFirmwareFile().name}`,
-  };
+  throw new Error(
+    `无法读取在线固件。请确认已在 ${manifestURL} 提供 firmwareUrl，或在 ${fallbackURL} 上传 latest.bin。`
+  );
 }
 
 function withTimeout(promise, ms, message) {
@@ -181,15 +193,5 @@ export async function copyHelp() {
   } catch (_e) {
     terminal.writeLine(helpText);
     setStatus("当前浏览器不允许剪贴板写入，请手动复制故障排查步骤", "");
-  }
-}
-
-export function onFirmwareFileSelected() {
-  const file = firmwareFileInput.files?.[0] ?? null;
-  setSelectedFirmwareFile(file);
-  if (file) {
-    setStatus(`已选择本地固件：${file.name}`, "ok");
-  } else {
-    setStatus("未选择本地固件，将使用在线内置固件", "");
   }
 }

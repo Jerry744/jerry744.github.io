@@ -32,10 +32,11 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
 ));
 
 // src/constants.js
-var FIRMWARE_PATH, FIXED_BAUDRATE, TOTAL_STEPS, FLASH_TIMEOUT_MS;
+var FIRMWARE_MANIFEST_PATH, FIRMWARE_FALLBACK_PATH, FIXED_BAUDRATE, TOTAL_STEPS, FLASH_TIMEOUT_MS;
 var init_constants = __esm({
   "src/constants.js"() {
-    FIRMWARE_PATH = "../assets/3.0.41_R1C_zh-CN.bin";
+    FIRMWARE_MANIFEST_PATH = "/firmware/latest.json";
+    FIRMWARE_FALLBACK_PATH = "/firmware/latest.bin";
     FIXED_BAUDRATE = 2e6;
     TOTAL_STEPS = 3;
     FLASH_TIMEOUT_MS = 3e4;
@@ -57,12 +58,6 @@ function getSelectedPort() {
 }
 function setSelectedPort(port) {
   window.__selectedPort = port;
-}
-function getSelectedFirmwareFile() {
-  return window.__selectedFirmwareFile ?? null;
-}
-function setSelectedFirmwareFile(file) {
-  window.__selectedFirmwareFile = file;
 }
 function setStatus(text, type = "") {
   statusText.textContent = `\u72B6\u6001\uFF1A${text}`;
@@ -150,7 +145,7 @@ function showDoneStatus(text, type = "ok") {
 function hideDoneStatus() {
   doneStatusText.classList.add("hidden");
 }
-var onboardingProgress, step1Card, step2Card, step3Card, prevStepBtn, nextStepBtn, browserStatusText, portStatusText, selectPortBtn, doneStatusText, flashBtn, cancelFlashBtn, copyHelpBtn, restartBtn, firmwareFileInput, toggleFileInputBtn, progressBar, progressText, statusText, logArea, browserErrorCard, mainFlow, busy, currentStep, terminal;
+var onboardingProgress, step1Card, step2Card, step3Card, prevStepBtn, nextStepBtn, browserStatusText, portStatusText, selectPortBtn, doneStatusText, flashBtn, cancelFlashBtn, copyHelpBtn, restartBtn, progressBar, progressText, statusText, logArea, browserErrorCard, mainFlow, busy, currentStep, terminal;
 var init_ui = __esm({
   "src/ui.js"() {
     onboardingProgress = document.getElementById("onboardingProgress");
@@ -167,8 +162,6 @@ var init_ui = __esm({
     cancelFlashBtn = document.getElementById("cancelFlashBtn");
     copyHelpBtn = document.getElementById("copyHelpBtn");
     restartBtn = document.getElementById("restartBtn");
-    firmwareFileInput = document.getElementById("firmwareFileInput");
-    toggleFileInputBtn = document.getElementById("toggleFileInputBtn");
     progressBar = document.getElementById("progressBar");
     progressText = document.getElementById("progressText");
     statusText = document.getElementById("statusText");
@@ -9316,24 +9309,32 @@ var init_lib = __esm({
 
 // src/flash.js
 async function getFirmwareData() {
-  const builtInFirmwareURL = new URL(FIRMWARE_PATH, import.meta.url).toString();
-  const res = await fetch(builtInFirmwareURL, { cache: "no-store" });
-  if (res.ok) {
+  const manifestURL = new URL(FIRMWARE_MANIFEST_PATH, window.location.origin).toString();
+  const fallbackURL = new URL(FIRMWARE_FALLBACK_PATH, window.location.origin).toString();
+  const candidateURLs = [];
+  try {
+    const manifestRes = await fetch(manifestURL, { cache: "no-store" });
+    if (manifestRes.ok) {
+      const manifest = await manifestRes.json();
+      if (manifest?.firmwareUrl) {
+        candidateURLs.push(new URL(manifest.firmwareUrl, manifestURL).toString());
+      }
+    }
+  } catch (_error) {
+    terminal.writeLine(`\u63D0\u793A\uFF1A\u8BFB\u53D6\u56FA\u4EF6\u6E05\u5355\u5931\u8D25\uFF0C\u5C06\u56DE\u9000\u5230\u9ED8\u8BA4\u5730\u5740\uFF1A${manifestURL}`);
+  }
+  candidateURLs.push(fallbackURL);
+  for (const firmwareURL of candidateURLs) {
+    const res = await fetch(firmwareURL, { cache: "no-store" });
+    if (!res.ok) continue;
     return {
       data: new Uint8Array(await res.arrayBuffer()),
-      label: `\u5728\u7EBF\u5185\u7F6E\u56FA\u4EF6\uFF1A${builtInFirmwareURL}`
+      label: `\u5728\u7EBF\u56FA\u4EF6\uFF1A${firmwareURL}`
     };
   }
-  if (!getSelectedFirmwareFile()) {
-    throw new Error(
-      `\u65E0\u6CD5\u8BFB\u53D6\u5728\u7EBF\u5185\u7F6E\u56FA\u4EF6\uFF1A${builtInFirmwareURL}\u3002\u8BF7\u5728\u7B2C\u4E09\u6B65\u9009\u62E9\u672C\u5730 .bin \u56FA\u4EF6\u6587\u4EF6\u540E\u518D\u5237\u5199\u3002`
-    );
-  }
-  const buf = await getSelectedFirmwareFile().arrayBuffer();
-  return {
-    data: new Uint8Array(buf),
-    label: `\u672C\u5730\u6587\u4EF6\uFF1A${getSelectedFirmwareFile().name}`
-  };
+  throw new Error(
+    `\u65E0\u6CD5\u8BFB\u53D6\u5728\u7EBF\u56FA\u4EF6\u3002\u8BF7\u786E\u8BA4\u5DF2\u5728 ${manifestURL} \u63D0\u4F9B firmwareUrl\uFF0C\u6216\u5728 ${fallbackURL} \u4E0A\u4F20 latest.bin\u3002`
+  );
 }
 function withTimeout(promise, ms, message) {
   return Promise.race([
@@ -9452,15 +9453,6 @@ async function copyHelp() {
     setStatus("\u5F53\u524D\u6D4F\u89C8\u5668\u4E0D\u5141\u8BB8\u526A\u8D34\u677F\u5199\u5165\uFF0C\u8BF7\u624B\u52A8\u590D\u5236\u6545\u969C\u6392\u67E5\u6B65\u9AA4", "");
   }
 }
-function onFirmwareFileSelected() {
-  const file = firmwareFileInput.files?.[0] ?? null;
-  setSelectedFirmwareFile(file);
-  if (file) {
-    setStatus(`\u5DF2\u9009\u62E9\u672C\u5730\u56FA\u4EF6\uFF1A${file.name}`, "ok");
-  } else {
-    setStatus("\u672A\u9009\u62E9\u672C\u5730\u56FA\u4EF6\uFF0C\u5C06\u4F7F\u7528\u5728\u7EBF\u5185\u7F6E\u56FA\u4EF6", "");
-  }
-}
 var abortController;
 var init_flash = __esm({
   "src/flash.js"() {
@@ -9508,7 +9500,6 @@ var require_app = __commonJS({
     }
     function handleRestart() {
       setSelectedPort(null);
-      setSelectedFirmwareFile(null);
       setCurrentStep(1);
       hideRestart();
       hideCopyHelp();
@@ -9543,10 +9534,6 @@ var require_app = __commonJS({
       cancelFlashBtn.addEventListener("click", cancelFlash);
       copyHelpBtn.addEventListener("click", copyHelp);
       restartBtn.addEventListener("click", handleRestart);
-      firmwareFileInput.addEventListener("change", onFirmwareFileSelected);
-      toggleFileInputBtn.addEventListener("click", () => {
-        firmwareFileInput.classList.toggle("hidden");
-      });
     }
     init();
   }

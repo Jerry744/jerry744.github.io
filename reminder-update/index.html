@@ -45,11 +45,7 @@
 
         <section class="step-card hidden" id="step3Card">
           <h2 class="step-title">第三步：刷入固件</h2>
-          <p class="step-desc">默认使用在线内置固件；若在线读取失败，再选择本地 .bin 固件文件。</p>
-          <div class="actions">
-            <button id="toggleFileInputBtn" type="button">上传本地固件（可选）</button>
-            <input id="firmwareFileInput" class="hidden" type="file" accept=".bin,application/octet-stream" />
-          </div>
+          <p class="step-desc">将自动从官网动态读取最新固件，无需手动下载或上传本地 .bin 文件。</p>
           <div class="status" id="statusText">状态：等待开始</div>
           <div class="actions">
             <button id="flashBtn">开始刷入固件</button>

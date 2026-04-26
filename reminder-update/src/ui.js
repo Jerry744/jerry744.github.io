@@ -12,8 +12,6 @@ const flashBtn = document.getElementById("flashBtn");
 const cancelFlashBtn = document.getElementById("cancelFlashBtn");
 const copyHelpBtn = document.getElementById("copyHelpBtn");
 const restartBtn = document.getElementById("restartBtn");
-const firmwareFileInput = document.getElementById("firmwareFileInput");
-const toggleFileInputBtn = document.getElementById("toggleFileInputBtn");
 const progressBar = document.getElementById("progressBar");
 const progressText = document.getElementById("progressText");
 const statusText = document.getElementById("statusText");
@@ -46,14 +44,6 @@ export function getSelectedPort() {
 
 export function setSelectedPort(port) {
   window.__selectedPort = port;
-}
-
-export function getSelectedFirmwareFile() {
-  return window.__selectedFirmwareFile ?? null;
-}
-
-export function setSelectedFirmwareFile(file) {
-  window.__selectedFirmwareFile = file;
 }
 
 export const terminal = {
@@ -177,10 +167,6 @@ export function hideDoneStatus() {
   doneStatusText.classList.add("hidden");
 }
 
-export function toggleFirmwareFileInput() {
-  firmwareFileInput.classList.toggle("hidden");
-}
-
 export {
   prevStepBtn,
   nextStepBtn,
@@ -189,8 +175,6 @@ export {
   cancelFlashBtn,
   copyHelpBtn,
   restartBtn,
-  firmwareFileInput,
-  toggleFileInputBtn,
   browserStatusText,
   portStatusText,
   statusText,

@@ -14,7 +14,6 @@ import {
   hideCopyHelp,
   hideDoneStatus,
   setSelectedPort,
-  setSelectedFirmwareFile,
   getSelectedPort,
   setProgress,
   portStatusText,
@@ -27,16 +26,8 @@ import {
   cancelFlashBtn,
   copyHelpBtn,
   restartBtn,
-  firmwareFileInput,
-  toggleFileInputBtn,
 } from "./ui.js";
-import {
-  doFlash,
-  cancelFlash,
-  selectPort,
-  copyHelp,
-  onFirmwareFileSelected,
-} from "./flash.js";
+import { doFlash, cancelFlash, selectPort, copyHelp } from "./flash.js";
 
 function canGoToStep(step) {
   if (step === 2) return browserSupported();
@@ -73,7 +64,6 @@ async function handleSelectPort() {
 
 function handleRestart() {
   setSelectedPort(null);
-  setSelectedFirmwareFile(null);
   setCurrentStep(1);
   hideRestart();
   hideCopyHelp();
@@ -111,10 +101,6 @@ function init() {
   cancelFlashBtn.addEventListener("click", cancelFlash);
   copyHelpBtn.addEventListener("click", copyHelp);
   restartBtn.addEventListener("click", handleRestart);
-  firmwareFileInput.addEventListener("change", onFirmwareFileSelected);
-  toggleFileInputBtn.addEventListener("click", () => {
-    firmwareFileInput.classList.toggle("hidden");
-  });
 }
 
 init();
