@@ -9,10 +9,10 @@ function setStatusText(el, text) {
 }
 
 function isChineseLanguage() {
-  const locales = Array.isArray(navigator.languages) && navigator.languages.length > 0
-    ? navigator.languages
-    : [navigator.language];
-  return locales.some((locale) => (locale ?? "").toLowerCase().startsWith("zh"));
+  const preferredLocale = Array.isArray(navigator.languages) && navigator.languages.length > 0
+    ? navigator.languages[0]
+    : navigator.language;
+  return (preferredLocale ?? "").toLowerCase().startsWith("zh");
 }
 
 async function initBootstrap() {

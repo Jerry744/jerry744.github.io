@@ -136,11 +136,10 @@ function isChineseLocale(locale) {
 }
 
 export function detectLanguageToken() {
-  const localeList = Array.isArray(navigator.languages) && navigator.languages.length > 0
-    ? navigator.languages
-    : [navigator.language];
-  const hasChinese = localeList.some(isChineseLocale);
-  languageToken = hasChinese ? LANGUAGE.ZH : LANGUAGE.EN;
+  const preferredLocale = Array.isArray(navigator.languages) && navigator.languages.length > 0
+    ? navigator.languages[0]
+    : navigator.language;
+  languageToken = isChineseLocale(preferredLocale) ? LANGUAGE.ZH : LANGUAGE.EN;
   return languageToken;
 }
 
