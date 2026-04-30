@@ -32,14 +32,207 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
 ));
 
 // src/constants.js
-var FIRMWARE_MANIFEST_PATH, FIRMWARE_FALLBACK_PATH, FIXED_BAUDRATE, TOTAL_STEPS, FLASH_TIMEOUT_MS;
+var FIXED_BAUDRATE, TOTAL_STEPS, FLASH_TIMEOUT_MS;
 var init_constants = __esm({
   "src/constants.js"() {
-    FIRMWARE_MANIFEST_PATH = "/firmware/latest.json";
-    FIRMWARE_FALLBACK_PATH = "/firmware/latest.bin";
     FIXED_BAUDRATE = 2e6;
     TOTAL_STEPS = 3;
     FLASH_TIMEOUT_MS = 3e4;
+  }
+});
+
+// src/i18n.js
+function isChineseLocale(locale) {
+  if (!locale) return false;
+  return locale.toLowerCase().startsWith("zh");
+}
+function detectLanguageToken() {
+  const localeList = Array.isArray(navigator.languages) && navigator.languages.length > 0 ? navigator.languages : [navigator.language];
+  const hasChinese = localeList.some(isChineseLocale);
+  languageToken = hasChinese ? LANGUAGE.ZH : LANGUAGE.EN;
+  return languageToken;
+}
+function getLanguageToken() {
+  return languageToken;
+}
+function setLanguageToken(token) {
+  languageToken = token === LANGUAGE.ZH ? LANGUAGE.ZH : LANGUAGE.EN;
+  return languageToken;
+}
+function t(key, ...args) {
+  const value = MESSAGES[languageToken][key];
+  if (typeof value === "function") {
+    return value(...args);
+  }
+  return value ?? key;
+}
+function setText(selector, value) {
+  const element = document.querySelector(selector);
+  if (element) {
+    element.textContent = value;
+  }
+}
+function applyPageI18n() {
+  document.documentElement.lang = languageToken;
+  setText("title", t("pageTitle"));
+  setText(".eyebrow", t("eyebrow"));
+  setText("h1", t("pageTitle"));
+  setText("#browserErrorCard h2", t("browserErrorTitle"));
+  setText("#browserErrorCard p:nth-of-type(1)", t("browserErrorDesc"));
+  setText("#browserErrorCard p:nth-of-type(2)", t("supportWechat"));
+  setText("#browserErrorCard a", t("downloadEdge"));
+  setText("#step1Card .step-title", t("step1Title"));
+  setText("#step1Card .step-desc", t("step1Desc"));
+  setText("#step2Card .step-title", t("step2Title"));
+  setText("#step2Card .step-desc", t("step2Desc"));
+  setText("#selectPortBtn", t("selectPortBtn"));
+  setText("#step3Card .step-title", t("step3Title"));
+  setText("#step3Card .step-desc", t("step3Desc"));
+  setText("#flashBtn", t("flashBtnIdle"));
+  setText("#cancelFlashBtn", t("cancelFlashBtn"));
+  setText("#copyHelpBtn", t("copyHelpBtn"));
+  setText("#restartBtn", t("restartBtn"));
+  setText(".tips", t("tips"));
+  setText("#prevStepBtn", t("prevBtn"));
+  setText("#nextStepBtn", t("nextBtn"));
+  const stepImage = document.querySelector("#step1Card .step-illustration");
+  if (stepImage) {
+    stepImage.alt = t("step1ImageAlt");
+  }
+  setText("#browserStatusText", `${t("statusPrefix")}${t("browserChecking")}`);
+  setText("#portStatusText", `${t("statusPrefix")}${t("notSelectedPort")}`);
+  setText("#statusText", `${t("statusPrefix")}${t("waitingStart")}`);
+  setText("#progressText", `${t("progressPrefix")}0%`);
+  setText("#doneStatusText", `${t("donePrefix")} ${t("waitingStart")}`);
+  const langEnBtn = document.getElementById("langEnBtn");
+  const langZhBtn = document.getElementById("langZhBtn");
+  langEnBtn?.classList.toggle("active", languageToken === LANGUAGE.EN);
+  langZhBtn?.classList.toggle("active", languageToken === LANGUAGE.ZH);
+}
+var LANGUAGE, languageToken, MESSAGES;
+var init_i18n = __esm({
+  "src/i18n.js"() {
+    LANGUAGE = {
+      ZH: "zh-CN",
+      EN: "en"
+    };
+    languageToken = LANGUAGE.EN;
+    MESSAGES = {
+      [LANGUAGE.ZH]: {
+        pageTitle: "\u66F4\u65B0\u56FA\u4EF6\uFF0C\u89E3\u9501 Halfmind Reminder \u7684 AI \u529F\u80FD",
+        eyebrow: "Halfmind Reminder \u56FA\u4EF6\u5347\u7EA7",
+        browserErrorTitle: "\u6D4F\u89C8\u5668\u4E0D\u652F\u6301",
+        browserErrorDesc: "\u5728\u7EBF\u5237\u5199\u529F\u80FD\u9700\u8981\u4F7F\u7528 Chrome \u6216 Edge \u6D4F\u89C8\u5668\u7684\u6700\u65B0\u7248\u672C\u3002\u8BF7\u4E0B\u8F7D\u652F\u6301\u7684\u6D4F\u89C8\u5668\u540E\u91CD\u65B0\u6253\u5F00\u672C\u9875\u9762\u3002",
+        supportWechat: "\u8BF7\u52A0\u5FAE\u4FE1halfmind-kaike\u83B7\u53D6\u4E00\u5BF9\u4E00\u5E2E\u52A9",
+        downloadEdge: "\u4E0B\u8F7D Edge",
+        onboardingStep: (step, total) => `\u7B2C ${step} / ${total} \u6B65`,
+        step1Title: "\u7B2C\u4E00\u6B65\uFF1A\u8FDE\u63A5\u8BBE\u5907",
+        step1Desc: "\u4F7F\u7528\u9644\u5E26\u78C1\u5438\u6570\u636E\u7EBF\u8FDE\u63A5\u8BBE\u5907\uFF0C\u5982\u56FE\u793A\u65B9\u5411\u3002\u8BF7\u52A0\u5FAE\u4FE1halfmind-kaike\u83B7\u53D6\u4E00\u5BF9\u4E00\u5E2E\u52A9\u3002",
+        step1ImageAlt: "\u78C1\u5438\u6570\u636E\u7EBF\u8FDE\u63A5\u8BBE\u5907\u65B9\u5411\u793A\u610F\u56FE",
+        step2Title: "\u7B2C\u4E8C\u6B65\uFF1A\u9009\u62E9\u4E32\u53E3",
+        step2Desc: "\u70B9\u51FB\u4E0B\u65B9\u6309\u94AE\u540E\uFF0C\u8BF7\u5728\u7CFB\u7EDF\u5F39\u7A97\u91CC\u9009\u62E9\u4F60\u7684\u8BBE\u5907\u7AEF\u53E3\uFF08\u901A\u5E38\u4F1A\u663E\u793A\u4E3A USB Serial / USB \u4E32\u53E3 \u7B49\u540D\u79F0\uFF0C\u9002\u7528\u4E8E macOS \u548C Windows\uFF09\u3002",
+        selectPortBtn: "\u9009\u62E9\u4E32\u53E3",
+        step3Title: "\u7B2C\u4E09\u6B65\uFF1A\u5237\u5165\u56FA\u4EF6",
+        step3Desc: "\u7CFB\u7EDF\u4F1A\u6839\u636E\u8BED\u8A00\u81EA\u52A8\u9009\u62E9\u56FA\u4EF6\uFF0C\u65E0\u9700\u624B\u52A8\u4E0B\u8F7D\u6216\u4E0A\u4F20\u672C\u5730 .bin \u6587\u4EF6\u3002",
+        flashBtnIdle: "\u5F00\u59CB\u5237\u5165\u56FA\u4EF6",
+        flashBtnBusy: "\u6B63\u5728\u5237\u5165...",
+        cancelFlashBtn: "\u53D6\u6D88\u5237\u5199",
+        copyHelpBtn: "\u590D\u5236\u6545\u969C\u6392\u67E5\u6B65\u9AA4",
+        restartBtn: "\u91CD\u65B0\u5347\u7EA7\u53E6\u4E00\u53F0\u8BBE\u5907",
+        tips: "\u64CD\u4F5C\u5EFA\u8BAE\uFF1A\u5347\u7EA7\u671F\u95F4\u8BF7\u52FF\u65AD\u5F00\u6570\u636E\u7EBF\uFF1B\u5982\u679C\u5931\u8D25\uFF0C\u5148\u91CD\u542F\u8BBE\u5907\u540E\u518D\u8BD5\u4E00\u6B21\u3002",
+        prevBtn: "\u8FD4\u56DE",
+        nextBtn: "\u4E0B\u4E00\u6B65",
+        statusPrefix: "\u72B6\u6001\uFF1A",
+        progressPrefix: "\u8FDB\u5EA6\uFF1A",
+        donePrefix: "\u5B8C\u6210\uFF1A",
+        waitingStart: "\u7B49\u5F85\u5F00\u59CB",
+        browserChecking: "\u6D4F\u89C8\u5668\u68C0\u67E5\u4E2D...",
+        notSelectedPort: "\u5C1A\u672A\u9009\u62E9\u4E32\u53E3",
+        browserNotSupportedNext: "\u6D4F\u89C8\u5668\u4E0D\u652F\u6301\uFF0C\u65E0\u6CD5\u8FDB\u5165\u4E0B\u4E00\u6B65\u3002",
+        selectPortInStep2: "\u8BF7\u5148\u5728\u7B2C\u4E8C\u6B65\u9009\u62E9\u4E32\u53E3",
+        selectPortDialogHint: "\u8BF7\u5148\u70B9\u51FB\u201C\u9009\u62E9\u4E32\u53E3\u201D\u5E76\u5728\u5F39\u7A97\u4E2D\u9009\u4E2D\u8BBE\u5907\u7AEF\u53E3\u3002",
+        browserNotSupportedLong: "\u6D4F\u89C8\u5668\u4E0D\u652F\u6301\u5728\u7EBF\u5237\u5199\uFF0C\u8BF7\u4F7F\u7528\u684C\u9762\u7248 Chrome \u6216 Edge \u6253\u5F00\u672C\u9875\u9762\u3002",
+        browserCheckFailed: "\u6D4F\u89C8\u5668\u68C0\u67E5\u672A\u901A\u8FC7",
+        browserCheckPassed: "\u6D4F\u89C8\u5668\u68C0\u67E5\u901A\u8FC7\uFF0C\u53EF\u4EE5\u8FDB\u5165\u4E0B\u4E00\u6B65\u3002",
+        pleaseSelectPortFirst: "\u8BF7\u5148\u5728\u7B2C\u4E8C\u6B65\u9009\u62E9\u4E32\u53E3",
+        preparingConnection: "\u6B63\u5728\u51C6\u5907\u8FDE\u63A5...",
+        loadedFirmware: "\u5DF2\u52A0\u8F7D\u56FA\u4EF6",
+        connectingDevice: "\u6B63\u5728\u8FDE\u63A5\u8BBE\u5907...",
+        connectTimeout: "\u8FDE\u63A5\u8BBE\u5907\u8D85\u65F6\uFF0C\u8BF7\u68C0\u67E5\u8BBE\u5907\u662F\u5426\u5DF2\u6B63\u786E\u8FDE\u63A5\u5E76\u53EF\u54CD\u5E94\u3002",
+        chipConnected: "\u5DF2\u8FDE\u63A5\u82AF\u7247",
+        flashCancelled: "\u5237\u5199\u5DF2\u53D6\u6D88",
+        flashingFirmware: "\u6B63\u5728\u5237\u5199\u56FA\u4EF6\uFF0C\u8BF7\u52FF\u65AD\u5F00\u8FDE\u63A5...",
+        flashDone: "\u5237\u5199\u5B8C\u6210\uFF0C\u8BBE\u5907\u5DF2\u81EA\u52A8\u91CD\u542F",
+        firmwareUpgradeDone: "\u5B8C\u6210\uFF1A\u56FA\u4EF6\u5347\u7EA7\u5DF2\u5B8C\u6210\u3002\u73B0\u5728\u53EF\u4EE5\u65AD\u5F00\u8BBE\u5907\u8FDE\u63A5\u3002",
+        flashSuccess: "\u5237\u5199\u6210\u529F\u3002",
+        flashFailed: "\u5237\u5199\u5931\u8D25",
+        errorPrefix: "\u9519\u8BEF",
+        disconnectWarning: "\u65AD\u5F00\u4E32\u53E3\u65F6\u51FA\u73B0\u63D0\u793A",
+        portSelected: "\u5DF2\u9009\u62E9\u4E32\u53E3\uFF0C\u53EF\u8FDB\u5165\u7B2C\u4E09\u6B65\u5237\u5199\u3002",
+        portReady: "\u4E32\u53E3\u5DF2\u51C6\u5907\u5C31\u7EEA",
+        portNotSelected: "\u672A\u9009\u62E9\u4E32\u53E3",
+        troubleshootingHelp: "\u6545\u969C\u6392\u67E5\u5EFA\u8BAE\uFF1A\n1. \u4F7F\u7528 Chrome \u6216 Edge \u6700\u65B0\u7248\u672C\u3002\n2. \u66F4\u6362\u652F\u6301\u6570\u636E\u4F20\u8F93\u7684 USB \u7EBF\u3002\n3. \u5173\u95ED\u4E32\u53E3\u8C03\u8BD5\u5DE5\u5177\u540E\u91CD\u8BD5\u3002\n4. \u65AD\u7535\u91CD\u542F\u8BBE\u5907\u540E\uFF0C\u518D\u6B21\u8FDE\u63A5\u5237\u5199\u3002",
+        helpCopied: "\u6545\u969C\u6392\u67E5\u6B65\u9AA4\u5DF2\u590D\u5236",
+        clipboardNotAllowed: "\u5F53\u524D\u6D4F\u89C8\u5668\u4E0D\u5141\u8BB8\u526A\u8D34\u677F\u5199\u5165\uFF0C\u8BF7\u624B\u52A8\u590D\u5236\u6545\u969C\u6392\u67E5\u6B65\u9AA4"
+      },
+      [LANGUAGE.EN]: {
+        pageTitle: "Update firmware to unlock Halfmind Reminder AI features",
+        eyebrow: "Halfmind Reminder Firmware Update",
+        browserErrorTitle: "Browser Not Supported",
+        browserErrorDesc: "Online flashing requires the latest desktop Chrome or Edge. Please install a supported browser and reopen this page.",
+        supportWechat: "Add WeChat halfmind-kaike for one-on-one help",
+        downloadEdge: "Download Edge",
+        onboardingStep: (step, total) => `Step ${step} / ${total}`,
+        step1Title: "Step 1: Connect Device",
+        step1Desc: "Connect the device with the magnetic data cable in the illustrated direction. Add WeChat halfmind-kaike for one-on-one help.",
+        step1ImageAlt: "Illustration of magnetic data cable connection direction",
+        step2Title: "Step 2: Select Serial Port",
+        step2Desc: "Click the button below, then choose your device port in the system dialog (usually shown as USB Serial, on macOS and Windows).",
+        selectPortBtn: "Select Serial Port",
+        step3Title: "Step 3: Flash Firmware",
+        step3Desc: "Firmware is selected automatically by language. No manual .bin download or upload is required.",
+        flashBtnIdle: "Start Flashing",
+        flashBtnBusy: "Flashing...",
+        cancelFlashBtn: "Cancel",
+        copyHelpBtn: "Copy Troubleshooting Steps",
+        restartBtn: "Flash Another Device",
+        tips: "Tip: Keep the cable connected during upgrade. If it fails, restart the device and try again.",
+        prevBtn: "Back",
+        nextBtn: "Next",
+        statusPrefix: "Status:",
+        progressPrefix: "Progress:",
+        donePrefix: "Done:",
+        waitingStart: "Waiting to start",
+        browserChecking: "Checking browser support...",
+        notSelectedPort: "No serial port selected",
+        browserNotSupportedNext: "Browser is not supported. Cannot continue.",
+        selectPortInStep2: "Please select a serial port in step 2 first",
+        selectPortDialogHint: "Click Select Serial Port and choose your device in the popup.",
+        browserNotSupportedLong: "Browser does not support online flashing. Please use desktop Chrome or Edge.",
+        browserCheckFailed: "Browser check failed",
+        browserCheckPassed: "Browser check passed. You can continue.",
+        pleaseSelectPortFirst: "Please select a serial port in step 2 first",
+        preparingConnection: "Preparing connection...",
+        loadedFirmware: "Firmware loaded",
+        connectingDevice: "Connecting to device...",
+        connectTimeout: "Device connection timed out. Check cable and device response.",
+        chipConnected: "Chip connected",
+        flashCancelled: "Flashing canceled",
+        flashingFirmware: "Flashing firmware. Do not disconnect...",
+        flashDone: "Flashing completed. Device restarted automatically",
+        firmwareUpgradeDone: "Done: Firmware upgrade completed. You can disconnect now.",
+        flashSuccess: "Flashing succeeded.",
+        flashFailed: "Flashing failed",
+        errorPrefix: "Error",
+        disconnectWarning: "Disconnect warning",
+        portSelected: "Serial port selected. You can proceed to step 3.",
+        portReady: "Serial port is ready",
+        portNotSelected: "Serial port not selected",
+        troubleshootingHelp: "Troubleshooting:\n1. Use latest Chrome or Edge.\n2. Try a USB data cable.\n3. Close serial monitor tools and retry.\n4. Power-cycle device and retry.",
+        helpCopied: "Troubleshooting steps copied",
+        clipboardNotAllowed: "Clipboard write is blocked in this browser. Please copy manually."
+      }
+    };
   }
 });
 
@@ -60,17 +253,17 @@ function setSelectedPort(port) {
   window.__selectedPort = port;
 }
 function setStatus(text, type = "") {
-  statusText.textContent = `\u72B6\u6001\uFF1A${text}`;
+  statusText.textContent = `${t("statusPrefix")}${text}`;
   statusText.className = `status ${type}`.trim();
 }
 function setSimpleStatus(el, text, type = "") {
-  el.textContent = `\u72B6\u6001\uFF1A${text}`;
+  el.textContent = `${t("statusPrefix")}${text}`;
   el.className = `status ${type}`.trim();
 }
 function setProgress(percent) {
   const safe = Math.max(0, Math.min(100, percent));
   progressBar.style.width = `${safe}%`;
-  progressText.textContent = `\u8FDB\u5EA6\uFF1A${safe.toFixed(1)}%`;
+  progressText.textContent = `${t("progressPrefix")}${safe.toFixed(1)}%`;
 }
 function browserSupported() {
   const hasSerial = typeof navigator !== "undefined" && "serial" in navigator;
@@ -83,10 +276,10 @@ function lockUI(locked) {
   prevStepBtn.disabled = locked || currentStep === 1;
   nextStepBtn.disabled = locked || currentStep === 3;
   if (locked) {
-    flashBtn.textContent = "\u6B63\u5728\u5237\u5165...";
+    flashBtn.textContent = t("flashBtnBusy");
     cancelFlashBtn.classList.remove("hidden");
   } else {
-    flashBtn.textContent = "\u5F00\u59CB\u5237\u5165\u56FA\u4EF6";
+    flashBtn.textContent = t("flashBtnIdle");
     cancelFlashBtn.classList.add("hidden");
   }
 }
@@ -97,7 +290,7 @@ function updateStepUI() {
     card.classList.toggle("hidden", stepNumber !== currentStep);
   });
   const waitingPortSelection = currentStep === 2 && !getSelectedPort();
-  onboardingProgress.textContent = `\u7B2C ${currentStep} / 3 \u6B65`;
+  onboardingProgress.textContent = t("onboardingStep", currentStep, 3);
   prevStepBtn.disabled = busy || currentStep === 1;
   nextStepBtn.disabled = busy || currentStep === 3;
   nextStepBtn.classList.toggle("primary", !waitingPortSelection && currentStep !== 3);
@@ -148,6 +341,7 @@ function hideDoneStatus() {
 var onboardingProgress, step1Card, step2Card, step3Card, prevStepBtn, nextStepBtn, browserStatusText, portStatusText, selectPortBtn, doneStatusText, flashBtn, cancelFlashBtn, copyHelpBtn, restartBtn, progressBar, progressText, statusText, logArea, browserErrorCard, mainFlow, busy, currentStep, terminal;
 var init_ui = __esm({
   "src/ui.js"() {
+    init_i18n();
     onboardingProgress = document.getElementById("onboardingProgress");
     step1Card = document.getElementById("step1Card");
     step2Card = document.getElementById("step2Card");
@@ -1123,11 +1317,11 @@ var init_pako_esm = __esm({
     };
     crcTable = new Uint32Array(makeTable());
     crc32 = (crc, buf, len, pos) => {
-      const t = crcTable;
+      const t2 = crcTable;
       const end = pos + len;
       crc ^= -1;
       for (let i = pos; i < end; i++) {
-        crc = crc >>> 8 ^ t[(crc ^ buf[i]) & 255];
+        crc = crc >>> 8 ^ t2[(crc ^ buf[i]) & 255];
       }
       return crc ^ -1;
     };
@@ -9186,9 +9380,9 @@ any other hardware connected to IOs.`);
             }
           }
           d = /* @__PURE__ */ new Date();
-          const t = d.getTime() - t1;
+          const t2 = d.getTime() - t1;
           if (options.compress) {
-            this.info("Wrote " + uncsize + " bytes (" + bytesSent + " compressed) at 0x" + address.toString(16) + " in " + t / 1e3 + " seconds.");
+            this.info("Wrote " + uncsize + " bytes (" + bytesSent + " compressed) at 0x" + address.toString(16) + " in " + t2 / 1e3 + " seconds.");
           }
           if (calcmd5) {
             this.info("File  md5: " + calcmd5);
@@ -9308,33 +9502,44 @@ var init_lib = __esm({
 });
 
 // src/flash.js
+function getFirmwareRegexByLanguage() {
+  if (getLanguageToken() === "zh-CN") {
+    return /^\d+\.\d+\.\d+_R01C_zh-CN_ota\.bin$/;
+  }
+  return /^\d+\.\d+\.\d+_R01C_EN_ota\.bin$/;
+}
+async function resolveFirmwarePath() {
+  const firmwareDirURL = new URL("/firmware/", window.location.origin).toString();
+  const dirRes = await fetch(firmwareDirURL, { cache: "no-store" });
+  if (!dirRes.ok) {
+    throw new Error(`Cannot read firmware directory: ${firmwareDirURL}`);
+  }
+  const html = await dirRes.text();
+  const fileNameRegex = /href=["']([^"']+\.bin)["']/gi;
+  const candidates = [];
+  let match = fileNameRegex.exec(html);
+  while (match) {
+    const rawName = decodeURIComponent(match[1].split("/").pop() ?? "");
+    candidates.push(rawName);
+    match = fileNameRegex.exec(html);
+  }
+  const rule = getFirmwareRegexByLanguage();
+  const matched = candidates.find((name) => rule.test(name));
+  if (!matched) {
+    throw new Error(`No firmware matched rule: ${rule}`);
+  }
+  return new URL(matched, firmwareDirURL).toString();
+}
 async function getFirmwareData() {
-  const manifestURL = new URL(FIRMWARE_MANIFEST_PATH, window.location.origin).toString();
-  const fallbackURL = new URL(FIRMWARE_FALLBACK_PATH, window.location.origin).toString();
-  const candidateURLs = [];
-  try {
-    const manifestRes = await fetch(manifestURL, { cache: "no-store" });
-    if (manifestRes.ok) {
-      const manifest = await manifestRes.json();
-      if (manifest?.firmwareUrl) {
-        candidateURLs.push(new URL(manifest.firmwareUrl, manifestURL).toString());
-      }
-    }
-  } catch (_error) {
-    terminal.writeLine(`\u63D0\u793A\uFF1A\u8BFB\u53D6\u56FA\u4EF6\u6E05\u5355\u5931\u8D25\uFF0C\u5C06\u56DE\u9000\u5230\u9ED8\u8BA4\u5730\u5740\uFF1A${manifestURL}`);
+  const firmwareURL = await resolveFirmwarePath();
+  const res = await fetch(firmwareURL, { cache: "no-store" });
+  if (!res.ok) {
+    throw new Error(`Firmware download failed: ${firmwareURL}`);
   }
-  candidateURLs.push(fallbackURL);
-  for (const firmwareURL of candidateURLs) {
-    const res = await fetch(firmwareURL, { cache: "no-store" });
-    if (!res.ok) continue;
-    return {
-      data: new Uint8Array(await res.arrayBuffer()),
-      label: `\u5728\u7EBF\u56FA\u4EF6\uFF1A${firmwareURL}`
-    };
-  }
-  throw new Error(
-    `\u65E0\u6CD5\u8BFB\u53D6\u5728\u7EBF\u56FA\u4EF6\u3002\u8BF7\u786E\u8BA4\u5DF2\u5728 ${manifestURL} \u63D0\u4F9B firmwareUrl\uFF0C\u6216\u5728 ${fallbackURL} \u4E0A\u4F20 latest.bin\u3002`
-  );
+  return {
+    data: new Uint8Array(await res.arrayBuffer()),
+    label: firmwareURL
+  };
 }
 function withTimeout(promise, ms, message) {
   return Promise.race([
@@ -9347,7 +9552,7 @@ function withTimeout(promise, ms, message) {
 async function doFlash() {
   if (isBusy()) return;
   if (!getSelectedPort()) {
-    setStatus("\u8BF7\u5148\u5728\u7B2C\u4E8C\u6B65\u9009\u62E9\u4E32\u53E3", "error");
+    setStatus(t("pleaseSelectPortFirst"), "error");
     return;
   }
   abortController = new AbortController();
@@ -9357,14 +9562,14 @@ async function doFlash() {
   hideCopyHelp();
   setProgress(0);
   hideDoneStatus();
-  setStatus("\u6B63\u5728\u51C6\u5907\u8FDE\u63A5...", "");
+  setStatus(t("preparingConnection"), "");
   terminal.clean();
   showLog();
   let transport = null;
   try {
     const firmwarePayload = await getFirmwareData();
     const firmware = firmwarePayload.data;
-    terminal.writeLine(`\u5DF2\u52A0\u8F7D\u56FA\u4EF6\uFF1A${firmwarePayload.label}\uFF08${firmware.length} bytes\uFF09`);
+    terminal.writeLine(`${t("loadedFirmware")}: ${firmwarePayload.label} (${firmware.length} bytes)`);
     transport = new Transport(getSelectedPort(), true);
     const loader = new ESPLoader({
       transport,
@@ -9372,17 +9577,17 @@ async function doFlash() {
       terminal,
       debugLogging: false
     });
-    setStatus("\u6B63\u5728\u8FDE\u63A5\u8BBE\u5907...", "");
+    setStatus(t("connectingDevice"), "");
     const chip = await withTimeout(
       loader.main(),
       FLASH_TIMEOUT_MS,
-      "\u8FDE\u63A5\u8BBE\u5907\u8D85\u65F6\uFF0C\u8BF7\u68C0\u67E5\u8BBE\u5907\u662F\u5426\u5DF2\u6B63\u786E\u8FDE\u63A5\u5E76\u53EF\u54CD\u5E94\u3002"
+      t("connectTimeout")
     );
-    terminal.writeLine(`\u5DF2\u8FDE\u63A5\u82AF\u7247\uFF1A${chip}`);
+    terminal.writeLine(`${t("chipConnected")}: ${chip}`);
     if (signal.aborted) {
-      throw new Error("\u5237\u5199\u5DF2\u53D6\u6D88");
+      throw new Error(t("flashCancelled"));
     }
-    setStatus("\u6B63\u5728\u5237\u5199\u56FA\u4EF6\uFF0C\u8BF7\u52FF\u65AD\u5F00\u8FDE\u63A5...", "");
+    setStatus(t("flashingFirmware"), "");
     await loader.writeFlash({
       fileArray: [{ data: firmware, address: 0 }],
       flashMode: "keep",
@@ -9396,19 +9601,19 @@ async function doFlash() {
     });
     await loader.after("hard_reset");
     setProgress(100);
-    setStatus("\u5237\u5199\u5B8C\u6210\uFF0C\u8BBE\u5907\u5DF2\u81EA\u52A8\u91CD\u542F", "ok");
-    showDoneStatus("\u5B8C\u6210\uFF1A\u56FA\u4EF6\u5347\u7EA7\u5DF2\u5B8C\u6210\u3002\u73B0\u5728\u53EF\u4EE5\u65AD\u5F00\u8BBE\u5907\u8FDE\u63A5\u3002", "ok");
-    terminal.writeLine("\u5237\u5199\u6210\u529F\u3002");
+    setStatus(t("flashDone"), "ok");
+    showDoneStatus(t("firmwareUpgradeDone"), "ok");
+    terminal.writeLine(t("flashSuccess"));
     showRestart();
     hideCopyHelp();
   } catch (err2) {
     const msg = err2 instanceof Error ? err2.message : String(err2);
-    if (msg.includes("\u53D6\u6D88") || msg.includes("aborted")) {
-      setStatus("\u5237\u5199\u5DF2\u53D6\u6D88", "");
-      terminal.writeLine("\u5237\u5199\u5DF2\u53D6\u6D88\u3002");
+    if (msg.includes("aborted") || msg === t("flashCancelled")) {
+      setStatus(t("flashCancelled"), "");
+      terminal.writeLine(t("flashCancelled"));
     } else {
-      setStatus(`\u5237\u5199\u5931\u8D25\uFF1A${msg}`, "error");
-      terminal.writeLine(`\u9519\u8BEF\uFF1A${msg}`);
+      setStatus(`${t("flashFailed")}: ${msg}`, "error");
+      terminal.writeLine(`${t("errorPrefix")}: ${msg}`);
       showCopyHelp();
     }
     showLog();
@@ -9417,7 +9622,7 @@ async function doFlash() {
       try {
         await transport.disconnect();
       } catch (e) {
-        terminal.writeLine(`\u65AD\u5F00\u4E32\u53E3\u65F6\u51FA\u73B0\u63D0\u793A\uFF1A${String(e)}`);
+        terminal.writeLine(`${t("disconnectWarning")}: ${String(e)}`);
       }
     }
     lockUI(false);
@@ -9434,23 +9639,23 @@ async function selectPort() {
   try {
     const port = await navigator.serial.requestPort();
     setSelectedPort(port);
-    setSimpleStatus(portStatusText, "\u5DF2\u9009\u62E9\u4E32\u53E3\uFF0C\u53EF\u8FDB\u5165\u7B2C\u4E09\u6B65\u5237\u5199\u3002", "ok");
-    setStatus("\u4E32\u53E3\u5DF2\u51C6\u5907\u5C31\u7EEA", "");
+    setSimpleStatus(portStatusText, t("portSelected"), "ok");
+    setStatus(t("portReady"), "");
     return true;
   } catch (err2) {
     const msg = err2 instanceof Error ? err2.message : String(err2);
-    setSimpleStatus(portStatusText, `\u672A\u9009\u62E9\u4E32\u53E3\uFF1A${msg}`, "error");
+    setSimpleStatus(portStatusText, `${t("portNotSelected")}: ${msg}`, "error");
     return false;
   }
 }
 async function copyHelp() {
-  const helpText = "\u6545\u969C\u6392\u67E5\u5EFA\u8BAE\uFF1A\n1. \u4F7F\u7528 Chrome \u6216 Edge \u6700\u65B0\u7248\u672C\u3002\n2. \u66F4\u6362\u652F\u6301\u6570\u636E\u4F20\u8F93\u7684 USB \u7EBF\u3002\n3. \u5173\u95ED\u4E32\u53E3\u8C03\u8BD5\u5DE5\u5177\u540E\u91CD\u8BD5\u3002\n4. \u65AD\u7535\u91CD\u542F\u8BBE\u5907\u540E\uFF0C\u518D\u6B21\u8FDE\u63A5\u5237\u5199\u3002";
+  const helpText = t("troubleshootingHelp");
   try {
     await navigator.clipboard.writeText(helpText);
-    setStatus("\u6545\u969C\u6392\u67E5\u6B65\u9AA4\u5DF2\u590D\u5236", "ok");
+    setStatus(t("helpCopied"), "ok");
   } catch (_e) {
     terminal.writeLine(helpText);
-    setStatus("\u5F53\u524D\u6D4F\u89C8\u5668\u4E0D\u5141\u8BB8\u526A\u8D34\u677F\u5199\u5165\uFF0C\u8BF7\u624B\u52A8\u590D\u5236\u6545\u969C\u6392\u67E5\u6B65\u9AA4", "");
+    setStatus(t("clipboardNotAllowed"), "");
   }
 }
 var abortController;
@@ -9458,6 +9663,7 @@ var init_flash = __esm({
   "src/flash.js"() {
     init_lib();
     init_constants();
+    init_i18n();
     init_ui();
     abortController = null;
   }
@@ -9469,6 +9675,7 @@ var require_app = __commonJS({
     init_constants();
     init_ui();
     init_flash();
+    init_i18n();
     function canGoToStep(step) {
       if (step === 2) return browserSupported();
       if (step === 3) return !!getSelectedPort();
@@ -9480,11 +9687,11 @@ var require_app = __commonJS({
         setCurrentStep(next);
         updateStepUI();
       } else if (next === 2 && !browserSupported()) {
-        setSimpleStatus(browserStatusText, "\u6D4F\u89C8\u5668\u4E0D\u652F\u6301\uFF0C\u65E0\u6CD5\u8FDB\u5165\u4E0B\u4E00\u6B65\u3002", "error");
+        setSimpleStatus(browserStatusText, t("browserNotSupportedNext"), "error");
       } else if (next === 3 && !getSelectedPort()) {
-        setSimpleStatus(portStatusText, "\u8BF7\u5148\u70B9\u51FB\u201C\u9009\u62E9\u4E32\u53E3\u201D\u5E76\u5728\u5F39\u7A97\u4E2D\u9009\u4E2D\u8BBE\u5907\u7AEF\u53E3\u3002", "error");
+        setSimpleStatus(portStatusText, t("selectPortDialogHint"), "error");
         highlightSelectPortButton();
-        setStatus("\u8BF7\u5148\u5728\u7B2C\u4E8C\u6B65\u9009\u62E9\u4E32\u53E3", "error");
+        setStatus(t("selectPortInStep2"), "error");
       }
     }
     function goPrevStep() {
@@ -9505,23 +9712,35 @@ var require_app = __commonJS({
       hideCopyHelp();
       hideDoneStatus();
       setProgress(0);
-      setStatus("\u7B49\u5F85\u5F00\u59CB", "");
+      setStatus(t("waitingStart"), "");
       hideLog();
       updateStepUI();
     }
     function init() {
+      detectLanguageToken();
+      applyPageI18n();
+      const langEnBtn = document.getElementById("langEnBtn");
+      const langZhBtn = document.getElementById("langZhBtn");
+      langEnBtn?.addEventListener("click", () => {
+        setLanguageToken("en");
+        applyPageI18n();
+        updateStepUI();
+        setStatus(t("waitingStart"), "");
+      });
+      langZhBtn?.addEventListener("click", () => {
+        setLanguageToken("zh-CN");
+        applyPageI18n();
+        updateStepUI();
+        setStatus(t("waitingStart"), "");
+      });
       if (!browserSupported()) {
         showBrowserError();
-        setSimpleStatus(
-          browserStatusText,
-          "\u6D4F\u89C8\u5668\u4E0D\u652F\u6301\u5728\u7EBF\u5237\u5199\uFF0C\u8BF7\u4F7F\u7528\u684C\u9762\u7248 Chrome \u6216 Edge \u6253\u5F00\u672C\u9875\u9762\u3002",
-          "error"
-        );
-        setStatus("\u6D4F\u89C8\u5668\u68C0\u67E5\u672A\u901A\u8FC7", "error");
+        setSimpleStatus(browserStatusText, t("browserNotSupportedLong"), "error");
+        setStatus(t("browserCheckFailed"), "error");
       } else {
         hideBrowserError();
-        setSimpleStatus(browserStatusText, "\u6D4F\u89C8\u5668\u68C0\u67E5\u901A\u8FC7\uFF0C\u53EF\u4EE5\u8FDB\u5165\u4E0B\u4E00\u6B65\u3002", "ok");
-        setStatus("\u7B49\u5F85\u5F00\u59CB", "");
+        setSimpleStatus(browserStatusText, t("browserCheckPassed"), "ok");
+        setStatus(t("waitingStart"), "");
       }
       hideRestart();
       hideCopyHelp();

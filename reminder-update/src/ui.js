@@ -1,3 +1,5 @@
+import { t } from "./i18n.js";
+
 const onboardingProgress = document.getElementById("onboardingProgress");
 const step1Card = document.getElementById("step1Card");
 const step2Card = document.getElementById("step2Card");
@@ -61,19 +63,19 @@ export const terminal = {
 };
 
 export function setStatus(text, type = "") {
-  statusText.textContent = `状态：${text}`;
+  statusText.textContent = `${t("statusPrefix")}${text}`;
   statusText.className = `status ${type}`.trim();
 }
 
 export function setSimpleStatus(el, text, type = "") {
-  el.textContent = `状态：${text}`;
+  el.textContent = `${t("statusPrefix")}${text}`;
   el.className = `status ${type}`.trim();
 }
 
 export function setProgress(percent) {
   const safe = Math.max(0, Math.min(100, percent));
   progressBar.style.width = `${safe}%`;
-  progressText.textContent = `进度：${safe.toFixed(1)}%`;
+  progressText.textContent = `${t("progressPrefix")}${safe.toFixed(1)}%`;
 }
 
 export function browserSupported() {
@@ -89,10 +91,10 @@ export function lockUI(locked) {
   nextStepBtn.disabled = locked || currentStep === 3;
 
   if (locked) {
-    flashBtn.textContent = "正在刷入...";
+    flashBtn.textContent = t("flashBtnBusy");
     cancelFlashBtn.classList.remove("hidden");
   } else {
-    flashBtn.textContent = "开始刷入固件";
+    flashBtn.textContent = t("flashBtnIdle");
     cancelFlashBtn.classList.add("hidden");
   }
 }
@@ -106,7 +108,7 @@ export function updateStepUI() {
 
   const waitingPortSelection = currentStep === 2 && !getSelectedPort();
 
-  onboardingProgress.textContent = `第 ${currentStep} / 3 步`;
+  onboardingProgress.textContent = t("onboardingStep", currentStep, 3);
   prevStepBtn.disabled = busy || currentStep === 1;
   nextStepBtn.disabled = busy || currentStep === 3;
   nextStepBtn.classList.toggle("primary", !waitingPortSelection && currentStep !== 3);

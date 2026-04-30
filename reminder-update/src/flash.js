@@ -1,10 +1,9 @@
 import { ESPLoader, Transport } from "esptool-js";
 import {
-  FIRMWARE_MANIFEST_PATH,
-  FIRMWARE_FALLBACK_PATH,
   FIXED_BAUDRATE,
   FLASH_TIMEOUT_MS,
 } from "./constants.js";
+import { getLanguageToken, t } from "./i18n.js";
 import {
   terminal,
   setStatus,
@@ -27,37 +26,47 @@ import {
 
 let abortController = null;
 
+function getFirmwareRegexByLanguage() {
+  if (getLanguageToken() === "zh-CN") {
+    return /^\d+\.\d+\.\d+_R01C_zh-CN_ota\.bin$/;
+  }
+  return /^\d+\.\d+\.\d+_R01C_EN_ota\.bin$/;
+}
+
+async function resolveFirmwarePath() {
+  const firmwareDirURL = new URL("/firmware/", window.location.origin).toString();
+  const dirRes = await fetch(firmwareDirURL, { cache: "no-store" });
+  if (!dirRes.ok) {
+    throw new Error(`Cannot read firmware directory: ${firmwareDirURL}`);
+  }
+  const html = await dirRes.text();
+  const fileNameRegex = /href=["']([^"']+\.bin)["']/gi;
+  const candidates = [];
+  let match = fileNameRegex.exec(html);
+  while (match) {
+    const rawName = decodeURIComponent(match[1].split("/").pop() ?? "");
+    candidates.push(rawName);
+    match = fileNameRegex.exec(html);
+  }
+
+  const rule = getFirmwareRegexByLanguage();
+  const matched = candidates.find((name) => rule.test(name));
+  if (!matched) {
+    throw new Error(`No firmware matched rule: ${rule}`);
+  }
+  return new URL(matched, firmwareDirURL).toString();
+}
+
 export async function getFirmwareData() {
-  const manifestURL = new URL(FIRMWARE_MANIFEST_PATH, window.location.origin).toString();
-  const fallbackURL = new URL(FIRMWARE_FALLBACK_PATH, window.location.origin).toString();
-
-  const candidateURLs = [];
-  try {
-    const manifestRes = await fetch(manifestURL, { cache: "no-store" });
-    if (manifestRes.ok) {
-      const manifest = await manifestRes.json();
-      if (manifest?.firmwareUrl) {
-        candidateURLs.push(new URL(manifest.firmwareUrl, manifestURL).toString());
-      }
-    }
-  } catch (_error) {
-    terminal.writeLine(`提示：读取固件清单失败，将回退到默认地址：${manifestURL}`);
+  const firmwareURL = await resolveFirmwarePath();
+  const res = await fetch(firmwareURL, { cache: "no-store" });
+  if (!res.ok) {
+    throw new Error(`Firmware download failed: ${firmwareURL}`);
   }
-
-  candidateURLs.push(fallbackURL);
-
-  for (const firmwareURL of candidateURLs) {
-    const res = await fetch(firmwareURL, { cache: "no-store" });
-    if (!res.ok) continue;
-    return {
-      data: new Uint8Array(await res.arrayBuffer()),
-      label: `在线固件：${firmwareURL}`,
-    };
-  }
-
-  throw new Error(
-    `无法读取在线固件。请确认已在 ${manifestURL} 提供 firmwareUrl，或在 ${fallbackURL} 上传 latest.bin。`
-  );
+  return {
+    data: new Uint8Array(await res.arrayBuffer()),
+    label: firmwareURL,
+  };
 }
 
 function withTimeout(promise, ms, message) {
@@ -72,7 +81,7 @@ function withTimeout(promise, ms, message) {
 export async function doFlash() {
   if (isBusy()) return;
   if (!getSelectedPort()) {
-    setStatus("请先在第二步选择串口", "error");
+    setStatus(t("pleaseSelectPortFirst"), "error");
     return;
   }
 
@@ -84,7 +93,7 @@ export async function doFlash() {
   hideCopyHelp();
   setProgress(0);
   hideDoneStatus();
-  setStatus("正在准备连接...", "");
+  setStatus(t("preparingConnection"), "");
   terminal.clean();
   showLog();
 
@@ -92,7 +101,7 @@ export async function doFlash() {
   try {
     const firmwarePayload = await getFirmwareData();
     const firmware = firmwarePayload.data;
-    terminal.writeLine(`已加载固件：${firmwarePayload.label}（${firmware.length} bytes）`);
+    terminal.writeLine(`${t("loadedFirmware")}: ${firmwarePayload.label} (${firmware.length} bytes)`);
 
     transport = new Transport(getSelectedPort(), true);
     const loader = new ESPLoader({
@@ -102,19 +111,19 @@ export async function doFlash() {
       debugLogging: false,
     });
 
-    setStatus("正在连接设备...", "");
+    setStatus(t("connectingDevice"), "");
     const chip = await withTimeout(
       loader.main(),
       FLASH_TIMEOUT_MS,
-      "连接设备超时，请检查设备是否已正确连接并可响应。"
+      t("connectTimeout")
     );
-    terminal.writeLine(`已连接芯片：${chip}`);
+    terminal.writeLine(`${t("chipConnected")}: ${chip}`);
 
     if (signal.aborted) {
-      throw new Error("刷写已取消");
+      throw new Error(t("flashCancelled"));
     }
 
-    setStatus("正在刷写固件，请勿断开连接...", "");
+    setStatus(t("flashingFirmware"), "");
     await loader.writeFlash({
       fileArray: [{ data: firmware, address: 0x0 }],
       flashMode: "keep",
@@ -129,19 +138,19 @@ export async function doFlash() {
 
     await loader.after("hard_reset");
     setProgress(100);
-    setStatus("刷写完成，设备已自动重启", "ok");
-    showDoneStatus("完成：固件升级已完成。现在可以断开设备连接。", "ok");
-    terminal.writeLine("刷写成功。");
+    setStatus(t("flashDone"), "ok");
+    showDoneStatus(t("firmwareUpgradeDone"), "ok");
+    terminal.writeLine(t("flashSuccess"));
     showRestart();
     hideCopyHelp();
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
-    if (msg.includes("取消") || msg.includes("aborted")) {
-      setStatus("刷写已取消", "");
-      terminal.writeLine("刷写已取消。");
+    if (msg.includes("aborted") || msg === t("flashCancelled")) {
+      setStatus(t("flashCancelled"), "");
+      terminal.writeLine(t("flashCancelled"));
     } else {
-      setStatus(`刷写失败：${msg}`, "error");
-      terminal.writeLine(`错误：${msg}`);
+      setStatus(`${t("flashFailed")}: ${msg}`, "error");
+      terminal.writeLine(`${t("errorPrefix")}: ${msg}`);
       showCopyHelp();
     }
     showLog();
@@ -150,7 +159,7 @@ export async function doFlash() {
       try {
         await transport.disconnect();
       } catch (e) {
-        terminal.writeLine(`断开串口时出现提示：${String(e)}`);
+        terminal.writeLine(`${t("disconnectWarning")}: ${String(e)}`);
       }
     }
     lockUI(false);
@@ -170,28 +179,23 @@ export async function selectPort() {
   try {
     const port = await navigator.serial.requestPort();
     setSelectedPort(port);
-    setSimpleStatus(portStatusText, "已选择串口，可进入第三步刷写。", "ok");
-    setStatus("串口已准备就绪", "");
+    setSimpleStatus(portStatusText, t("portSelected"), "ok");
+    setStatus(t("portReady"), "");
     return true;
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
-    setSimpleStatus(portStatusText, `未选择串口：${msg}`, "error");
+    setSimpleStatus(portStatusText, `${t("portNotSelected")}: ${msg}`, "error");
     return false;
   }
 }
 
 export async function copyHelp() {
-  const helpText =
-    "故障排查建议：\n" +
-    "1. 使用 Chrome 或 Edge 最新版本。\n" +
-    "2. 更换支持数据传输的 USB 线。\n" +
-    "3. 关闭串口调试工具后重试。\n" +
-    "4. 断电重启设备后，再次连接刷写。";
+  const helpText = t("troubleshootingHelp");
   try {
     await navigator.clipboard.writeText(helpText);
-    setStatus("故障排查步骤已复制", "ok");
+    setStatus(t("helpCopied"), "ok");
   } catch (_e) {
     terminal.writeLine(helpText);
-    setStatus("当前浏览器不允许剪贴板写入，请手动复制故障排查步骤", "");
+    setStatus(t("clipboardNotAllowed"), "");
   }
 }

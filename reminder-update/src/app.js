@@ -28,6 +28,12 @@ import {
   restartBtn,
 } from "./ui.js";
 import { doFlash, cancelFlash, selectPort, copyHelp } from "./flash.js";
+import {
+  detectLanguageToken,
+  applyPageI18n,
+  setLanguageToken,
+  t,
+} from "./i18n.js";
 
 function canGoToStep(step) {
   if (step === 2) return browserSupported();
@@ -41,11 +47,11 @@ function goNextStep() {
     setCurrentStep(next);
     updateStepUI();
   } else if (next === 2 && !browserSupported()) {
-    setSimpleStatus(browserStatusText, "浏览器不支持，无法进入下一步。", "error");
+    setSimpleStatus(browserStatusText, t("browserNotSupportedNext"), "error");
   } else if (next === 3 && !getSelectedPort()) {
-    setSimpleStatus(portStatusText, "请先点击“选择串口”并在弹窗中选中设备端口。", "error");
+    setSimpleStatus(portStatusText, t("selectPortDialogHint"), "error");
     highlightSelectPortButton();
-    setStatus("请先在第二步选择串口", "error");
+    setStatus(t("selectPortInStep2"), "error");
   }
 }
 
@@ -69,24 +75,36 @@ function handleRestart() {
   hideCopyHelp();
   hideDoneStatus();
   setProgress(0);
-  setStatus("等待开始", "");
+  setStatus(t("waitingStart"), "");
   hideLog();
   updateStepUI();
 }
 
 function init() {
+  detectLanguageToken();
+  applyPageI18n();
+  const langEnBtn = document.getElementById("langEnBtn");
+  const langZhBtn = document.getElementById("langZhBtn");
+  langEnBtn?.addEventListener("click", () => {
+    setLanguageToken("en");
+    applyPageI18n();
+    updateStepUI();
+    setStatus(t("waitingStart"), "");
+  });
+  langZhBtn?.addEventListener("click", () => {
+    setLanguageToken("zh-CN");
+    applyPageI18n();
+    updateStepUI();
+    setStatus(t("waitingStart"), "");
+  });
   if (!browserSupported()) {
     showBrowserError();
-    setSimpleStatus(
-      browserStatusText,
-      "浏览器不支持在线刷写，请使用桌面版 Chrome 或 Edge 打开本页面。",
-      "error"
-    );
-    setStatus("浏览器检查未通过", "error");
+    setSimpleStatus(browserStatusText, t("browserNotSupportedLong"), "error");
+    setStatus(t("browserCheckFailed"), "error");
   } else {
     hideBrowserError();
-    setSimpleStatus(browserStatusText, "浏览器检查通过，可以进入下一步。", "ok");
-    setStatus("等待开始", "");
+    setSimpleStatus(browserStatusText, t("browserCheckPassed"), "ok");
+    setStatus(t("waitingStart"), "");
   }
 
   hideRestart();
