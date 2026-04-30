@@ -32,12 +32,14 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
 ));
 
 // src/constants.js
-var FIXED_BAUDRATE, TOTAL_STEPS, FLASH_TIMEOUT_MS;
+var FIXED_BAUDRATE, TOTAL_STEPS, FLASH_TIMEOUT_MS, FIRMWARE_MANIFEST_PATH, FIRMWARE_FALLBACK_PATH;
 var init_constants = __esm({
   "src/constants.js"() {
     FIXED_BAUDRATE = 2e6;
     TOTAL_STEPS = 3;
     FLASH_TIMEOUT_MS = 3e4;
+    FIRMWARE_MANIFEST_PATH = "../firmware/manifest.json";
+    FIRMWARE_FALLBACK_PATH = "../firmware/latest.bin";
   }
 });
 
@@ -9502,44 +9504,43 @@ var init_lib = __esm({
 });
 
 // src/flash.js
-function getFirmwareRegexByLanguage() {
-  if (getLanguageToken() === "zh-CN") {
-    return /^\d+\.\d+\.\d+_R01C_zh-CN_ota\.bin$/;
-  }
-  return /^\d+\.\d+\.\d+_R01C_EN_ota\.bin$/;
-}
-async function resolveFirmwarePath() {
-  const firmwareDirURL = new URL("/firmware/", window.location.origin).toString();
-  const dirRes = await fetch(firmwareDirURL, { cache: "no-store" });
-  if (!dirRes.ok) {
-    throw new Error(`Cannot read firmware directory: ${firmwareDirURL}`);
-  }
-  const html = await dirRes.text();
-  const fileNameRegex = /href=["']([^"']+\.bin)["']/gi;
-  const candidates = [];
-  let match = fileNameRegex.exec(html);
-  while (match) {
-    const rawName = decodeURIComponent(match[1].split("/").pop() ?? "");
-    candidates.push(rawName);
-    match = fileNameRegex.exec(html);
-  }
-  const rule = getFirmwareRegexByLanguage();
-  const matched = candidates.find((name) => rule.test(name));
-  if (!matched) {
-    throw new Error(`No firmware matched rule: ${rule}`);
-  }
-  return new URL(matched, firmwareDirURL).toString();
+function buildFirmwareFileName(version, channel = "R01C") {
+  const languageToken2 = getLanguageToken();
+  const languageSuffix = languageToken2 === "zh-CN" ? "zh-CN" : "EN";
+  return `${version}_${channel}_${languageSuffix}.bin`;
 }
 async function getFirmwareData() {
-  const firmwareURL = await resolveFirmwarePath();
-  const res = await fetch(firmwareURL, { cache: "no-store" });
-  if (!res.ok) {
-    throw new Error(`Firmware download failed: ${firmwareURL}`);
+  const manifestURL = new URL(FIRMWARE_MANIFEST_PATH, window.location.href).toString();
+  const fallbackURL = new URL(FIRMWARE_FALLBACK_PATH, window.location.href).toString();
+  const candidateURLs = [];
+  try {
+    const manifestRes = await fetch(manifestURL, { cache: "no-store" });
+    if (manifestRes.ok) {
+      const manifest = await manifestRes.json();
+      if (manifest?.firmwareUrl) {
+        candidateURLs.push(new URL(manifest.firmwareUrl, manifestURL).toString());
+      }
+      if (manifest?.version) {
+        const channel = manifest?.channel ?? "R01C";
+        const versionedFileName = buildFirmwareFileName(manifest.version, channel);
+        candidateURLs.push(new URL(versionedFileName, manifestURL).toString());
+      }
+    }
+  } catch (_error) {
+    terminal.writeLine(`Hint: Failed to read firmware manifest, fallback will be used: ${manifestURL}`);
   }
-  return {
-    data: new Uint8Array(await res.arrayBuffer()),
-    label: firmwareURL
-  };
+  candidateURLs.push(fallbackURL);
+  for (const firmwareURL of candidateURLs) {
+    const res = await fetch(firmwareURL, { cache: "no-store" });
+    if (!res.ok) continue;
+    return {
+      data: new Uint8Array(await res.arrayBuffer()),
+      label: firmwareURL
+    };
+  }
+  throw new Error(
+    `Unable to download online firmware. Please provide version or firmwareUrl in ${manifestURL}, and ensure firmware files exist in ../firmware/.`
+  );
 }
 function withTimeout(promise, ms, message) {
   return Promise.race([
