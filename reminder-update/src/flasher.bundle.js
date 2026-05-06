@@ -74,7 +74,7 @@ function setText(selector, value) {
   }
 }
 function applyPageI18n() {
-  document.documentElement.lang = languageToken;
+  document.documentElement.lang = languageToken === LANGUAGE.ZH ? "zh" : languageToken;
   setText("title", t("pageTitle"));
   setText(".eyebrow", t("eyebrow"));
   setText("h1", t("pageTitle"));
@@ -114,7 +114,7 @@ var LANGUAGE, languageToken, MESSAGES;
 var init_i18n = __esm({
   "src/i18n.js"() {
     LANGUAGE = {
-      ZH: "zh-CN",
+      ZH: "ZH",
       EN: "en"
     };
     languageToken = LANGUAGE.EN;
@@ -9505,7 +9505,7 @@ var init_lib = __esm({
 // src/flash.js
 function buildFirmwareFileName(version, channel = "R01C") {
   const languageToken2 = getLanguageToken();
-  const languageSuffix = languageToken2 === "zh-CN" ? "zh-CN" : "EN";
+  const languageSuffix = languageToken2 === LANGUAGE.ZH ? LANGUAGE.ZH : "EN";
   return `${version}_${channel}_${languageSuffix}.bin`;
 }
 async function getFirmwareData() {
@@ -9728,7 +9728,7 @@ var require_app = __commonJS({
         setStatus(t("waitingStart"), "");
       });
       langZhBtn?.addEventListener("click", () => {
-        setLanguageToken("zh-CN");
+        setLanguageToken(LANGUAGE.ZH);
         applyPageI18n();
         updateStepUI();
         setStatus(t("waitingStart"), "");

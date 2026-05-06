@@ -5,7 +5,7 @@ import {
   FIXED_BAUDRATE,
   FLASH_TIMEOUT_MS,
 } from "./constants.js";
-import { getLanguageToken, t } from "./i18n.js";
+import { LANGUAGE, getLanguageToken, t } from "./i18n.js";
 import {
   terminal,
   setStatus,
@@ -30,7 +30,7 @@ let abortController = null;
 
 function buildFirmwareFileName(version, channel = "R01C") {
   const languageToken = getLanguageToken();
-  const languageSuffix = languageToken === "zh-CN" ? "zh-CN" : "EN";
+  const languageSuffix = languageToken === LANGUAGE.ZH ? LANGUAGE.ZH : "EN";
   return `${version}_${channel}_${languageSuffix}.bin`;
 }
 

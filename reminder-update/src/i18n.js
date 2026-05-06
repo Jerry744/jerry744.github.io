@@ -1,5 +1,5 @@
-const LANGUAGE = {
-  ZH: "zh-CN",
+export const LANGUAGE = {
+  ZH: "ZH",
   EN: "en",
 };
 
@@ -168,7 +168,7 @@ function setText(selector, value) {
 }
 
 export function applyPageI18n() {
-  document.documentElement.lang = languageToken;
+  document.documentElement.lang = languageToken === LANGUAGE.ZH ? "zh" : languageToken;
   setText("title", t("pageTitle"));
   setText(".eyebrow", t("eyebrow"));
   setText("h1", t("pageTitle"));

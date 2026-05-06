@@ -29,6 +29,7 @@ import {
 } from "./ui.js";
 import { doFlash, cancelFlash, selectPort, copyHelp } from "./flash.js";
 import {
+  LANGUAGE,
   detectLanguageToken,
   applyPageI18n,
   setLanguageToken,
@@ -92,7 +93,7 @@ function init() {
     setStatus(t("waitingStart"), "");
   });
   langZhBtn?.addEventListener("click", () => {
-    setLanguageToken("zh-CN");
+    setLanguageToken(LANGUAGE.ZH);
     applyPageI18n();
     updateStepUI();
     setStatus(t("waitingStart"), "");
