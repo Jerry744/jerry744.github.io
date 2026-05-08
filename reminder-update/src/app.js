@@ -13,8 +13,10 @@ import {
   hideRestart,
   hideCopyHelp,
   hideDoneStatus,
+  hideCompletionModal,
   setSelectedPort,
   getSelectedPort,
+  setSelectedManualFirmware,
   setProgress,
   portStatusText,
   highlightSelectPortButton,
@@ -22,10 +24,13 @@ import {
   prevStepBtn,
   nextStepBtn,
   selectPortBtn,
+  manualUploadBtn,
+  manualUploadInput,
   flashBtn,
   cancelFlashBtn,
   copyHelpBtn,
   restartBtn,
+  completionConfirmBtn,
 } from "./ui.js";
 import { doFlash, cancelFlash, selectPort, copyHelp } from "./flash.js";
 import {
@@ -69,12 +74,44 @@ async function handleSelectPort() {
   updateStepUI();
 }
 
+function handleManualUpload() {
+  if (!manualUploadInput) return;
+  manualUploadInput.value = "";
+  manualUploadInput.click();
+}
+
+function handleManualUploadChange(event) {
+  const target = event.target;
+  const file = target?.files?.[0] ?? null;
+  setSelectedManualFirmware(file);
+
+  if (file) {
+    setStatus(`${t("manualUploadSelected")}: ${file.name}`, "ok");
+  }
+}
+
+function syncRuntimeStatusTexts() {
+  if (!browserSupported()) {
+    setSimpleStatus(browserStatusText, t("browserNotSupportedLong"), "error");
+  } else {
+    setSimpleStatus(browserStatusText, t("browserCheckPassed"), "ok");
+  }
+
+  if (getSelectedPort()) {
+    setSimpleStatus(portStatusText, t("portSelected"), "ok");
+  } else {
+    setSimpleStatus(portStatusText, t("notSelectedPort"));
+  }
+}
+
 function handleRestart() {
   setSelectedPort(null);
+  setSelectedManualFirmware(null);
   setCurrentStep(1);
   hideRestart();
   hideCopyHelp();
   hideDoneStatus();
+  hideCompletionModal();
   setProgress(0);
   setStatus(t("waitingStart"), "");
   hideLog();
@@ -89,12 +126,14 @@ function init() {
   langEnBtn?.addEventListener("click", () => {
     setLanguageToken("en");
     applyPageI18n();
+    syncRuntimeStatusTexts();
     updateStepUI();
     setStatus(t("waitingStart"), "");
   });
   langZhBtn?.addEventListener("click", () => {
     setLanguageToken(LANGUAGE.ZH);
     applyPageI18n();
+    syncRuntimeStatusTexts();
     updateStepUI();
     setStatus(t("waitingStart"), "");
   });
@@ -120,6 +159,9 @@ function init() {
   cancelFlashBtn.addEventListener("click", cancelFlash);
   copyHelpBtn.addEventListener("click", copyHelp);
   restartBtn.addEventListener("click", handleRestart);
+  completionConfirmBtn.addEventListener("click", handleRestart);
+  manualUploadBtn?.addEventListener("click", handleManualUpload);
+  manualUploadInput?.addEventListener("change", handleManualUploadChange);
 }
 
 init();

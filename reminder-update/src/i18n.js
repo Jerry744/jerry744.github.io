@@ -16,14 +16,16 @@ const MESSAGES = {
     downloadEdge: "下载 Edge",
     onboardingStep: (step, total) => `第 ${step} / ${total} 步`,
     step1Title: "第一步：连接设备",
-    step1Desc: "使用附带磁吸数据线连接设备，如图示方向。请加微信halfmind-kaike获取一对一帮助。",
+    step1Desc: "使用附带磁吸数据线连接设备，如图示方向。微信添加halfmind-kaike获取一对一帮助。飞书说明文档https://icntqvy8p48c.feishu.cn/wiki/OnWqwjr5tir9OXkqXOqcl0nln1e",
     step1ImageAlt: "磁吸数据线连接设备方向示意图",
     step2Title: "第二步：选择串口",
     step2Desc:
       "点击下方按钮后，请在系统弹窗里选择你的设备端口（通常会显示为 USB Serial / USB 串口 等名称，适用于 macOS 和 Windows）。",
     selectPortBtn: "选择串口",
     step3Title: "第三步：刷入固件",
-    step3Desc: "系统会根据语言自动选择固件，无需手动下载或上传本地 .bin 文件。",
+    step3Desc: "默认从官网动态读取最新固件；如需离线刷写，可点击“手动上传”选择本地 .bin 文件。",
+    manualUploadBtn: "手动上传",
+    manualUploadSelected: "已选择本地固件",
     flashBtnIdle: "开始刷入固件",
     flashBtnBusy: "正在刷入...",
     cancelFlashBtn: "取消刷写",
@@ -65,6 +67,9 @@ const MESSAGES = {
       "故障排查建议：\n1. 使用 Chrome 或 Edge 最新版本。\n2. 更换支持数据传输的 USB 线。\n3. 关闭串口调试工具后重试。\n4. 断电重启设备后，再次连接刷写。",
     helpCopied: "故障排查步骤已复制",
     clipboardNotAllowed: "当前浏览器不允许剪贴板写入，请手动复制故障排查步骤",
+    completionTitle: "刷写完成",
+    completionMessage: "固件升级成功！\n\n请按照以下步骤操作：\n1. 重新连接设备电源\n 2. 设备重新配对即可使用新功能",
+    completionConfirm: "我已断开连接",
   },
   [LANGUAGE.EN]: {
     pageTitle: "Update firmware to unlock Halfmind Reminder AI features",
@@ -77,14 +82,16 @@ const MESSAGES = {
     onboardingStep: (step, total) => `Step ${step} / ${total}`,
     step1Title: "Step 1: Connect Device",
     step1Desc:
-      "Connect the device with the magnetic data cable in the illustrated direction. Add WeChat halfmind-kaike for one-on-one help.",
+      "Connect the device with the magnetic data cable in the illustrated direction. Send your issue on Instagram @halfmind.tech for one-on-one help.",
     step1ImageAlt: "Illustration of magnetic data cable connection direction",
     step2Title: "Step 2: Select Serial Port",
     step2Desc:
       "Click the button below, then choose your device port in the system dialog (usually shown as USB Serial, on macOS and Windows).",
     selectPortBtn: "Select Serial Port",
     step3Title: "Step 3: Flash Firmware",
-    step3Desc: "Firmware is selected automatically by language. No manual .bin download or upload is required.",
+    step3Desc: "Firmware is loaded from the official site by default. For offline flashing, click Manual Upload to choose a local .bin file.",
+    manualUploadBtn: "Manual Upload",
+    manualUploadSelected: "Local firmware selected",
     flashBtnIdle: "Start Flashing",
     flashBtnBusy: "Flashing...",
     cancelFlashBtn: "Cancel",
@@ -127,6 +134,9 @@ const MESSAGES = {
       "Troubleshooting:\n1. Use latest Chrome or Edge.\n2. Try a USB data cable.\n3. Close serial monitor tools and retry.\n4. Power-cycle device and retry.",
     helpCopied: "Troubleshooting steps copied",
     clipboardNotAllowed: "Clipboard write is blocked in this browser. Please copy manually.",
+    completionTitle: "Flashing Completed",
+    completionMessage: "Firmware upgrade successful!\n\nFollow these steps:\n1. Reconnect the device power\n2. Re-pair with Halfmind Todo app",
+    completionConfirm: "I have disconnected",
   },
 };
 
@@ -183,6 +193,7 @@ export function applyPageI18n() {
   setText("#selectPortBtn", t("selectPortBtn"));
   setText("#step3Card .step-title", t("step3Title"));
   setText("#step3Card .step-desc", t("step3Desc"));
+  setText("#manualUploadBtn", t("manualUploadBtn"));
   setText("#flashBtn", t("flashBtnIdle"));
   setText("#cancelFlashBtn", t("cancelFlashBtn"));
   setText("#copyHelpBtn", t("copyHelpBtn"));

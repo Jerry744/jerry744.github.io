@@ -29,7 +29,7 @@
 
         <section class="step-card" id="step1Card">
           <h2 class="step-title">第一步：连接设备</h2>
-          <p class="step-desc">使用附带磁吸数据线连接设备，如图示方向。请加微信halfmind-kaike获取一对一帮助。</p>
+          <p class="step-desc">使用附带磁吸数据线连接设备，如图示方向。微信添加halfmind-kaike获取一对一帮助。飞书说明文档https://icntqvy8p48c.feishu.cn/wiki/OnWqwjr5tir9OXkqXOqcl0nln1e</p>
           <img
             class="step-illustration"
             src="./src/pogo-pin-connect-reminder.png"
@@ -51,14 +51,16 @@
 
         <section class="step-card hidden" id="step3Card">
           <h2 class="step-title">第三步：刷入固件</h2>
-          <p class="step-desc">将自动从官网动态读取最新固件，无需手动下载或上传本地 .bin 文件。</p>
+          <p class="step-desc">默认从官网动态读取最新固件；如需离线刷写，可点击“手动上传”选择本地 .bin 文件。</p>
           <div class="status" id="statusText">状态：等待开始</div>
           <div class="actions">
+            <button id="manualUploadBtn" type="button">手动上传</button>
             <button id="flashBtn">开始刷入固件</button>
             <button id="cancelFlashBtn" type="button" class="hidden">取消刷写</button>
             <button id="copyHelpBtn" type="button">复制故障排查步骤</button>
             <button id="restartBtn" type="button" class="hidden">重新升级另一台设备</button>
           </div>
+          <input id="manualUploadInput" type="file" accept=".bin,application/octet-stream" class="hidden" />
           <div class="progress-wrap" aria-label="刷写进度">
             <div class="progress-bar" id="progressBar"></div>
           </div>
@@ -78,6 +80,16 @@
         </div>
       </div>
     </main>
+
+    <!-- Completion Modal -->
+    <div id="completionModal" class="modal hidden">
+      <div class="modal-overlay"></div>
+      <div class="modal-content">
+        <h2 id="completionTitle">刷写完成</h2>
+        <p id="completionMessage">固件升级成功！</p>
+        <button id="completionConfirmBtn" type="button" class="primary">我已断开连接</button>
+      </div>
+    </div>
 
     <script type="module" src="./src/bootstrap.js"></script>
   </body>

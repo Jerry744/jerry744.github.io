@@ -19,8 +19,10 @@ import {
   hideRestart,
   showDoneStatus,
   hideDoneStatus,
+  showCompletionModal,
   getSelectedPort,
   setSelectedPort,
+  getSelectedManualFirmware,
   isBusy,
   portStatusText,
   browserStatusText,
@@ -35,6 +37,14 @@ function buildFirmwareFileName(version, channel = "R01C") {
 }
 
 export async function getFirmwareData() {
+  const manualFirmware = getSelectedManualFirmware();
+  if (manualFirmware) {
+    return {
+      data: new Uint8Array(await manualFirmware.arrayBuffer()),
+      label: manualFirmware.name,
+    };
+  }
+
   const manifestURL = new URL(FIRMWARE_MANIFEST_PATH, window.location.href).toString();
   const fallbackURL = new URL(FIRMWARE_FALLBACK_PATH, window.location.href).toString();
 
@@ -147,6 +157,7 @@ export async function doFlash() {
     terminal.writeLine(t("flashSuccess"));
     showRestart();
     hideCopyHelp();
+    showCompletionModal();
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
     if (msg.includes("aborted") || msg === t("flashCancelled")) {

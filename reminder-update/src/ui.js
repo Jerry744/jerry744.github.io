@@ -9,6 +9,8 @@ const nextStepBtn = document.getElementById("nextStepBtn");
 const browserStatusText = document.getElementById("browserStatusText");
 const portStatusText = document.getElementById("portStatusText");
 const selectPortBtn = document.getElementById("selectPortBtn");
+const manualUploadBtn = document.getElementById("manualUploadBtn");
+const manualUploadInput = document.getElementById("manualUploadInput");
 const doneStatusText = document.getElementById("doneStatusText");
 const flashBtn = document.getElementById("flashBtn");
 const cancelFlashBtn = document.getElementById("cancelFlashBtn");
@@ -20,6 +22,10 @@ const statusText = document.getElementById("statusText");
 const logArea = document.getElementById("logArea");
 const browserErrorCard = document.getElementById("browserErrorCard");
 const mainFlow = document.getElementById("mainFlow");
+const completionModal = document.getElementById("completionModal");
+const completionTitle = document.getElementById("completionTitle");
+const completionMessage = document.getElementById("completionMessage");
+const completionConfirmBtn = document.getElementById("completionConfirmBtn");
 
 let busy = false;
 let currentStep = 1;
@@ -46,6 +52,14 @@ export function getSelectedPort() {
 
 export function setSelectedPort(port) {
   window.__selectedPort = port;
+}
+
+export function getSelectedManualFirmware() {
+  return window.__manualFirmwareFile ?? null;
+}
+
+export function setSelectedManualFirmware(file) {
+  window.__manualFirmwareFile = file ?? null;
 }
 
 export const terminal = {
@@ -169,10 +183,25 @@ export function hideDoneStatus() {
   doneStatusText.classList.add("hidden");
 }
 
+export function showCompletionModal() {
+  completionTitle.textContent = t("completionTitle");
+  completionMessage.textContent = t("completionMessage");
+  completionConfirmBtn.textContent = t("completionConfirm");
+  completionModal.classList.remove("hidden");
+}
+
+export function hideCompletionModal() {
+  completionModal.classList.add("hidden");
+}
+
 export {
   prevStepBtn,
   nextStepBtn,
   selectPortBtn,
+  manualUploadBtn,
+  completionModal,
+  completionConfirmBtn,
+  manualUploadInput,
   flashBtn,
   cancelFlashBtn,
   copyHelpBtn,
