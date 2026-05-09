@@ -13,10 +13,12 @@ const MESSAGES = {
     browserErrorDesc:
       "在线刷写功能需要使用 Chrome 或 Edge 浏览器的最新版本。请下载支持的浏览器后重新打开本页面。",
     supportWechat: "请加微信halfmind-kaike获取一对一帮助",
+    supportBlockTitle: "客户支持",
+    supportGuideLinkText: "安卓安装包/教程在这里",
     downloadEdge: "下载 Edge",
     onboardingStep: (step, total) => `第 ${step} / ${total} 步`,
     step1Title: "第一步：连接设备",
-    step1Desc: "使用附带磁吸数据线连接设备，如图示方向。微信添加halfmind-kaike获取一对一帮助。飞书说明文档https://icntqvy8p48c.feishu.cn/wiki/OnWqwjr5tir9OXkqXOqcl0nln1e",
+    step1Desc: "使用附带磁吸数据线连接设备，如图示方向。",
     step1ImageAlt: "磁吸数据线连接设备方向示意图",
     step2Title: "第二步：选择串口",
     step2Desc:
@@ -78,11 +80,12 @@ const MESSAGES = {
     browserErrorDesc:
       "Online flashing requires the latest desktop Chrome or Edge. Please install a supported browser and reopen this page.",
     supportWechat: "Add WeChat halfmind-kaike for one-on-one help",
+    supportBlockTitle: "Customer support",
+    supportGuideLinkText: "Android installer/tutorial here",
     downloadEdge: "Download Edge",
     onboardingStep: (step, total) => `Step ${step} / ${total}`,
     step1Title: "Step 1: Connect Device",
-    step1Desc:
-      "Connect the device with the magnetic data cable in the illustrated direction. Send your issue on Instagram @halfmind.tech for one-on-one help.",
+    step1Desc: "Connect the device with the magnetic data cable in the illustrated direction.",
     step1ImageAlt: "Illustration of magnetic data cable connection direction",
     step2Title: "Step 2: Select Serial Port",
     step2Desc:
@@ -186,6 +189,9 @@ export function applyPageI18n() {
   setText("#browserErrorCard p:nth-of-type(1)", t("browserErrorDesc"));
   setText("#browserErrorCard p:nth-of-type(2)", t("supportWechat"));
   setText("#browserErrorCard a", t("downloadEdge"));
+  setText("#supportBlockTitle", t("supportBlockTitle"));
+  setText("#supportBlockContact", t("supportWechat"));
+  setText("#supportGuideLink", t("supportGuideLinkText"));
   setText("#step1Card .step-title", t("step1Title"));
   setText("#step1Card .step-desc", t("step1Desc"));
   setText("#step2Card .step-title", t("step2Title"));

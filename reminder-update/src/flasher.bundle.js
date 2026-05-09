@@ -82,6 +82,9 @@ function applyPageI18n() {
   setText("#browserErrorCard p:nth-of-type(1)", t("browserErrorDesc"));
   setText("#browserErrorCard p:nth-of-type(2)", t("supportWechat"));
   setText("#browserErrorCard a", t("downloadEdge"));
+  setText("#supportBlockTitle", t("supportBlockTitle"));
+  setText("#supportBlockContact", t("supportWechat"));
+  setText("#supportGuideLink", t("supportGuideLinkText"));
   setText("#step1Card .step-title", t("step1Title"));
   setText("#step1Card .step-desc", t("step1Desc"));
   setText("#step2Card .step-title", t("step2Title"));
@@ -126,10 +129,12 @@ var init_i18n = __esm({
         browserErrorTitle: "\u6D4F\u89C8\u5668\u4E0D\u652F\u6301",
         browserErrorDesc: "\u5728\u7EBF\u5237\u5199\u529F\u80FD\u9700\u8981\u4F7F\u7528 Chrome \u6216 Edge \u6D4F\u89C8\u5668\u7684\u6700\u65B0\u7248\u672C\u3002\u8BF7\u4E0B\u8F7D\u652F\u6301\u7684\u6D4F\u89C8\u5668\u540E\u91CD\u65B0\u6253\u5F00\u672C\u9875\u9762\u3002",
         supportWechat: "\u8BF7\u52A0\u5FAE\u4FE1halfmind-kaike\u83B7\u53D6\u4E00\u5BF9\u4E00\u5E2E\u52A9",
+        supportBlockTitle: "\u5BA2\u6237\u652F\u6301",
+        supportGuideLinkText: "\u5B89\u5353\u5B89\u88C5\u5305/\u6559\u7A0B\u5728\u8FD9\u91CC",
         downloadEdge: "\u4E0B\u8F7D Edge",
         onboardingStep: (step, total) => `\u7B2C ${step} / ${total} \u6B65`,
         step1Title: "\u7B2C\u4E00\u6B65\uFF1A\u8FDE\u63A5\u8BBE\u5907",
-        step1Desc: "\u4F7F\u7528\u9644\u5E26\u78C1\u5438\u6570\u636E\u7EBF\u8FDE\u63A5\u8BBE\u5907\uFF0C\u5982\u56FE\u793A\u65B9\u5411\u3002\u5FAE\u4FE1\u6DFB\u52A0halfmind-kaike\u83B7\u53D6\u4E00\u5BF9\u4E00\u5E2E\u52A9\u3002\u98DE\u4E66\u8BF4\u660E\u6587\u6863https://icntqvy8p48c.feishu.cn/wiki/OnWqwjr5tir9OXkqXOqcl0nln1e",
+        step1Desc: "\u4F7F\u7528\u9644\u5E26\u78C1\u5438\u6570\u636E\u7EBF\u8FDE\u63A5\u8BBE\u5907\uFF0C\u5982\u56FE\u793A\u65B9\u5411\u3002",
         step1ImageAlt: "\u78C1\u5438\u6570\u636E\u7EBF\u8FDE\u63A5\u8BBE\u5907\u65B9\u5411\u793A\u610F\u56FE",
         step2Title: "\u7B2C\u4E8C\u6B65\uFF1A\u9009\u62E9\u4E32\u53E3",
         step2Desc: "\u70B9\u51FB\u4E0B\u65B9\u6309\u94AE\u540E\uFF0C\u8BF7\u5728\u7CFB\u7EDF\u5F39\u7A97\u91CC\u9009\u62E9\u4F60\u7684\u8BBE\u5907\u7AEF\u53E3\uFF08\u901A\u5E38\u4F1A\u663E\u793A\u4E3A USB Serial / USB \u4E32\u53E3 \u7B49\u540D\u79F0\uFF0C\u9002\u7528\u4E8E macOS \u548C Windows\uFF09\u3002",
@@ -188,10 +193,12 @@ var init_i18n = __esm({
         browserErrorTitle: "Browser Not Supported",
         browserErrorDesc: "Online flashing requires the latest desktop Chrome or Edge. Please install a supported browser and reopen this page.",
         supportWechat: "Add WeChat halfmind-kaike for one-on-one help",
+        supportBlockTitle: "Customer support",
+        supportGuideLinkText: "Android installer/tutorial here",
         downloadEdge: "Download Edge",
         onboardingStep: (step, total) => `Step ${step} / ${total}`,
         step1Title: "Step 1: Connect Device",
-        step1Desc: "Connect the device with the magnetic data cable in the illustrated direction. Send your issue on Instagram @halfmind.tech for one-on-one help.",
+        step1Desc: "Connect the device with the magnetic data cable in the illustrated direction.",
         step1ImageAlt: "Illustration of magnetic data cable connection direction",
         step2Title: "Step 2: Select Serial Port",
         step2Desc: "Click the button below, then choose your device port in the system dialog (usually shown as USB Serial, on macOS and Windows).",
