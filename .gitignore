@@ -2,6 +2,5 @@
 # Backup folder
 bak/
 *.csv
-test_data/
-/invitation
+
 .vscode/
