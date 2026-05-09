@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="halfmind.svg">
+    <title>T.O.V.A. Test Demo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #000000;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            color: white;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 40px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .header h1 {
+            font-size: 48px;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        
+        .header p {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+        
+        .demo-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+        
+        .demo-section {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 8px 32px rgba(255, 255, 255, 0.1);
+        }
+        
+        .demo-section h3 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #ffd700;
+        }
+        
+        .stimulus-demo {
+            background: white;
+            width: 200px;
+            height: 200px;
+            margin: 20px auto;
+            border-radius: 10px;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(255, 255, 255, 0.2);
+        }
+        
+        .target-square {
+            width: 30px;
+            height: 30px;
+            background: black;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .target-demo {
+            top: 30%;
+        }
+        
+        .nontarget-demo {
+            top: 60%;
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .feature {
+            background: rgba(255, 255, 255, 0.08);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 6px 24px rgba(255, 255, 255, 0.1);
+        }
+        
+        .feature-icon {
+            font-size: 30px;
+            margin-bottom: 10px;
+        }
+        
+        .launch-section {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 15px;
+            padding: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 8px 32px rgba(255, 255, 255, 0.1);
+        }
+        
+        .launch-btn {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a52);
+            border: none;
+            color: white;
+            padding: 20px 40px;
+            font-size: 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin: 10px;
+            box-shadow: 0 10px 30px rgba(255, 107, 107, 0.4);
+            transition: all 0.3s ease;
+        }
+        
+        .launch-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(255, 107, 107, 0.6);
+        }
+        
+        .secondary-btn {
+            background: linear-gradient(45deg, #4ecdc4, #44a08d);
+            box-shadow: 0 10px 30px rgba(78, 205, 196, 0.4);
+        }
+        
+        .secondary-btn:hover {
+            box-shadow: 0 15px 40px rgba(78, 205, 196, 0.6);
+        }
+        
+        .info-text {
+            margin: 20px 0;
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        
+        .warning {
+            background: rgba(255, 193, 7, 0.15);
+            border: 2px solid #ffc107;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 8px 32px rgba(255, 193, 7, 0.2);
+        }
+        
+        .warning h4 {
+            color: #ffc107;
+            margin-top: 0;
+        }
+        
+        .consent-section {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 8px 32px rgba(255, 255, 255, 0.1);
+        }
+        
+        .consent-checkbox {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .consent-label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            font-size: 18px;
+            line-height: 1.5;
+            padding: 10px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .consent-label:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        #consent-checkbox {
+            width: 20px;
+            height: 20px;
+            margin-right: 15px;
+            cursor: pointer;
+        }
+        
+        .consent-text {
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        a {
+            color: #ffb366;
+            font-weight: bold;
+            text-decoration: none;
+        }
+        
+        a:hover {
+            color: #ffc080;
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 768px) {
+            .demo-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .container {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 36px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Continuous Attention Test</h1>
+            <p>Enabled by <a href="https://halfmind.tech">halfmind.tech</a></p>
+        </div>
+
+        <div class="demo-grid">
+            <div class="demo-section">
+                <h3>🎯 Target Stimulus</h3>
+                <div class="stimulus-demo">
+                    <div class="target-square target-demo"></div>
+                </div>
+                <p>When the small black square appears at the <strong>top</strong>, <strong>press the spacebar immediately</strong></p>
+            </div>
+
+            <div class="demo-section">
+                <h3>❌ Non-Target Stimulus</h3>
+                <div class="stimulus-demo">
+                    <div class="target-square nontarget-demo"></div>
+                </div>
+                <p>When the small black square appears at the <strong>bottom</strong>, <strong>do not press any key</strong></p>
+            </div>
+        </div>
+
+        <div class="features">
+            <div class="feature">
+                <div class="feature-icon">⏱️</div>
+                <h4>High Precision Timing</h4>
+                <p>Sub-millisecond response time measurement</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🖥️</div>
+                <h4>Fullscreen Mode</h4>
+                <p>Immersive testing environment</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">📊</div>
+                <h4>Scientific Data</h4>
+                <p>Complete statistical analysis report</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">⌨️</div>
+                <h4>Spacebar Control</h4>
+                <p>Simple and intuitive operation</p>
+            </div>
+        </div>
+
+        <div class="warning">
+            <h4>⚠️ Pre-Test Instructions</h4>
+            <ul style="text-align: left;">
+                <li>TOVA test only offers two gender options: Male and Female. Select your assigned sex at birth.</li>
+                <li>Adjust the screen brightness to a lower level</li>
+                <li>Do not use external monitor for optimal latency</li>
+                <li>The test will automatically enter fullscreen mode, use Esc to exit</li>
+                <li>Ensure you are in a quiet environment</li>
+                <li>Mute your phone & set do-not-disturb mode</li>
+                <li>Use a laptop with built-in keyboard for best results</li>
+                <li>The total length is approximately 27 minutes</li>
+            </ul>
+        </div>
+
+        <div class="consent-section">
+            <h4>📋 Informed Consent Form</h4>
+            <div class="consent-text" style="text-align: left; max-height: 400px; overflow-y: auto; padding: 20px; background: rgba(0,0,0,0.3); border-radius: 10px; margin: 20px 0;">
+                <h5>Before you start:</h5>
+                <p>Thank you for considering trying this test. Please read this information carefully so you understand what this tool does — and what it doesn't.</p>
+                
+                <h5>Purpose of the Test:</h5>
+                <p>This tool is a prototype inspired by the Test of Variables of Attention (TOVA), a type of Continuous Performance Test (CPT). It was created as part of a graduation project to test design ideas and user experience. It is for demonstration and research purposes only — it is not a medical diagnostic tool.</p>
+                
+                <h5>What You Will Do:</h5>
+                <p>You will complete a short series of repetitive tasks that measure reaction time and attention. It should take about 30 minutes.</p>
+                
+                <h5>Voluntary Participation:</h5>
+                <p>Your participation is completely voluntary. You may stop at any time, for any reason, without any penalty.</p>
+                
+                <h5>Risks & Discomfort:</h5>
+                <p>There are no known significant risks, but the test may feel repetitive or tiring. Take breaks if needed, or exit at any time.</p>
+                
+                <h5>Data Privacy:</h5>
+                <p>This is a demo version. No data will be collected or stored by the system. When you finish, your results will be available for you to download locally. You are responsible for saving or sharing them if you wish — the data is not sent anywhere else.</p>
+                
+                <h5>How Your Data Is Used:</h5>
+                <p>Since no data is stored on the server, we do not keep any of your test results. If you choose to share your results with others (for example, with a healthcare professional), that is entirely up to you.</p>
+                
+                <h5>Questions & Concerns:</h5>
+                <p>If you have any questions about this tool, please feel free to contact me at z.liu-77@student.tudelft.nl.</p>
+                
+                <h5>Consent:</h5>
+                <p>By clicking "Start" or proceeding with the test, you acknowledge that you have read and understood this information and voluntarily agree to try this demo.</p>
+                
+                <h5>Disclaimer:</h5>
+                <p><strong>This test cannot and does not diagnose ADHD or any other condition. Please consult a qualified specialist if you have concerns about ADHD or related symptoms.</strong></p>
+            </div>
+            
+            <div class="consent-checkbox">
+                <input type="checkbox" id="consent-checkbox">
+                <label for="consent-checkbox" class="consent-label">
+                    <span class="consent-text">
+                        <strong>I have read and understood the informed consent form above, and I voluntarily agree to try this demo.</strong>
+                    </span>
+                </label>
+            </div>
+        </div>
+
+        <div class="launch-section">
+            <h3>🚀 Start Test</h3>
+            <p class="info-text">Click the button below to start the T.O.V.A. attention test</p>
+            
+            <a href="full-test.html" class="launch-btn">
+                🧪 Start Full Test
+            </a>
+            
+            <a href="https://zhengyang-liu.notion.site/TOVA-Test-Manual-22a31aa3af9180b6a0bcd621c4d5b489?source=copy_link" class="launch-btn secondary-btn">
+                📖 View Instructions
+            </a>
+            
+            <div class="info-text">
+                <p><strong>Test Structure:</strong></p>
+                <p>Practice (3 min) → TOVA Test (24 min)</p>
+                <p>Check out my task management product for ADHD'ers at <a href="https://halfmind.tech">halfmind.tech</a></p>
+                <!-- <p><strong>Data Output:</strong> Raw Data + Summary Statistics</p> -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+                    // Add interactive effects
+            document.addEventListener('DOMContentLoaded', () => {
+                // Add animation effects for demo stimuli
+                const demos = document.querySelectorAll('.stimulus-demo');
+                
+                demos.forEach(demo => {
+                    demo.addEventListener('mouseenter', () => {
+                        demo.style.transform = 'scale(1.1)';
+                        demo.style.transition = 'transform 0.3s ease';
+                        demo.style.boxShadow = '0 15px 45px rgba(255, 255, 255, 0.3)';
+                    });
+                    
+                    demo.addEventListener('mouseleave', () => {
+                        demo.style.transform = 'scale(1)';
+                        demo.style.boxShadow = '0 10px 30px rgba(255, 255, 255, 0.2)';
+                    });
+                });
+
+            // Check browser compatibility
+            if (!document.documentElement.requestFullscreen) {
+                const warning = document.querySelector('.warning');
+                warning.innerHTML += '<p style="color: #ff6b6b; margin-top: 15px;"><strong>Note:</strong> Your browser may not support fullscreen mode. We recommend using Chrome or Firefox.</p>';
+            }
+
+            // Add keyboard shortcuts
+            document.addEventListener('keydown', (e) => {
+                if (e.code === 'Space') {
+                    e.preventDefault();
+                    checkConsentAndProceed();
+                }
+            });
+
+            // Handle checkbox state changes
+            const consentCheckbox = document.getElementById('consent-checkbox');
+            const startTestBtn = document.querySelector('.launch-btn[href="index.html"]');
+            
+            consentCheckbox.addEventListener('change', function() {
+                updateButtonState();
+            });
+
+            function updateButtonState() {
+                if (consentCheckbox.checked) {
+                    startTestBtn.classList.remove('disabled');
+                } else {
+                    startTestBtn.classList.add('disabled');
+                }
+            }
+
+            // Add click handlers for launch buttons
+            document.querySelectorAll('.launch-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    if (btn.href && btn.href.includes('index.html')) {
+                        e.preventDefault();
+                        checkConsentAndProceed();
+                    }
+                });
+            });
+
+            function checkConsentAndProceed() {
+                const consentChecked = document.getElementById('consent-checkbox').checked;
+                
+                if (!consentChecked) {
+                    alert('⚠️ Please read and accept the informed consent statement before starting the test.\n\nYou must acknowledge that you are aware of your data being recorded and that you can quit at any time without consequences.');
+                    return;
+                }
+                
+                window.location.href = 'index.html';
+            }
+
+            // Initialize button state
+            updateButtonState();
+        });
+    </script>
+</body>
+</html>
