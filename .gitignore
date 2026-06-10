@@ -4,3 +4,6 @@ bak/
 *.csv
 
 .vscode/
+
+/portfolio/README.md
+node_modules/
